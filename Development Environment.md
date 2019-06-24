@@ -6,7 +6,7 @@
 
 2. `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash`
 
-   - ![1561377098138](./curlNvmInstall.png)
+   - ![1561377098138](./ReadMeImage/curlNvmInstall.png)
 
 3. `source ~/.bashrc`
 
