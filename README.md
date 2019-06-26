@@ -79,4 +79,4 @@ The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodejs 10.6.0.
 - module Version
   - ![module Version](./ReadMeImage/moduleVersion.png)
 - Execute Test
-  - ![Execute Test screenshot](./ReadMeImage/E4sensingApp.jpg?v=4&s=200)
+  - ![Execute Test screenshot](./ReadMeImage/E4sensingApp.jpg?s=100)
