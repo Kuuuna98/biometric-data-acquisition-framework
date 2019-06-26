@@ -75,7 +75,7 @@ The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodejs 10.6.0.
     - `android.useAndroidX=true`
     - `android.enableJetifier=true`
 - `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
-  - ![1561543764731](E:/labProject/ReadMeImage/dependenciesVersion.png)
+  - ![dependencies Version](./ReadMeImage/dependenciesVersion.png)
 - module Version
-  - ![module Version](E:/labProject/ReadMeImage/moduleVersion.png)
+  - ![module Version](./ReadMeImage/moduleVersion.png)
 
