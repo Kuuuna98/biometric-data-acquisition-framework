@@ -1,7 +1,8 @@
 # biometric-data-acquisition-framework
+
 The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodejs 10.6.0.
 
-# Development Environment
+# Development Environment (npm, nodeJS)
 
 1. `sudo apt-get install build-essential libssl-dev`
 
@@ -33,4 +34,49 @@ The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodejs 10.6.0.
 
 7. `npm --version`
 
-   - ![1561377273225](./ReadMeImage/npmVersion.png)
+   - ![npmVersion](./ReadMeImage/npmVersion.png)
+
+
+
+# Development Environment (Android)
+
+1. `https://www.jetbrains.com/toolbox/app/?fromMenu` Download Toolbox APP
+
+- ![downloadToolbox](./ReadMeImage/downloadToolbox.png)
+
+2. save and extract
+
+   - ![saveFile](./ReadMeImage/saveFile.png)
+
+     
+
+   - ![toolboxExtractAndRun](./ReadMeImage/toolboxExtractAndRun.png)
+
+3. install Android Studio
+
+   - ![install Android Studio](./ReadMeImage/installAndroidStudio.png)
+
+4. Run Android Studio
+
+   - `Next` => `standard` => `Next` => `Next` => `Finish`
+
+5. Setup
+
+   - ![InstallingAndroidStudio](./ReadMeImage/InstallingAndroid.png)
+
+6. `configure` => `AVD Manager` => `Create Virtual Device
+
+   - Install `Pixel 2` => Download `Pie`
+
+# 오류 및 Version
+
+- `ERROR: Manifest merger failed : Attribute application@appComponentFactory value=(android.support.v4.app.CoreComponentFactory) from [com.android.support:support-compat:28.0.0] AndroidManifest.xm:22:18-91`
+  - `gradle.properties`에 아래와 같이 추가하기
+    - `android.useAndroidX=true`
+    - `android.enableJetifier=true`
+- `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
+  - ![dependencies Version](./ReadMeImage/dependenciesVersion.png)
+- module Version
+  - ![module Version](./ReadMeImage/moduleVersion.png)
+- Execute Test
+  - <img src="./ReadMeImage/E4sensingApp.jpg" width="300">
