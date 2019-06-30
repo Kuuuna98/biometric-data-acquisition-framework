@@ -1,0 +1,9 @@
+{
+    "path" : "~/r-suggestBot/DataExploration",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ [K]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ htop
+>]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ npoc
+'npoc' 명령을 찾을 수 없습니다. 비슷한 명령:
+ 'nproc' 명령은 패키지 'coreutils'(main)에 있습니다.
+npoc: 명령을 찾을 수 없습니다
+]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ nproc[K
+'npro' 명령을 찾을 수 없습니다. 비슷한 명령:
+ 'nero' 명령은 패키지 'alliance'(universe)에 있습니다.
+ 'nproc' 명령은 패키지 'coreutils'(main)에 있습니다.
+npro: 명령을 찾을 수 없습니다
+]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ nproc
+8
+]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ free
+              total        used        free      shared  buff/cache   available
+Mem:       32938784     3480924     4848492      123640    24609368    28877428
+Swap:        998396      529992      468404
+]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ [K]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ htop
+>]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ htop
+]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ [K]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ htop
+>]0;/home/ubuntu/r-suggestBot/DataExploration]0;ubuntu@ubuntu: ~/r-suggestBot/DataExploration[01;32mubuntu@ubuntu[00m:[01;34m~/r-suggestBot/DataExploration[00m$ 

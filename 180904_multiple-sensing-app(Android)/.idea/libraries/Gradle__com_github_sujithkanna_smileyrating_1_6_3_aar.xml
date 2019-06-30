@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.sujithkanna:smileyrating:1.6.3@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d4a6bebcb856e6bb5c57511626cda8e9/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d4a6bebcb856e6bb5c57511626cda8e9/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d4a6bebcb856e6bb5c57511626cda8e9/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.sujithkanna/smileyrating/1.6.3/d8527393065c5fa848e27716a38d65ee1c8d0734/smileyrating-1.6.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
