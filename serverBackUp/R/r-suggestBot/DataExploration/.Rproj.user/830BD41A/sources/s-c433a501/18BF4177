@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1530809673241.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "18BF4177",
+    "lastKnownWriteTime" : 1530869458,
+    "last_content_update" : 1530869458645,
+    "path" : "~/r-suggestBot/DataExploration/DataExtractionFromMySQLDB.R",
+    "project_path" : "DataExtractionFromMySQLDB.R",
+    "properties" : {
+        "cursorPosition" : "214,31",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

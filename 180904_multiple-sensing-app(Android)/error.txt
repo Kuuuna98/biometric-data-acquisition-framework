@@ -1,0 +1,539 @@
+--------- beginning of system
+03-19 20:56:07.048  4506  4506 D io_stats: !@   8,0 r 91069 6601880 w 312083 5664228 d 22122 26243984 f 141600 141598 iot 226560 174155 th 461188 0 0 pt 0 inp 0 0 108339.461
+--------- beginning of main
+03-19 20:56:07.270  3724  4039 E WifiWatchdogStateMachine: Unhandled message { when=-1ms what=135238 target=com.android.internal.util.StateMachine$SmHandler } in state ValidNonSwitchableState
+03-19 20:56:08.353  3724  3962 D WifiStateMachine: Current network is: "Welcome_KAIST" , ID is: 2
+03-19 20:56:08.353  3724  3962 D WifiStateMachine: enterprise network, bail out...
+03-19 20:56:09.144  3724  3918 D InputReader: Input event(4): value=1 when=108341558147000
+03-19 20:56:09.144  3724  3918 D InputReader: Input event(4): value=1 when=108341558147000
+03-19 20:56:09.144  3724  3918 I InputReader: Touch event's action is 0x0 (deviceType=0) [pCnt=1, s=0.764 ] when=108341558147000
+03-19 20:56:09.144  3724  3918 D InputReader: lastThreadEndTime = 108336609401550, currentThreadStartTime = 108336609404742, diff = 0
+03-19 20:56:09.145  3724  3917 I InputDispatcher: Delivering touch to (4091): action: 0x4, toolType: 1
+03-19 20:56:09.145  3724  3917 I InputDispatcher: Delivering touch to (11873): action: 0x0, toolType: 1
+03-19 20:56:09.145  3724  3917 I InputDispatcher: Delivering touch to (4091): action: 0x0, toolType: 1
+03-19 20:56:09.146  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=121.28906, y[0]=1712.8125, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341558, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.146 11873 11873 D ViewRootImpl@2c02d6b[LauncherActivity]: ViewPostImeInputStage processPointer 0
+03-19 20:56:09.153  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.28906, y[0]=1712.3438, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341566, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.158  3724 12427 D CustomFrequencyManagerService: acquireDVFSLockLocked : type : DVFS_MIN_LIMIT  frequency : 1040000  uid : 1000  pid : 3724  pkgName : LAUNCHER_TOUCH@CPU_MIN@6
+03-19 20:56:09.161  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.28906, y[0]=1711.875, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341574, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.169  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.28906, y[0]=1710.9375, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341583, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.171 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.178  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.28906, y[0]=1710.0, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341591, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.186  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.28906, y[0]=1709.0625, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341600, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.188 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.195  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.552734, y[0]=1708.125, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341608, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.203  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=121.81641, y[0]=1707.1875, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341617, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.204 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.211  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=122.34375, y[0]=1706.25, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341625, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.220  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=122.60742, y[0]=1705.3125, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341633, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.221 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.229  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=122.87109, y[0]=1704.8438, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341642, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.238  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=123.134766, y[0]=1704.375, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341651, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.238 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.246  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=123.39844, y[0]=1703.9062, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341659, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.254  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=123.66211, y[0]=1703.4375, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341667, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.255 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.263  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=123.92578, y[0]=1702.9688, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341676, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.272 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.280  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_MOVE, actionButton=0, id[0]=0, x[0]=124.18945, y[0]=1702.5, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341693, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.287  3724  3918 D InputReader: Input event(4): value=0 when=108341701729000
+03-19 20:56:09.287  3724  3918 D InputReader: Input event(4): value=0 when=108341701729000
+03-19 20:56:09.287  3724  3918 I InputReader: Touch event's action is 0x1 (deviceType=0) [pCnt=1, s=] when=108341701729000
+03-19 20:56:09.288  3724  3917 I InputDispatcher: Delivering touch to (11873): action: 0x1, toolType: 1
+03-19 20:56:09.288  3724  3917 I InputDispatcher: Delivering touch to (4091): action: 0x1, toolType: 1
+03-19 20:56:09.288 11873 11873 I Launcher.PagedView: determineScrollingStart : mTouchState=0, mIsPageMoving=false
+03-19 20:56:09.288  4091  4091 V WallpaperService: Delivering touch event: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=124.18945, y[0]=1702.5, toolType[0]=TOOL_TYPE_FINGER, buttonState=0, metaState=0, flags=0x3, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=108341701, downTime=108341558, deviceId=4, source=0x1002 }
+03-19 20:56:09.288 11873 11873 D ViewRootImpl@2c02d6b[LauncherActivity]: ViewPostImeInputStage processPointer 1
+03-19 20:56:09.298  3724  3767 D CustomFrequencyManagerService: releaseDVFSLockLocked : Getting Lock type frm List : DVFS_MIN_LIMIT  frequency : 1040000  uid : 1000  pid : 3724  tag : LAUNCHER_TOUCH@CPU_MIN@6
+03-19 20:56:09.299 11873 11873 D MenuView: visible = false isExit = false
+03-19 20:56:09.329  3724  4672 D CustomFrequencyManagerService: acquireDVFSLockLocked : type : DVFS_MIN_LIMIT  frequency : 2600000  uid : 1000  pid : 3724  pkgName : APP_LAUNCH@CPU_MIN@270
+03-19 20:56:09.336  3724  3943 I ActivityManager: START u0 {act=android.intent.action.MAIN typ=null flg=0x10200000 cmp=ComponentInfo{com.kaist.iclab/com.kaist.iclab.activity.MainActivity}} from uid 10078 on display 0
+03-19 20:56:09.337  3724  3943 D ActivityManager: ActivityRecord() Constructor : multiScreenAttrs=MultiScreenAttrs{mDisplayId=0, mBaseDisplayId=0, mBaseActivity=false}
+03-19 20:56:09.337  3724  3943 D CustomFrequencyManagerService: acquireDVFSLockLocked : type : DVFS_MIN_LIMIT  frequency : 1560000  uid : 1000  pid : 3724  pkgName : AMS_RESUME@CPU_MIN@7
+03-19 20:56:09.337  3724  3943 D ActivityManager: mActivityResumeBooster.acquire()
+03-19 20:56:09.338  3724  3943 D ActivityManager: computeStackFocus: stackId=1
+03-19 20:56:09.338  3724  3943 D ActivityManager: computeStackFocus: New stack r=ActivityRecord{f3a2f9bd0 u0 com.kaist.iclab/.activity.MainActivity t-1} stackId=1
+03-19 20:56:09.338  3724  3943 I MultiWindowManagerService: setTaskDimensions: Task=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=1} minWidth=-1 minHeight=-1 maxWidth=-1 maxHeight=-1
+03-19 20:56:09.338  3724  3943 D ActivityManager: moveToFront() : reason=startedActivity setFocusedActivity isAttached=true TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=1}
+03-19 20:56:09.339  3724  3943 D ActivityManager: setFocusStackUnchecked: reason=startedActivity setFocusedActivity focusCandidate=ActivityStack{4a68279d0 stackId=1, 4 tasks} caller=com.android.server.am.ActivityStack.moveToFront:875 com.android.server.am.ActivityStackSupervisor.moveActivityStackToFront:1995 
+03-19 20:56:09.339  3724  3943 D InputDispatcher: Focused application set to: xxxx
+03-19 20:56:09.339  3724  3943 D InputDispatcher: Focus left window: 11873
+03-19 20:56:09.340  3724  3943 D ActivityManager: resumeTopActivityInnerLocked() : #1 prevTask=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=1} next=ActivityRecord{f3a2f9bd0 u0 com.kaist.iclab/.activity.MainActivity t84} mFocusedStack=ActivityStack{4a68279d0 stackId=1, 4 tasks}
+03-19 20:56:09.340  3724  3943 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+03-19 20:56:09.340  3724  3943 D GameManagerService: sem_perfomance_mode: 0
+03-19 20:56:09.341  3724  3943 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.342  3724  3833 D WindowManager: addWindow: android.view.ViewRootImpl$W@29fcc4e displayId=0
+03-19 20:56:09.342  3724  3833 D InputTransport: Input channel constructed: fd=450
+03-19 20:56:09.342  3724  3833 D InputTransport: Input channel constructed: fd=497
+03-19 20:56:09.343  3724  3833 D ViewRootImpl@e6cdb49[iclab]: setView = DecorView@da9ce7c[iclab] touchMode=true
+03-19 20:56:09.344 11873 11873 D Launcher: onPause, Launcher: 128676851
+03-19 20:56:09.344 11873 11873 D Launcher.HomeView: onPause
+03-19 20:56:09.344 11873 11873 D Launcher.Workspace: exitWidgetResizeMode. isClearResizeFrame is false
+03-19 20:56:09.345  3724  3949 D ActivityManager: resumeTopActivityInnerLocked() : #1 prevTask=TaskRecord{96f0247d0 #5 A=com.sec.android.app.launcher U=0 StackId=0 sz=1} next=ActivityRecord{f3a2f9bd0 u0 com.kaist.iclab/.activity.MainActivity t84} mFocusedStack=ActivityStack{4a68279d0 stackId=1, 4 tasks}
+03-19 20:56:09.346  3724  3949 E ActivityManager: applyOptionsLocked: pendingOptions.getStartX()=29pendingOptions.getStartY()=1539
+03-19 20:56:09.346  3724  3949 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.350  3724  3949 D GameManagerService: sem_perfomance_mode: 0
+03-19 20:56:09.350  3724  3724 D GameManagerService: NotifyRunnable. pkg: com.kaist.iclab, type: 4, isMinimized: false, isTunableApp: false
+03-19 20:56:09.350  3724  3724 D GameManagerService: unexpected mPrevNotiType: -1
+03-19 20:56:09.351  3724  3949 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.352 11873 11873 D ViewRootImpl@2c02d6b[LauncherActivity]: MSG_WINDOW_FOCUS_CHANGED 0
+03-19 20:56:09.354  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.355  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.359  3724  3833 V WindowManager: Relayout Window{9df16fd0 u0 Starting com.kaist.iclab}: viewVisibility=0 req=1080x1848 WM.LayoutParams{(0,0)(fillxfill) sim=#20 ty=3 fl=#81830118 pfl=0x20011 wanim=0x1030465 vsysui=0x600 needsMenuKey=2 naviIconColor=0}
+03-19 20:56:09.362  4629  4641 D ForegroundUtils: could not check pending caller
+03-19 20:56:09.365  3198  3198 I SurfaceFlinger: id=625 createSurf (1x1),1 flag=404, jclab
+03-19 20:56:09.367  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.372  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.375  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.375  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.385  3724  3833 D WindowManager: finishDrawingWindow: Window{9df16fd0 u0 Starting com.kaist.iclab} mDrawState=DRAW_PENDING
+03-19 20:56:09.385  3724  3833 D ViewRootImpl@e6cdb49[iclab]: MSG_RESIZED_REPORT: ci=Rect(0, 72 - 0, 0) vi=Rect(0, 72 - 0, 0) or=1
+03-19 20:56:09.385  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.387  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.388  3724  3802 D WindowManager: set systemUiVisibility of statusbar : vis= 0x608
+03-19 20:56:09.391  3724  3833 D WindowManager: finishDrawingWindow: Window{9df16fd0 u0 Starting com.kaist.iclab} mDrawState=HAS_DRAWN
+03-19 20:56:09.392  3724  3969 D MountService: getExternalStorageMountMode : 3
+03-19 20:56:09.392  3724  3969 D MountService: getExternalStorageMountMode : 3
+03-19 20:56:09.392  3724  3969 D MountService: getExternalStorageMountMode : final mountMode=3, uid : 10181, packageName : com.kaist.iclab
+03-19 20:56:09.398  3724  4672 V WindowManager: Relayout Window{ba81e71d0 u0 com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity}: viewVisibility=8 req=1080x1920 WM.LayoutParams{(0,0)(fillxfill) sim=#30 ty=1 fl=#81910d02 pfl=0x20000 fmt=-2 wanim=0x103038a vsysui=0x600 needsMenuKey=2 dimDuration=0 naviIconColor=0 sfl=0x40}
+03-19 20:56:09.399  3724  4672 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.404  2586  2586 E Zygote  : v2
+03-19 20:56:09.404  2586  2586 I libpersona: KNOX_SDCARD checking this for 10181
+03-19 20:56:09.404  2586  2586 I libpersona: KNOX_SDCARD not a persona
+03-19 20:56:09.404  3724  3969 I ActivityManager: Start proc 2586:com.kaist.iclab:data/u0a181 for content provider com.kaist.iclab/.datamanager.DataProvider
+03-19 20:56:09.405  2586  2586 E Zygote  : accessInfo : 0
+03-19 20:56:09.406  2586  2586 W SELinux : SELinux selinux_android_compute_policy_index : Policy Index[2],  Con:u:r:zygote:s0 RAM:SEPF_SECMOBILE_7.0_0010, [-1 -1 -1 -1 0 1]
+03-19 20:56:09.406  2586  2586 I SELinux : SELinux: seapp_context_lookup: seinfo=untrusted, level=s0:c512,c768, pkgname=com.kaist.iclab:data 
+03-19 20:56:09.408  3724  6382 I ActivityManager: START u0 {act=android.content.pm.action.REQUEST_PERMISSIONS typ=null flg=0x0 cmp=ComponentInfo{com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity}} from uid 10181 on display 0
+03-19 20:56:09.408  3724  6382 W ActivityManager: REQUEST_PERMISSIONS Action.
+03-19 20:56:09.408  3724  6382 W ActivityManager: REQUEST_PERMISSIONS Action.
+03-19 20:56:09.409  2586  2586 I art     : Late-enabling -Xcheck:jni
+03-19 20:56:09.409  3724  6382 D ActivityManager: ActivityRecord() Constructor : multiScreenAttrs=MultiScreenAttrs{mDisplayId=0, mBaseDisplayId=0, mBaseActivity=false}
+03-19 20:56:09.409  3724  6382 D CustomFrequencyManagerService: FrequencyrequestList.getNextCStateDisableRequest, index: 2
+03-19 20:56:09.410  3724  6382 D CustomFrequencyManagerService: releaseDVFSLockLocked : Getting Lock type frm List : DVFS_MIN_LIMIT  frequency : 1560000  uid : 1000  pid : 3724  tag : AMS_RESUME@CPU_MIN@7
+03-19 20:56:09.410  3724  6382 D CustomFrequencyManagerService: acquireDVFSLockLocked : type : DVFS_MIN_LIMIT  frequency : 1560000  uid : 1000  pid : 3724  pkgName : AMS_RESUME@CPU_MIN@7
+03-19 20:56:09.410  3724  6382 D ActivityManager: mActivityResumeBooster.acquire()
+03-19 20:56:09.410  3724  6382 D ActivityManager: moveToFront() : reason=sourceStackToFront isAttached=true null
+03-19 20:56:09.411  3724  6382 I MultiWindowManagerService: setTaskDimensions: Task=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=1} minWidth=-1 minHeight=-1 maxWidth=-1 maxHeight=-1
+03-19 20:56:09.411  3724  6382 D ActivityManager: moveToFront() : reason=startedActivity setFocusedActivity isAttached=true TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=2}
+03-19 20:56:09.412  3724  6382 D InputDispatcher: Focused application set to: xxxx
+03-19 20:56:09.413  3724  6382 D ActivityManager: resumeTopActivityInnerLocked() : #1 prevTask=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=2} next=ActivityRecord{e1ee305d0 u0 com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity t84} mFocusedStack=ActivityStack{4a68279d0 stackId=1, 4 tasks}
+03-19 20:56:09.413  3724  6382 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+03-19 20:56:09.413  3724  6382 D GameManagerService: sem_perfomance_mode: 0
+03-19 20:56:09.414  3724  6382 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.421  3724  6346 D WindowManager: addWindow: android.view.IWindow$Stub$Proxy@b035668 displayId=0
+03-19 20:56:09.424  2586  2586 D TimaKeyStoreProvider: TimaSignature is unavailable
+03-19 20:56:09.425  2586  2586 D ActivityThread: Added TimaKeyStore provider
+03-19 20:56:09.426  3724  3980 I ActivityManager: DSS on for com.kaist.iclab and scale is 1.0
+03-19 20:56:09.427  3724  6346 D InputTransport: Input channel constructed: fd=498
+03-19 20:56:09.427  3724  6346 D InputTransport: Input channel constructed: fd=501
+03-19 20:56:09.428  3724  6346 D InputTransport: Input channel destroyed: fd=501
+03-19 20:56:09.429  1281  1281 D InputTransport: Input channel constructed: fd=81
+03-19 20:56:09.429  1281  1281 D ViewRootImpl@4568f92[MainActivity]: setView = DecorView@585cd63[MainActivity] touchMode=true
+03-19 20:56:09.429  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.429  3724  4206 D ActivityManager: post active user change for 0 fullscreen true isHomeActivity() false
+03-19 20:56:09.430  3724  4206 D KnoxTimeoutHandler: postActiveUserChange [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 0
+03-19 20:56:09.430  3724  3724 D KnoxTimeoutHandler: handleActiveUserChange [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 0
+03-19 20:56:09.431  3724  3724 I KnoxTimeoutHandler: Shared devices show user statefalse
+03-19 20:56:09.433  3724  4704 V WindowManager: Relayout Window{8051726d0 u0 com.kaist.iclab/com.kaist.iclab.activity.MainActivity}: viewVisibility=0 req=1080x1848 WM.LayoutParams{(0,0)(fillxfill) sim=#120 ty=1 fl=#81810100 pfl=0x20000 wanim=0x1030465 vsysui=0x600 needsMenuKey=2 naviIconColor=0}
+03-19 20:56:09.433  3198  3198 I SurfaceFlinger: id=626 createSurf (1x1),1 flag=404, NainActivit
+03-19 20:56:09.435  3724  4704 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.437  2586  2593 I art     : Debugger is no longer active
+03-19 20:56:09.437  2586  2593 I art     : Starting a blocking GC Instrumentation
+03-19 20:56:09.440  3724  4704 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.443  1281  1408 D mali_winsys: EGLint new_window_surface(egl_winsys_display*, void*, EGLSurface, EGLConfig, egl_winsys_surface**, egl_color_buffer_format*, EGLBoolean) returns 0x3000,  [1080x1920]-format:1
+03-19 20:56:09.444  3724  6379 D ActivityManager: resumeTopActivityInnerLocked() : #1 prevTask=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=2} next=ActivityRecord{e1ee305d0 u0 com.google.android.packageinstaller/com.android.packageinstaller.permission.ui.GrantPermissionsActivity t84} mFocusedStack=ActivityStack{4a68279d0 stackId=1, 4 tasks}
+03-19 20:56:09.445  3724  6379 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.449  3724  6379 D GameManagerService: sem_perfomance_mode: 0
+03-19 20:56:09.450  3724  3724 D GameManagerService: NotifyRunnable. pkg: com.google.android.packageinstaller, type: 4, isMinimized: false, isTunableApp: false
+03-19 20:56:09.450  3724  3724 D GameManagerService: unexpected mPrevNotiType: -1
+03-19 20:56:09.450  3724  6379 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.453  3724  5410 D GameManagerService: identifyGamePackage. com.google.android.packageinstaller
+03-19 20:56:09.454  4629  4644 D ForegroundUtils: could not check pending caller
+03-19 20:56:09.462  3724  5410 D GameManagerService: identifyGamePackage. com.google.android.packageinstaller
+03-19 20:56:09.462  3724  5410 D GameManagerService: identifyGamePackage. com.google.android.packageinstaller
+03-19 20:56:09.466  3724  6376 D WindowManager: finishDrawingWindow: Window{8051726d0 u0 com.kaist.iclab/com.kaist.iclab.activity.MainActivity} mDrawState=DRAW_PENDING
+03-19 20:56:09.466  1281  1281 D ViewRootImpl@4568f92[MainActivity]: MSG_RESIZED_REPORT: ci=Rect(0, 72 - 0, 0) vi=Rect(0, 72 - 0, 0) or=1
+03-19 20:56:09.466  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.468  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.469  3724  3833 D KnoxTimeoutHandler: notifyActivityDrawn [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 1
+03-19 20:56:09.469  3724  3724 D KnoxTimeoutHandler: activityDrawn [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 1
+03-19 20:56:09.470  3724  3833 D ViewRootImpl@e6cdb49[iclab]: dispatchDetachedFromWindow
+03-19 20:56:09.470  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.471  3724  3724 I KnoxTimeoutHandler: SD activityfalse
+03-19 20:56:09.471  3724  3724 I KnoxTimeoutHandler: Fullscreen and mCurrent is not KNOX user. Hence hide keyguard
+03-19 20:56:09.472  3724  3833 D InputTransport: Input channel destroyed: fd=450
+03-19 20:56:09.472  3724  3833 D InputTransport: Input channel destroyed: fd=497
+03-19 20:56:09.474  3724  6346 D WindowManager: finishDrawingWindow: Window{8051726d0 u0 com.kaist.iclab/com.kaist.iclab.activity.MainActivity} mDrawState=HAS_DRAWN
+03-19 20:56:09.474  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.523  3724 26307 W MultiScreenManagerService: moveTaskBackToDisplayIfNeeded(): The task has more than one activity
+03-19 20:56:09.526  3724 26307 D ActivityManager: moveToFront() : reason=finishActivity adjustFocus setFocusedActivity isAttached=true TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=2}
+03-19 20:56:09.526  3724 26307 D InputDispatcher: Focused application set to: xxxx
+03-19 20:56:09.527  3724 26307 D InputDispatcher: Focus entered window: 1281
+03-19 20:56:09.528  3724 26307 D ActivityTrigger: ActivityTrigger activityPauseTrigger 
+03-19 20:56:09.528  3724 26307 D GameManagerService: sem_perfomance_mode: 0
+03-19 20:56:09.531  3724  4827 D ActivityManager: resumeTopActivityInnerLocked() : #1 prevTask=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=2} next=ActivityRecord{f3a2f9bd0 u0 com.kaist.iclab/.activity.MainActivity t84} mFocusedStack=ActivityStack{4a68279d0 stackId=1, 4 tasks}
+03-19 20:56:09.532  1281  1281 D ViewRootImpl@4568f92[MainActivity]: MSG_WINDOW_FOCUS_CHANGED 1
+03-19 20:56:09.533  1281  1281 V InputMethodManager: Starting input: tba=android.view.inputmethod.EditorInfo@42486d5 nm : com.kaist.iclab ic=null
+03-19 20:56:09.533  1281  1281 I InputMethodManager: [IMM] startInputInner - mService.startInputOrWindowGainedFocus
+03-19 20:56:09.533  3724  3767 D InputMethodManagerService: windowGainedFocus mCurrentFocusedUserId - 0 and mSecureKeypadEnabled-false
+03-19 20:56:09.534  3724  3767 D InputMethodManagerService: mDesktopModeManager null!
+03-19 20:56:09.534  3724  4827 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.534 11873 11873 D InputTransport: Input channel destroyed: fd=77
+03-19 20:56:09.535  3724  3767 D InputTransport: Input channel constructed: fd=450
+03-19 20:56:09.535  3724  3767 D InputTransport: Input channel destroyed: fd=450
+03-19 20:56:09.535  1281  1281 D InputTransport: Input channel constructed: fd=85
+03-19 20:56:09.536  4479  4479 D SamsungIME: onFinishInput
+03-19 20:56:09.536  4479  4479 D SamsungIME: IMPL finishInput
+03-19 20:56:09.536  4479  4479 I SamsungIME: [IMI] onStartInput - caller packageName : com.kaist.iclab
+03-19 20:56:09.536  4479  4479 D SamsungIME: onStartInput: No inputType, No imeOption, isInputViewShown = false, isExtractViewShown = false, isShowInputRequested = false, isConfigChanged = false, mIsFirstStartInput = false
+03-19 20:56:09.537  3724  4827 D GameManagerService: sem_perfomance_mode: 0
+03-19 20:56:09.537  3724  3724 D GameManagerService: NotifyRunnable. pkg: com.kaist.iclab, type: 4, isMinimized: false, isTunableApp: false
+03-19 20:56:09.537  3724  3724 D GameManagerService: unexpected mPrevNotiType: -1
+03-19 20:56:09.538  3724  4827 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.539  3724  4827 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.541  3724  3801 D ActivityManager: mActivityResumeBoosterTail.acquire()
+03-19 20:56:09.541  3724  3833 D CustomFrequencyManagerService: FrequencyrequestList.getNextCStateDisableRequest, index: 1
+03-19 20:56:09.542  3724  3833 D CustomFrequencyManagerService: releaseDVFSLockLocked : Getting Lock type frm List : DVFS_MIN_LIMIT  frequency : 1560000  uid : 1000  pid : 3724  tag : AMS_RESUME@CPU_MIN@7
+03-19 20:56:09.542  3724  3833 D ActivityManager: mActivityResumeBooster.release()
+03-19 20:56:09.542  3724  3801 D CustomFrequencyManagerService: acquireDVFSLockLocked : type : DVFS_MIN_LIMIT  frequency : 1560000  uid : 1000  pid : 3724  pkgName : AMS_RESUME_TAIL@CPU_MIN@13
+03-19 20:56:09.543  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.544  3724  6346 D ActivityManager: post active user change for 0 fullscreen true isHomeActivity() false
+03-19 20:56:09.545  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.546  3724  6346 D KnoxTimeoutHandler: postActiveUserChange [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 0
+03-19 20:56:09.546  3724  3724 D KnoxTimeoutHandler: handleActiveUserChange [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 0
+03-19 20:56:09.547  3724  3724 I KnoxTimeoutHandler: Shared devices show user statefalse
+03-19 20:56:09.548  3724  4703 V WindowManager: Relayout Window{8051726d0 u0 com.kaist.iclab/com.kaist.iclab.activity.MainActivity}: viewVisibility=0 req=1080x1920 WM.LayoutParams{(0,0)(fillxfill) sim=#120 ty=1 fl=#81810100 pfl=0x20000 wanim=0x1030465 vsysui=0x600 needsMenuKey=2 naviIconColor=0}
+03-19 20:56:09.548  3724  4703 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.549  2586  2586 D ContextRelationMgrBrdg: loadKlass() : caller=com.samsung.android.bridge.multiscreen.common.ContextRelationManagerBridge.<clinit>:28 android.app.LoadedApk.makeApplication:840 
+03-19 20:56:09.549  3724  3833 D KnoxTimeoutHandler: notifyActivityDrawn [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 1
+03-19 20:56:09.550  3724  3724 D KnoxTimeoutHandler: activityDrawn [MsgParam] userId: 0 fullscreen is true showWhenlocked is false isMutiwindowRecord is false multiwindowstyle is 1
+03-19 20:56:09.551  3724  3724 I KnoxTimeoutHandler: SD activityfalse
+03-19 20:56:09.551  3724  3724 I KnoxTimeoutHandler: Fullscreen and mCurrent is not KNOX user. Hence hide keyguard
+03-19 20:56:09.554  2586  2586 I DataProvider: onCreate
+03-19 20:56:09.556  3724  4206 D ActivityTrigger: ActivityTrigger activityStopTrigger 
+03-19 20:56:09.557  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.559 11873 11873 D MenuAppsGridFragment: onStop
+03-19 20:56:09.559 11873 11873 D Launcher.HomeView: onStop
+03-19 20:56:09.559 11873 11873 D capture : ----destroy
+03-19 20:56:09.560  3724  4206 I MultiWindowManagerService: setTaskDimensions: Task=TaskRecord{e822a77d0 #84 A=com.kaist.iclab U=0 StackId=1 sz=1} minWidth=-1 minHeight=-1 maxWidth=-1 maxHeight=-1
+03-19 20:56:09.560  4629  9852 D ForegroundUtils: could not check pending caller
+03-19 20:56:09.561  2586  2599 D DataProvider: CP insertcom.kaist.iclab.datamanager.DAO@9329405
+03-19 20:56:09.561  2586  2599 D DAO     : writeLog:
+03-19 20:56:09.565  2586  2599 I DAO     : onOpen:1, SQLiteDatabase: /data/user/0/com.kaist.iclab/databases/sensors_data.db
+03-19 20:56:09.569  2586  2586 D AndroidRuntime: Shutting down VM
+--------- beginning of crash
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: FATAL EXCEPTION: main
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: Process: com.kaist.iclab:data, PID: 2586
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: java.lang.ClassCastException: android.os.BinderProxy cannot be cast to com.kaist.iclab.services.BluetoothLeService$LocalBinder
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at com.kaist.iclab.E4SensingApplication$1.onServiceConnected(E4SensingApplication.java:70)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:1516)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:1544)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at android.os.Handler.handleCallback(Handler.java:751)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at android.os.Handler.dispatchMessage(Handler.java:95)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at android.os.Looper.loop(Looper.java:154)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at android.app.ActivityThread.main(ActivityThread.java:6646)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at java.lang.reflect.Method.invoke(Native Method)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:1468)
+03-19 20:56:09.569  2586  2586 E AndroidRuntime: 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1358)
+03-19 20:56:09.570  2586  2599 D DataProvider: new id: 16690
+03-19 20:56:09.570  3724  6379 D Debug   : !@DumpState : SHIP
+03-19 20:56:09.570  3724  6379 D Debug   : !@DumpState : debug level:0x4f4c
+03-19 20:56:09.570  3724  6379 D Debug   : !@Dumpstate : Finally, system will skip dumpstate
+03-19 20:56:09.576 11873 11873 D Launcher: onTrimMemory. Level: 20
+03-19 20:56:09.592  3724  3802 D RestrictionPolicy: isGoogleCrashReportAllowed : ret=true userId =0
+03-19 20:56:09.594 30002 30002 I SmartManagerReceiver: Received : android.intent.action.DROPBOX_ENTRY_ADDED
+03-19 20:56:09.594 30002 30002 W ContextImpl: Calling a method in the system process without a qualified user: android.app.ContextImpl.startService:1403 android.content.ContextWrapper.startService:664 android.content.ContextWrapper.startService:664 com.samsung.android.sm.common.SmartManagerReceiver.b:375 com.samsung.android.sm.common.SmartManagerReceiver.onReceive:114 
+03-19 20:56:09.598  3724  3802 D WindowManager: addWindow: android.view.ViewRootImpl$W@719cc5 displayId=0
+03-19 20:56:09.598  3724  3802 D InputTransport: Input channel constructed: fd=450
+03-19 20:56:09.598  3724  3802 D InputTransport: Input channel constructed: fd=497
+03-19 20:56:09.599  3724  3802 V MARsPolicyManager: handelAlertToastWindowStarted pkgName = android
+03-19 20:56:09.601  3724  3802 D InputDispatcher: Focus left window: 1281
+03-19 20:56:09.601  3724  3802 D InputDispatcher: Focus entered window: 3724
+03-19 20:56:09.601  3724  3802 D ViewRootImpl@490573c[iclab]: setView = DecorView@2a9ab28[iclab] touchMode=true
+03-19 20:56:09.606  4629  4644 D ForegroundUtils: could not check pending caller
+03-19 20:56:09.608  3724  3802 V WindowManager: Relayout Window{381f61ad0 u0 Application Error: com.kaist.iclab}: viewVisibility=0 req=1015x442 WM.LayoutParams{(0,0)(wrapxwrap) gr=#11 sim=#120 ty=2003 fl=#1820002 pfl=0x110 fmt=-3 wanim=0x103038b surfaceInsets=Rect(6, 6 - 6, 6) needsMenuKey=2 naviIconColor=0}
+03-19 20:56:09.615  3198  3198 I SurfaceFlinger: id=627 createSurf (13x13),1 flag=4, jclab
+03-19 20:56:09.617  3724  3802 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.619 30002  2607 V CrashedAppLogging: isMasterSwitchOff : false
+03-19 20:56:09.624  3724  3802 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.626  3724  4064 I OpenGLRenderer: Initialized EGL, version 1.4
+03-19 20:56:09.626  3724  4064 D OpenGLRenderer: Swap behavior 1
+03-19 20:56:09.627  3724  3802 D WindowManager: set systemUiVisibility of statusbar : vis= 0x8
+03-19 20:56:09.628  3724  3802 D ViewRootImpl@490573c[iclab]: MSG_WINDOW_FOCUS_CHANGED 1
+03-19 20:56:09.628  3724  4827 D WindowManager: adjustSystemUiVisibilityLw : vis= 0x8
+03-19 20:56:09.629  3724  4064 D mali_winsys: EGLint new_window_surface(egl_winsys_display*, void*, EGLSurface, EGLConfig, egl_winsys_surface**, egl_color_buffer_format*, EGLBoolean) returns 0x3000,  [1027x454]-format:1
+03-19 20:56:09.638  3724  3802 D WindowManager: finishDrawingWindow: Window{381f61ad0 u0 Application Error: com.kaist.iclab} mDrawState=DRAW_PENDING
+03-19 20:56:09.638  3724  3802 D ViewRootImpl@490573c[iclab]: MSG_RESIZED_REPORT: ci=Rect(0, 0 - 0, 0) vi=Rect(0, 0 - 0, 0) or=1
+03-19 20:56:09.638  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.642  1281  1281 D ViewRootImpl@4568f92[MainActivity]: MSG_WINDOW_FOCUS_CHANGED 0
+03-19 20:56:09.643  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.644  3724  3802 D WindowManager: finishDrawingWindow: Window{381f61ad0 u0 Application Error: com.kaist.iclab} mDrawState=HAS_DRAWN
+03-19 20:56:09.657  3724  3833 I WindowManager: Destroying surface Surface(name=Starting com.kaist.iclab) called by com.android.server.wm.WindowStateAnimator.destroySurface:2849 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:1079 com.android.server.wm.WindowState.destroyOrSaveSurface:2561 com.android.server.wm.AppWindowToken.destroySurfaces:412 com.android.server.wm.AppWindowToken.destroySurfaces:376 com.android.server.wm.WindowStateAnimator.finishExit:654 com.android.server.wm.WindowStateAnimator.stepAnimationLocked:564 com.android.server.wm.WindowAnimator.updateWindowsLocked:439 
+03-19 20:56:09.657  3198  3203 I SurfaceFlinger: id=625 Removed jclab (5/11)
+03-19 20:56:09.658  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.660  3198  3203 I SurfaceFlinger: id=625 Removed jclab (-2/11)
+03-19 20:56:09.661  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.736  3724  4025 D MdnieScenarioControlService:  packageName : com.kaist.iclab    className : com.kaist.iclab.activity.MainActivity
+03-19 20:56:09.841  3724  3833 I WindowManager: Destroying surface Surface(name=com.sec.android.app.launcher/com.sec.android.app.launcher.activities.LauncherActivity) called by com.android.server.wm.WindowStateAnimator.destroySurface:2849 com.android.server.wm.WindowStateAnimator.destroySurfaceLocked:1079 com.android.server.wm.WindowState.destroyOrSaveSurface:2561 com.android.server.wm.AppWindowToken.destroySurfaces:412 com.android.server.wm.AppWindowToken.destroySurfaces:376 com.android.server.wm.WindowStateAnimator.finishExit:654 com.android.server.wm.AppWindowAnimator.stepAnimationLocked:493 com.android.server.wm.WindowAnimator.updateAppWindowsLocked:227 
+03-19 20:56:09.842  3198  3203 I SurfaceFlinger: id=624 Removed MauncherAct (1/10)
+03-19 20:56:09.842  3724  3724 D CustomFrequencyManagerService: FrequencyrequestList.getNextCStateDisableRequest, index: 1
+03-19 20:56:09.842  3724  3724 D CustomFrequencyManagerService: releaseDVFSLockLocked : Getting Lock type frm List : DVFS_MIN_LIMIT  frequency : 1560000  uid : 1000  pid : 3724  tag : AMS_RESUME_TAIL@CPU_MIN@13
+03-19 20:56:09.843  3198  3923 I SurfaceFlinger: id=624 Removed MauncherAct (-2/10)
+03-19 20:56:09.843  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.859  4091  4091 V WallpaperService: Visibility change in com.android.systemui.ImageWallpaper$DrawableEngine@920f31c: 0
+03-19 20:56:09.859  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:09.859  4091  4091 V WallpaperService: onVisibilityChanged(false): com.android.systemui.ImageWallpaper$DrawableEngine@920f31c
+03-19 20:56:09.859  4091  4091 D ImageWallpaper: onVisibilityChanged: mVisible, visible=true, false
+03-19 20:56:09.859  4091  4091 D ImageWallpaper: Visibility changed to visible=false
+03-19 20:56:09.907  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.907  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.908  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:09.908  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:10.261  3724  3833 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:10.333  3724  3768 D CustomFrequencyManagerService: releaseDVFSLockLocked : Getting Lock type frm List : DVFS_MIN_LIMIT  frequency : 2600000  uid : 1000  pid : 3724  tag : APP_LAUNCH@CPU_MIN@270
+03-19 20:56:11.380  3724  3962 D WifiStateMachine: Current network is: "Welcome_KAIST" , ID is: 2
+03-19 20:56:11.380  3724  3962 D WifiStateMachine: enterprise network, bail out...
+03-19 20:56:12.051  4506  4506 D io_stats: !@   8,0 r 91069 6601880 w 312164 5664944 d 22124 26243992 f 141631 141629 iot 226580 174177 th 458248 0 0 pt 0 inp 0 0 108344.464
+03-19 20:56:12.283  3724  5410 D SSRM:t  : SIOP:: AP = 330, PST = 317 (W:6), CP = 269, CUR = -22, LCD = 101
+03-19 20:56:12.292  3724  5410 D MultiWindowManagerService: turn on MW[#0], Requester : SSRM
+03-19 20:56:12.292  3724  3724 D MultiWindowSettingsObserver: sendMultiWindowSettings(u0)
+03-19 20:56:12.292  3724  3724 D MultiWindowSettingsObserver: populateAllSettings(u0)
+03-19 20:56:12.292  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:12.292  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:12.292  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:12.292  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:12.293  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:12.293  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:12.293  3724  3724 D MultiWindowSettingsObserver: do nothing
+03-19 20:56:14.401  3724  3995 D ConnectivityService: updateCapabilities: oldCap = [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -74], newCap = [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -75]
+03-19 20:56:14.401  3724  3995 D ConnectivityService: rematching NetworkAgentInfo [WIFI () - 507]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:  network has: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -75]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.402  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=66, legacyType=-1, [ Transports: CELLULAR Capabilities: IMS&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.403  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.403  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.403  3724  3995 D ConnectivityService: Network NetworkAgentInfo [WIFI () - 507] was already satisfying request 1. No change.
+03-19 20:56:14.403  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.403  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:14.403  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=4, legacyType=-1, [ Transports: CELLULAR Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.404  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=13, legacyType=-1, [ Transports: CELLULAR Capabilities: IMS&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.405  3724  3962 D WifiStateMachine: Current network is: "Welcome_KAIST" , ID is: 2
+03-19 20:56:14.405  3724  3962 D WifiStateMachine: enterprise network, bail out...
+03-19 20:56:14.406  4091  4396 D NetworkController: onReceive: intent=Intent { act=android.net.wifi.RSSI_CHANGED flg=0x4000010 launchParam=MultiScreenLaunchParams { mDisplayId=0 mFlags=0 } bqHint=1 (has extras) }
+03-19 20:56:14.407  3724  3995 D ConnectivityService: notifyType CAP_CHANGED for NetworkAgentInfo [WIFI () - 507]
+03-19 20:56:14.407  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.408  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:14.408  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:14.408  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.409  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.409  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.413  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.414  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.414  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.415  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:14.415  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:14.416  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.417  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.417  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.418  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.418  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.419  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.419  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.419  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.421  3724  3995 D ConnectivityService: updateNetworkScore for NetworkAgentInfo [WIFI () - 507] to 55
+03-19 20:56:14.421  3724  3995 D ConnectivityService: rematching NetworkAgentInfo [WIFI () - 507]
+03-19 20:56:14.421  3724  3995 D ConnectivityService:  network has: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -75]
+03-19 20:56:14.421  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.421  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:14.421  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.422  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.422  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:14.422  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=66, legacyType=-1, [ Transports: CELLULAR Capabilities: IMS&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.422  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.422  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.422  3724  3995 D ConnectivityService: Network NetworkAgentInfo [WIFI () - 507] was already satisfying request 1. No change.
+03-19 20:56:14.426  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.426  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:14.426  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=4, legacyType=-1, [ Transports: CELLULAR Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.427  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=13, legacyType=-1, [ Transports: CELLULAR Capabilities: IMS&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.427  3724  3995 D ConnectivityService: sending new Min Network Score(100): NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.428  3724  3958 D WIFI_P2P: new score 100 for exisiting request NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.428  3724  3958 D WIFI_P2P:   my score=60, my filter=[ Transports: WIFI Capabilities: WIFI_P2P&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]
+03-19 20:56:14.428  3724  3958 D WIFI_P2P: evalRequest
+03-19 20:56:14.428  3724  3958 D WIFI_P2P:   done
+03-19 20:56:14.428  3724  4047 D Ethernet: new score 100 for exisiting request NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.429  3724  4047 D Ethernet:   my score=-1, my filter=[ Transports: ETHERNET Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=100000Kbps LinkDnBandwidth>=100000Kbps]
+03-19 20:56:14.429  3724  4047 D Ethernet: evalRequest
+03-19 20:56:14.429  3724  4047 D Ethernet:   done
+03-19 20:56:14.438  4066  4066 D PhoneSwitcherNetworkRequstListener: new score 100 for exisiting request NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.439  4066  4066 D PhoneSwitcherNetworkRequstListener:   my score=101, my filter=[ Transports: CELLULAR Capabilities: MMS&SUPL&DUN&FOTA&IMS&CBS&IA&RCS&XCAP&EIMS&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&ENT1 Specifier: <*>]
+03-19 20:56:14.439  4066  4066 D PhoneSwitcherNetworkRequstListener: evalRequest
+03-19 20:56:14.439  4066  4066 D PhoneSwitcherNetworkRequstListener:   done
+03-19 20:56:14.440  3724  3962 D WIFI_UT : new score 100 for exisiting request NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.440  3724  3962 D WIFI_UT :   my score=2147483647, my filter=[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]
+03-19 20:56:14.440  3724  3962 D WIFI_UT : evalRequest
+03-19 20:56:14.441  3724  3962 D WIFI_UT :   done
+03-19 20:56:14.441  3724  3962 D WIFI    : new score 100 for exisiting request NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:14.441  3724  3962 D WIFI    :   my score=60, my filter=[ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps]
+03-19 20:56:14.441  3724  3962 D WIFI    : evalRequest
+03-19 20:56:14.441  3724  3962 D WIFI    :   done
+03-19 20:56:14.457  4091  4091 V hong    : mid yDiff = 438
+03-19 20:56:14.457  4091  4091 V hong    : mid yDiff = 438
+03-19 20:56:15.266  3311  3806 E NetlinkEvent: NetlinkEvent::FindParam(): Parameter 'LABEL' not found
+03-19 20:56:15.356  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:15.562  3311  3807 D Netd    : Iface wlan0 link up
+03-19 20:56:15.563  3311  3807 D Netd    : Iface wlan0 link up
+03-19 20:56:15.563  3311  3807 D Netd    : Iface wlan0 link up
+03-19 20:56:15.563  3311  3807 D Netd    : Iface wlan0 link up
+03-19 20:56:15.566  3724  3831 D Tethering: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.567  3724  3831 D Tethering: interfaceStatusChanged wlan0, true
+03-19 20:56:15.568  3724  3831 D MptcpService-SKT: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.569  3724  3831 D Tethering: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.569  3724  3831 D Tethering: interfaceStatusChanged wlan0, true
+03-19 20:56:15.570  3724  3831 D MptcpService-SKT: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.570  4298  4298 I wpa_supplicant: wlan0: RSN: proactive_key_caching(1), okc(1) 
+03-19 20:56:15.571  4298  4298 I wpa_supplicant: nl80211: Received scan results (1 BSSes)
+03-19 20:56:15.571  4298  4298 I wpa_supplicant: Associated with D8.15.20
+03-19 20:56:15.574  4298  4298 I wpa_supplicant: wlan0: CTRL-EVENT-SUBNET-STATUS-UPDATE status=0
+03-19 20:56:15.574  3724  3831 D Tethering: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.574  3724  3831 D Tethering: interfaceStatusChanged wlan0, true
+03-19 20:56:15.576  3724  3962 D WifiStateMachine: NOT update Last BSSID
+03-19 20:56:15.577  3724  3831 D MptcpService-SKT: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.577  3724  3962 D SecContentProvider2: query(), uri = 20 selection = getPromptCredentialsEnabled
+03-19 20:56:15.578  3724  3831 D Tethering: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.578  3724  3831 D Tethering: interfaceStatusChanged wlan0, true
+03-19 20:56:15.579  3724  3831 D MptcpService-SKT: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.587  3724  3962 D SecContentProvider2: query(), uri = 20 selection = getPromptCredentialsEnabled
+03-19 20:56:15.612  4298  4298 I wpa_supplicant: WPA: Key negotiation completed with D8.15.20 [PTK=CCMP GTK=CCMP]
+03-19 20:56:15.612  4298  4298 I wpa_supplicant: connected! : anqp_for_default_ap = 0
+03-19 20:56:15.612  4298  4298 I wpa_supplicant: CTRL-EVENT-CONNECTED - Connection to D8.15.20 completed [id=2 id_str=%7B%22creatorUid%22%3A%221000%22%2C%22configKey%22%3A%22%5C%22Welcome_KAIST%5C%22WPA_EAP%22%7D]
+03-19 20:56:15.612  3311  3807 D Netd    : Iface wlan0 link up
+03-19 20:56:15.615  3724  3831 D Tethering: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.615  3724  3831 D Tethering: interfaceStatusChanged wlan0, true
+03-19 20:56:15.616  3724  3831 D MptcpService-SKT: interfaceLinkStateChanged wlan0, true
+03-19 20:56:15.619  3724  3962 D WifiNative-wlan0: callSECApiVoid - ID [50]
+03-19 20:56:15.620  3724  3962 D WifiStateMachine: getDhcpRenewAfterRoamingMode
+03-19 20:56:15.621  3724  3962 D WifiStateMachine: mDhcpRenewAfterRoamingMode : 0
+03-19 20:56:15.621  3724  3962 D WifiHAL : Getting APF capabilities, halHandle = 0x7b63160be0
+03-19 20:56:15.621  3724  3962 I WifiHAL : 
+03-19 20:56:15.621  3724  3962 I WifiHAL : createRequest: APF get capabilities request
+03-19 20:56:15.623  3724  3962 D WifiHAL : In SetAPFCommand::handleResponse
+03-19 20:56:15.623  3724  3962 D WifiHAL : Id = 0, subcmd = 0, len = 16
+03-19 20:56:15.623  3724  3962 D WifiHAL : Response recieved for get packet filter capabilities command
+03-19 20:56:15.623  3724  3962 I WifiHAL : APF version is 2
+03-19 20:56:15.623  3724  3962 I WifiHAL : APF max len is 1897
+03-19 20:56:15.623  3724  3962 I WifiHAL : Done!
+03-19 20:56:15.623  3724  3962 D WifiHAL : Getting APF capability, version = 2, max_len = 1897
+03-19 20:56:15.623  3724  3962 D wifi    : APF version supported: 2
+03-19 20:56:15.623  3724  3962 D wifi    : Maximum APF program size: 1897
+03-19 20:56:15.626  3724  4042 D WifiWatchdogStateMachine.QualityResultHandler_0: [EVENT_NETWORK_PROPERTIES_CHANGED] 2
+03-19 20:56:15.630  3724  3962 D SecContentProvider2: query(), uri = 20 selection = getPromptCredentialsEnabled
+03-19 20:56:15.631  3724  3967 D SamsungAlarmManager: setExact Listener (T:2/F:9/AC:false) 20180319T205620 - CU:1000/CP:3724
+03-19 20:56:15.632  3724  3967 I SamsungAlarmManager: setLocked to kernel - T:2 / 20180319T205620, SetElapsed=112370942, nowELAPSED=112365945
+03-19 20:56:15.640  4780  4878 D ContactsProvider_EventLog: contents_sample_state: [ contacts(0) data(0) accounts({}) accounts deleted({}) calls([]) countryIso(KR) userId(0)  ]
+03-19 20:56:15.640  4780  4878 D ContactsProvider_EventLog: contents_sample_state: [ agr({})  ]
+03-19 20:56:15.640  4780  4878 D ContactsProvider_EventLog: contents_sample_state: [ actCnt({android.process.acore=1})  ]
+03-19 20:56:15.643  4780  4878 E ContactsProvider_EventLog: Flush buffer to file cnt : 1 size : 0Kb duration : 2ms lastUpdatedAfter : 60090 ms mFlush_time_threasold : 2000 mCurrentSize : 257
+03-19 20:56:15.719  4298  4298 I wpa_supplicant: Interworking: Fetch ANQP after connect
+03-19 20:56:15.743  3724  3958 D WifiP2pService: InactiveState{ what=143375 }
+03-19 20:56:15.743  3724  3962 D SecContentProvider2: query(), uri = 20 selection = getPromptCredentialsEnabled
+03-19 20:56:15.743  3724  3958 D WifiP2pService: P2pEnabledState{ what=143375 }
+03-19 20:56:15.749  3311  3806 E NetlinkEvent: NetlinkEvent::FindParam(): Parameter 'LABEL' not found
+03-19 20:56:15.758  3724   316 D SamsungAlarmManager: setExact Listener (T:2/F:9/AC:false) 20180319T205617 - CU:1000/CP:3724
+03-19 20:56:15.759  3724   316 I SamsungAlarmManager: setLocked to kernel - T:2 / 20180319T205617, SetElapsed=112367918, nowELAPSED=112366072
+03-19 20:56:15.907  3724  5410 D GameManagerService: identifyGamePackage. com.kaist.iclab
+03-19 20:56:17.054  4506  4506 D io_stats: !@   8,0 r 91069 6601880 w 312192 5665280 d 22128 26244048 f 141634 141632 iot 226580 174183 th 459680 0 0 pt 0 inp 0 0 108349.467
+03-19 20:56:17.191  3724  3896 D SamsungAlarmManager: Expired : 8
+03-19 20:56:17.192  3724  3896 V SamsungAlarmManager: Sending to uid : 10013 action=com.google.android.gms.auth.authzen.cryptauth.DEVICE_STATE_CHECK_DELAY_COMPLETE alarm=Alarm{1d419ca type 3 when 112367504 com.google.android.gms}
+03-19 20:56:17.218  3724  6376 D LockSettingsStorage: mSKTLockState = 2
+03-19 20:56:17.227 14220  2617 I Authzen : [DeviceStateSyncManager] The server is in sync with current state. Nothing to do
+03-19 20:56:17.422  3724  3962 D WifiStateMachine: Current network is: "Welcome_KAIST" , ID is: 2
+03-19 20:56:17.422  3724  3962 D WifiStateMachine: enterprise network, bail out...
+03-19 20:56:17.605  3724  3896 D SamsungAlarmManager: Expired : 4
+03-19 20:56:17.605  3724  3896 I SamsungAlarmManager: setLocked to kernel - T:2 / 20180319T205620, SetElapsed=112370942, nowELAPSED=112367918
+03-19 20:56:17.606  3724  3896 V SamsungAlarmManager: Sending to uid : 1000 listener=android.app.AlarmManager$ListenerWrapper@7cc4135 alarm=Alarm{1322e58 type 2 when 112367918 android}
+03-19 20:56:17.614  3724   316 D SamsungAlarmManager: setExact Listener (T:2/F:9/AC:false) 20180319T205621 - CU:1000/CP:3724
+03-19 20:56:17.623  3724   316 D DhcpClient: Renewed lease: IP address 143.248.162.17/24 Gateway 143.248.162.1  DNS servers: [ 143.248.1.177 143.248.2.177 8.8.8.8 ] Domains kaist.ac.kr DHCP server /143.248.117.100 Vendor info null lease 1800 seconds
+03-19 20:56:17.623  3724   316 D SamsungAlarmManager: Cancel Alarm calling from uid:1000 pid :3724 / listener:android.app.AlarmManager$ListenerWrapper@c8cbbb1
+03-19 20:56:17.623  3724  3967 D SamsungAlarmManager: Cancel Alarm calling from uid:1000 pid :3724 / listener:android.app.AlarmManager$ListenerWrapper@536076c
+03-19 20:56:17.626  3724  3967 I SamsungAlarmManager: setLocked to kernel - T:2 / 20180319T205951, SetElapsed=112581996, nowELAPSED=112367940
+03-19 20:56:17.627  3724  3967 I SamsungAlarmManager: setLocked to kernel - T:3 / 20180319T205700, SetElapsed=112410313, nowELAPSED=112367940
+03-19 20:56:17.632  3724  3958 D WifiP2pService: InactiveState{ what=143375 }
+03-19 20:56:17.632  3724  3958 D WifiP2pService: P2pEnabledState{ what=143375 }
+03-19 20:56:17.636  3724   316 I SamsungAlarmManager: setLocked to kernel - T:2 / 20180319T211142, SetElapsed=113292991, nowELAPSED=112367949
+03-19 20:56:17.637  3724   316 D SamsungAlarmManager: setExact Listener (T:2/F:9/AC:false) 20180319T211041 - CU:1000/CP:3724
+03-19 20:56:17.637  3724   316 I SamsungAlarmManager: setLocked to kernel - T:2 / 20180319T211041, SetElapsed=113231939, nowELAPSED=112367950
+03-19 20:56:17.639  3724  3962 E WifiStateMachine: result: 0, Moved BSSID: d8:c7:c8:df:15:20
+03-19 20:56:17.639  3724  3962 W WifiNetworkLists: findNetwork(d8:c7:c8:df:15:20) == true
+03-19 20:56:17.640  3724  3995 D ConnectivityService: updateCapabilities: oldCap = [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -75], newCap = [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -78]
+03-19 20:56:17.641  3724  3995 D ConnectivityService: rematching NetworkAgentInfo [WIFI () - 507]
+03-19 20:56:17.641  3724   316 D SamsungAlarmManager: setExact Listener (T:2/F:9/AC:false) 20180319T212232 - CU:1000/CP:3724
+03-19 20:56:17.641  3724  3995 D ConnectivityService:  network has: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED LinkUpBandwidth>=1048576Kbps LinkDnBandwidth>=1048576Kbps SignalStrength: -78]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=66, legacyType=-1, [ Transports: CELLULAR Capabilities: IMS&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.641  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService: Network NetworkAgentInfo [WIFI () - 507] was already satisfying request 1. No change.
+03-19 20:56:17.642  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=4, legacyType=-1, [ Transports: CELLULAR Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService:   checking if request is satisfied: NetworkRequest [ id=13, legacyType=-1, [ Transports: CELLULAR Capabilities: IMS&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService: notifyType CAP_CHANGED for NetworkAgentInfo [WIFI () - 507]
+03-19 20:56:17.642  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=1, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:17.642  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=3, legacyType=-1, [] ]
+03-19 20:56:17.643  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.643  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=5, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.643  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.643  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=6, legacyType=-1, [ Transports: CELLULAR|WIFI Capabilities: NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.644  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.644  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=7, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.644  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:17.644  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=8, legacyType=-1, [] ]
+03-19 20:56:17.645  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.645  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=9, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.647  3724  4039 D WifiWatchdogStateMachine: updateDnsLinkProperty: enter
+03-19 20:56:17.647  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.647  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=10, legacyType=-1, [ Transports: WIFI Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN] ]
+03-19 20:56:17.648  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:17.648  3724  4039 D WifiWatchdogStateMachine.DnsResolver: setCurrentLinkProperties: lp={InterfaceName: wlan0 LinkAddresses: [fe80::9676:b7ff:fe95:3c05/64,143.248.162.17/24,]  Routes: [fe80::/64 -> :: wlan0,143.248.162.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 143.248.162.1 wlan0,] DnsAddresses: [143.248.1.177,143.248.2.177,8.8.8.8,] Domains: kaist.ac.kr MTU: 0 TcpBufferSizes: 524288,1048576,4525824,524288,1048576,4525824}
+03-19 20:56:17.648  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=36, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:17.648  3724  3995 D ConnectivityService:  sending notification for NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:17.648  3724  3995 D ConnectivityService: sending notification CAP_CHANGED for NetworkRequest [ id=77, legacyType=-1, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED] ]
+03-19 20:56:17.649  3724  4039 D WifiWatchdogStateMachine.SingDnsChecker: setCurrentLinkProperties: lp={InterfaceName: wlan0 LinkAddresses: [fe80::9676:b7ff:fe95:3c05/64,143.248.162.17/24,]  Routes: [fe80::/64 -> :: wlan0,143.248.162.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 143.248.162.1 wlan0,] DnsAddresses: [143.248.1.177,143.248.2.177,8.8.8.8,] Domains: kaist.ac.kr MTU: 0 TcpBufferSizes: 524288,1048576,4525824,524288,1048576,4525824}
+03-19 20:56:17.649  3724  4039 D WifiWatchdogStateMachine.CaptivePortalDnsResolver: setCurrentLinkProperties: lp={InterfaceName: wlan0 LinkAddresses: [fe80::9676:b7ff:fe95:3c05/64,143.248.162.17/24,]  Routes: [fe80::/64 -> :: wlan0,143.248.162.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 143.248.162.1 wlan0,] DnsAddresses: [143.248.1.177,143.248.2.177,8.8.8.8,] Domains: kaist.ac.kr MTU: 0 TcpBufferSizes: 524288,1048576,4525824,524288,1048576,4525824}
+03-19 20:56:17.650  3724  3995 D ConnectivityService: Update of LinkProperties for NetworkAgentInfo [WIFI () - 507]; created=true; everConnected=true
+03-19 20:56:17.651  3724  3995 D ConnectivityService: updateLinkProperties: newLp = {InterfaceName: wlan0 LinkAddresses: [fe80::9676:b7ff:fe95:3c05/64,143.248.162.17/24,]  Routes: [fe80::/64 -> :: wlan0,143.248.162.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 143.248.162.1 wlan0,] DnsAddresses: [143.248.1.177,143.248.2.177,8.8.8.8,] Domains: kaist.ac.kr MTU: 0 TcpBufferSizes: 524288,1048576,4525824,524288,1048576,4525824}, oldLp = {InterfaceName: wlan0 LinkAddresses: [fe80::9676:b7ff:fe95:3c05/64,143.248.162.17/24,]  Routes: [fe80::/64 -> :: wlan0,143.248.162.0/24 -> 0.0.0.0 wlan0,0.0.0.0/0 -> 143.248.162.1 wlan0,] DnsAddresses: [143.248.1.177,143.248.2.177,8.8.8.8,] Domains: kaist.ac.kr MTU: 0 TcpBufferSizes: 524288,1048576,4525824,524288,1048576,4525824}
+03-19 20:56:17.651  3724  3995 D ConnectivityService: identical MTU - not setting
+03-19 20:56:17.651  3724  3995 I Nat464Xlat: Stopping clatd
+03-19 20:56:17.653  3311  3815 E ClatdController: clatd already stopped
+03-19 20:56:17.654  3724   316 D SamsungAlarmManager: setExact Listener (T:2/F:9/AC:false) 20180319T212617 - CU:1000/CP:3724
+03-19 20:56:17.654  3724   316 D DhcpClient: Scheduling renewal in 863s
+03-19 20:56:17.654  3724   316 D DhcpClient: Scheduling rebind in 1574s
+03-19 20:56:17.654  3724   316 D DhcpClient: Scheduling expiry in 1799s
+03-19 20:56:17.655  3724  3995 E Nat464Xlat: Error stopping clatd: java.lang.IllegalStateException: command '539 clatd stop wlan0' failed with '400 539 Clatd operation failed'
+03-19 20:56:17.655  3724  3995 D ConnectivityService: Not required to send intent.
+03-19 20:56:18.299  1495  1550 I ReschedulableTimer: [#CMH#] ReschedulableTimer started 
+03-19 20:56:20.443  3724  3962 D WifiStateMachine: Current network is: "Welcome_KAIST" , ID is: 2
+03-19 20:56:20.443  3724  3962 D WifiStateMachine: enterprise network, bail out...
+03-19 20:56:22.057  4506  4506 D io_stats: !@   8,0 r 91069 6601880 w 312212 5665436 d 22129 26244052 f 141635 141633 iot 226580 174187 th 459644 0 0 pt 0 inp 0 0 108354.470
+03-19 20:56:22.308  3724  5410 D SSRM:t  : SIOP:: AP = 320, PST = 316 (W:6), CP = 270, CUR = -9, LCD = 101
+03-19 20:56:22.320  3724  5410 D MultiWindowManagerService: turn on MW[#0], Requester : SSRM
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: sendMultiWindowSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateAllSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: populateSettings(u0)
+03-19 20:56:22.320  3724  3724 D MultiWindowSettingsObserver: do nothing
