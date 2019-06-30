@@ -68,15 +68,58 @@ The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodejs 10.6.0.
 
    - Install `Pixel 2` => Download `Pie`
 
-# 오류 및 Version
+# Error & Version
 
 - `ERROR: Manifest merger failed : Attribute application@appComponentFactory value=(android.support.v4.app.CoreComponentFactory) from [com.android.support:support-compat:28.0.0] AndroidManifest.xm:22:18-91`
   - `gradle.properties`에 아래와 같이 추가하기
     - `android.useAndroidX=true`
     - `android.enableJetifier=true`
+- Spring error
+  - mysql
+    - ![mysql error](./ReadMeImage/error1.png)
+  - run
+    - ![run error](./ReadMeImage/error2.png)
 - `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
   - ![dependencies Version](./ReadMeImage/dependenciesVersion.png)
 - module Version
   - ![module Version](./ReadMeImage/moduleVersion.png)
 - Execute Test
-  - <img src="./ReadMeImage/E4sensingApp.jpg" width="300">
+  - <img src="./ReadMeImage/E4sensingApp.jpg" width="300" alt="E4 Sensing App screenshot">
+
+# Install Nginx
+
+- install Nginx
+  - ![install Nginx](./ReadMeImage/installNginx.png)
+  - ![start Nginx](./ReadMeImage/startNginx.png)
+- add ufw
+  - ![add ufw](./ReadMeImage/addUfw.png)
+- allow permission AVD
+  - permission denied
+    - ![permission denied](./ReadMeImage/AVDPermissionDenied.png)
+  - `install qemu-kvm`
+    - ![install qemu-kvm](./ReadMeImage/installQemuKvm.png)
+  - add user kvm
+    - ![add user kvm](./ReadMeImage/adduserKvm.png)
+  - permission allow
+    - ![permission allow](./ReadMeImage/permissionAllow1.png)
+    - ![permission allow](./ReadMeImage/permissionAllow2.png)
+  - after run AVD screenshot
+    - ![AVD](./ReadMeImage/AVD1.png)
+    - ![AVD](./ReadMeImage/AVD2.png)
+    - ![AVD](./ReadMeImage/AVD3.png)
+
+# Install NodeJs
+
+- npm init
+  - ![npm init](./ReadMeImage/npmInit.png)
+- install modules
+  - ![install modules express, express-fileupload](./ReadMeImage/installModules1.png)
+  - ![install modules mysql, socket.io](./ReadMeImage/installModules2.png)
+- run App.js
+  - ![run App.js](./ReadMeImage/runAppJs.png)
+- `localhost:3000/`
+  - it means index.html
+  - ![index.html](./ReadMeImage/indexHtml.png)
+- `localhost:3000/board`
+  - it means board.html
+  - ![board.html](./ReadMeImage/boardHtml.png)
