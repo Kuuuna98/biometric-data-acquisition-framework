@@ -96,7 +96,7 @@
   - 첫 번째 빌드
     - ![first build](./ReadMeImage/FirstBuild.PNG)
   - 두 번째 빌드
-    - ![second build](./ReadMeImage/SecondBuild.PNG)
+    - ![second build](./ReadMeImage/NextBuild.PNG)
      *실제 환경에서는 해당 오류 발생하지 않음.*
 - ##### Spring error  
   - Mysql
