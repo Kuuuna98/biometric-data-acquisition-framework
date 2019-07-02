@@ -1,7 +1,6 @@
 # biometric-data-acquisition-framework
 
 #### The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodeJs 10.6.0.
-
 ---
 
 ## Development Environment (npm, nodeJS)
@@ -96,17 +95,15 @@
   - `gradle.properties`에 아래와 같이 추가하기
     - `android.useAndroidX=true`
     - `android.enableJetifier=true`
-  - 
-  
-- #### 두번째 빌드부터 발생하는 FileNotFound error
+
+- ##### 두번째 빌드부터 발생하는 FileNotFound error
   - 첫 번째 빌드
     - ![first build](./ReadMeImage/FirstBuild.PNG)
   - 두 번째 빌드
     - ![second build](./ReadMeImage/NextBuild.PNG)
      *실제 환경에서는 해당 오류 발생하지 않음.*
 
-- #### Spring error
-  
+- ##### Spring error  
   - Mysql
     - ![mysql error](./ReadMeImage/error1.png)
   - Run
@@ -155,7 +152,7 @@
 - #### `npm init`
   
   - ![npm init](./ReadMeImage/npmInit.png)
-  
+
 - #### Install modules
   
   - `npm install express`
@@ -164,18 +161,15 @@
   - `npm install mysql`
   - `npm install socket.io`
     - ![install modules mysql, socket.io](./ReadMeImage/installModules2.png)
-  
-- #### Run App.js
-  
+
+- #### Run App.js  
   - ![run App.js](./ReadMeImage/runAppJs.png)
-  
-- #### `localhost:3000/`
-  
+
+- #### `localhost:3000/`  
   - It means index.html
   - ![index.html](./ReadMeImage/indexHtml.png)
-  
+
 - #### `localhost:3000/board`
-  
   - It means board.html
   - ![board.html](./ReadMeImage/boardHtml.png)
 
