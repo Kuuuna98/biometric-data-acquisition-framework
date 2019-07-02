@@ -1,7 +1,6 @@
 # biometric-data-acquisition-framework
 
-#### The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodejs 10.6.0.
-
+#### The environment is ubuntu 16.04 LTS, npm 6.1.0, and nodeJs 10.6.0.
 ---
 
 ## Development Environment (npm, nodeJS)
@@ -81,13 +80,18 @@
 
    - ![InstallingAndroidStudio](./ReadMeImage/InstallingAndroid.png)
 
-6. `configure` => `AVD Manager` => `Create Virtual Device`
+6. #### `configure` => `AVD Manager` => `Create Virtual Device`
 
    - Install `Pixel 2` => Download `Pie`
 
 # Error & Version
 
-- `ERROR: Manifest merger failed : Attribute application@appComponentFactory value=(android.support.v4.app.CoreComponentFactory) from [com.android.support:support-compat:28.0.0] AndroidManifest.xm:22:18-91`
+- #### 해당 API가 다른 API로 대체되었고 2019년 말에는 사라질 것이라는 내용으로 추후에 해당코드를 수정해야 합니다.
+  
+  - ![android warning](./ReadMeImage/androidWarning.jpg)
+  
+- #### `ERROR: Manifest merger failed : Attribute application@appComponentFactory value=(android.support.v4.app.CoreComponentFactory) from [com.android.support:support-compat:28.0.0] AndroidManifest.xm:22:18-91`
+  
   - `gradle.properties`에 아래와 같이 추가하기
     - `android.useAndroidX=true`
     - `android.enableJetifier=true`
@@ -98,18 +102,22 @@
   - 두 번째 빌드
     - ![second build](./ReadMeImage/NextBuild.PNG)
      *실제 환경에서는 해당 오류 발생하지 않음.*
+
 - ##### Spring error  
   - Mysql
     - ![mysql error](./ReadMeImage/error1.png)
   - Run
     - ![run error](./ReadMeImage/error2.png)
-- `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
+  
+- #### `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
   
   - ![dependencies Version](./ReadMeImage/dependenciesVersion.png)
-- Module version
+  
+- #### Module version
   
   - ![module Version](./ReadMeImage/moduleVersion.png)
-- Execute test
+  
+- #### Execute test
   
   - <img src="./ReadMeImage/E4sensingApp.jpg" width="300" alt="E4 Sensing App screenshot">
 
@@ -144,6 +152,7 @@
 - #### `npm init`
   
   - ![npm init](./ReadMeImage/npmInit.png)
+
 - #### Install modules
   
   - `npm install express`
@@ -152,14 +161,78 @@
   - `npm install mysql`
   - `npm install socket.io`
     - ![install modules mysql, socket.io](./ReadMeImage/installModules2.png)
-- #### Run App.js
-  
+
+- #### Run App.js  
   - ![run App.js](./ReadMeImage/runAppJs.png)
-- #### `localhost:3000/`
-  
+
+- #### `localhost:3000/`  
   - It means index.html
   - ![index.html](./ReadMeImage/indexHtml.png)
+
 - #### `localhost:3000/board`
-  
   - It means board.html
   - ![board.html](./ReadMeImage/boardHtml.png)
+
+## Connect Virtual Machine Web Server
+
+- #### 가상머신 웹서버로 nginx를 설치하였습니다.
+
+- #### `파일` => `호스트 네트워크 관리자 (ctrl + h)` 로 아래 화면을 설정합니다.
+
+  -  ##### 없다면 새로 만들기
+
+  -  수동으로 어댑터 설정
+
+  -  IPv4 주소 : `192.168.56.1`
+
+  - IPv4 서브넷 마스크 : `255.255.255.0`
+
+    -  ![virtual Box host network manager](./ReadMeImage/virtualBoxPortForwardingApater.png)
+
+- #### DHCP서버를 선택합니다.
+
+  - 서버주소 : `192.168.56.100`
+  - 서버 마스크 : `255.255.0`
+  - 최저 주소 한계 : `192.168.56.101`
+  - 쵝 주소 한계 : `192.168.56.254`
+    - ![virtual Box host network manager](./ReadMeImage/virtualBoxPortForwardingDhcpServer.png)
+
+- #### 해당 가상머신의 `설정` => `네트워크` =>`어댑터`를 아래와 같이 설정합니다.
+
+  - `어댑터 1`은 `NAT`로 사용하고 있을 것입니다.
+
+  - 그래서 저희는 `어댑터2`를 사용하겠습니다.
+
+  - `다음에 연결됨`을 `호스트 전용 어댑터`로 설정합니다.
+
+    - ![virtual machine network manager](./ReadMeImage/virtualBoxPortForwardingApater2.png)
+
+  - 가상머신을 재부팅하고 주소를 확인하면 `192.168.56.102`라고 DHCP를 통해서 ip주소가 자동할당된 것을 확인할 수 있습니다.
+
+    - ![ifconfig virtual machine](./ReadMeImage/virtualMachineIfconfig.png)
+
+  - 이 주소는 local 서버의 경우이니 실제 환경에서는 고정시켜서 사용합니다.
+
+    - 가상머신의 ip주소를 고정시키는 방법은 다음 주소를 참고하였습니다. **(추후에 수정)**
+    - https://dbrang.tistory.com/1279
+
+  - `http://192.168.56.102`를 통해서 가상머신의 웹서버 nginx에 접속되는 것을 확인할 수 있었습니다.
+  - ![connect virtual machine web server](./ReadMeImage/connectVirtualMachineNginxWebpage.png)
+
+## Install Mysql
+
+- #### ` sudo apt install mysql-server` 를 통해서 mysql-server를 설치합니다.
+
+  - 설치중에 Mysql에서 사용할 root용 `password 설정`을 합니다.
+    - ~~우선은 `eslabeslab533`으로 설정을 해두었습니다. ( 추후에 강력하게 변경하기 )~~
+  - password를 잊어버리더라도 Google에 `mysql password forgot`와 같은 방식으로 검색하면 방법이 있습니다.
+  - ![install Mysql Server](./ReadMeImage/installMysqlServer.png)
+
+- #### `sudo apt install mysql-workbench` 를 통해서 mysql-workbench를 설치합니다.
+
+  - ![install Mysql workbench](./ReadMeImage/installMysqlWorkbench.png)
+
+- #### `sudo service mysql start`
+
+  - ![Mysql start](./ReadMeImage/startMysql.png)
+
