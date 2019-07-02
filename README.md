@@ -94,9 +94,9 @@
 
 - ##### 두번째 빌드부터 발생하는 FileNotFound error
   - 첫 번째 빌드
-     - ![first_build](./ReadMeImage/FirstBuild.png)
+    - ![first build](./ReadMeImage/FirstBuild.png)
   - 두 번째 빌드
-     - ![second_build](./ReadMeImage/SecondBuild.png)
+    - ![second build](./ReadMeImage/SecondBuild.png)
      *실제 환경에서는 해당 오류 발생하지 않음.*
 - ##### Spring error  
   - Mysql
