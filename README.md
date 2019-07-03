@@ -217,7 +217,7 @@
     - https://dbrang.tistory.com/1279
 
   - `http://192.168.56.102`를 통해서 가상머신의 웹서버 nginx에 접속되는 것을 확인할 수 있었습니다.
-  - ![connect virtual machine web server](./ReadMeImage/connectVirtualMachineNginxWebpage.png)
+  - ![connect virtual machine web server](./ReadMeImage/connectVirtualMachineNginxWebPage.png)
 
 ## Install Mysql
 
