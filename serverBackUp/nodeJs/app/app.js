@@ -4,10 +4,11 @@ var fileUpload = require('express-fileupload');
 var fs = require('fs');
 var mysql = require("mysql");
 var mysqlConfig = {
-	host: "127.0.0.1",
+	//host: "127.0.0.1",
+	host: "168.188.127.124",
 	port: 3306,
 	user: "root",
-	password: "rootpass12#$",
+	password: "Rootpass12#$",
 	database: "main",
 	multipleStatements: true
 };
