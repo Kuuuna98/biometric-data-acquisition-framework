@@ -8,7 +8,8 @@ const Writable = require('stream').Writable;
 const Transform = require('stream').Transform;
 
 var mysqlConfig = {
-	host: "127.0.0.1",
+	//host: "127.0.0.1",
+	host: "168.188.127.124",
 	port: 3306,
 	user: "root",
 	password: "rootpass12#$",
