@@ -7,7 +7,6 @@
 ## Development Environment (npm, nodeJS)
 
 1. ##### `sudo apt-get install build-essential libssl-dev`
-
    - npm 및 nodejs 관련 모듈을 설치하기 위해, apt로 다음과 같은 모듈을 먼저 설치합니다.
 
    - libssl-dev 패키지는 SSL 개발에 필요한 라이브러리와 헤더파일등을 가지고 있으며 아래에 링크에 자세한 내용을 살펴 볼수 있습니다.
@@ -31,19 +30,15 @@
    - bashrc를 업데이트 합니다.
 
    - ![1561377119975](./ReadMeImage/sourceBashrc.png)
-
    
 
 4. ##### `nvm install 10.6.0`
-
    - nvm을 10.6.0 버전으로 설치합니다.
 
    - ![1561377159507](./ReadMeImage/nvmInstall.png)
-
    
 
 5. ##### `nvm --version`
-
    - ` 0.33.11` version이 맞게 설치되었는지 확인합니다.
 
    - ![1561377207497](./ReadMeImage/nvmVersion.png)
@@ -51,7 +46,6 @@
    
 
 6. ##### `node --version`
-
    1. ` 10.6.0`  version이 맞게 설치되었는지 확인합니다.
 
    - ![1561377242602](./ReadMeImage/nodejsVersion.png)
@@ -59,7 +53,6 @@
    
 
 7. ##### `npm --version`
-
    - `6.1.0` version이 맞게 설치되었는지 확인합니다.
 
    - ![npmVersion](./ReadMeImage/npmVersion.png)
@@ -82,7 +75,6 @@
      
 
    - ![toolboxExtractAndRun](./ReadMeImage/toolboxExtractAndRun.png)
-
    
 
 3. ##### Install Android Studio
@@ -104,7 +96,6 @@
    
 
 6. ##### `configure` => `AVD Manager` => `Create Virtual Device`
-
    - Install `Pixel 2` => Download `Pie`
 
 
@@ -124,7 +115,6 @@
     - `android.enableJetifier=true`
 
 
-
 - ##### 두번째 빌드부터 발생하는 FileNotFound error
   
   - 첫 번째 빌드
@@ -141,15 +131,13 @@
 
 
 - ##### Spring error  
-  
-  - Mysql
+    - Mysql
     - ![mysql error](./ReadMeImage/error1.png)
   
   
   
   - Run
     - ![run error](./ReadMeImage/error2.png)
-
 
 
 - ##### `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
@@ -165,7 +153,7 @@
 
 
 - ##### Execute test
-  
+
   - <img src="./ReadMeImage/E4sensingApp.jpg" width="300" alt="E4 Sensing App screenshot">
 
 
