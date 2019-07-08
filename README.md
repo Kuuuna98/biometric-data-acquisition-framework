@@ -373,7 +373,7 @@
 - ##### 아래의 명령어를 통해서 `uploads`와 `logs` table을 생성합니다.
 
   - ```mysql
-CREATE TABLE uploads(
+  CREATE TABLE uploads(
         id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
         udid VARCHAR(255) NOT NULL, fileName VARCHAR(255) NOT NULL,
         info LONGTEXT,
@@ -389,7 +389,7 @@ CREATE TABLE uploads(
   
   
   - ```mysql
-CREATE TABLE logs(
+  CREATE TABLE logs(
         id BIGINT(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,
       fileID BIGINT(20), json VARCHAR(255),
         logID BIGINT(20), reg BIGINT(20) NOT NULL,
