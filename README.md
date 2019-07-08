@@ -31,13 +31,11 @@
 
    - ![1561377119975](./ReadMeImage/sourceBashrc.png)
    
-
 4. ##### `nvm install 10.6.0`
    - nvm을 10.6.0 버전으로 설치합니다.
 
    - ![1561377159507](./ReadMeImage/nvmInstall.png)
    
-
 5. ##### `nvm --version`
    - ` 0.33.11` version이 맞게 설치되었는지 확인합니다.
 
@@ -76,7 +74,6 @@
 
    - ![toolboxExtractAndRun](./ReadMeImage/toolboxExtractAndRun.png)
    
-
 3. ##### Install Android Studio
 
    - ![install Android Studio](./ReadMeImage/installAndroidStudio.png)
@@ -133,9 +130,9 @@
 - ##### Spring error  
     - Mysql
     - ![mysql error](./ReadMeImage/error1.png)
+
   
-  
-  
+
   - Run
     - ![run error](./ReadMeImage/error2.png)
 
@@ -373,23 +370,25 @@
 - ##### 아래의 명령어를 통해서 `uploads`와 `logs` table을 생성합니다.
 
   - ```mysql
-  CREATE TABLE uploads(
-        id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-        udid VARCHAR(255) NOT NULL, fileName VARCHAR(255) NOT NULL,
-        info LONGTEXT,
-        reg TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        processed INT(11) NOT NULL DEFAULT 0
-    );
+    CREATE TABLE uploads(
+            id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            udid VARCHAR(255) NOT NULL, fileName VARCHAR(255) NOT NULL,
+            info LONGTEXT,
+            reg TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            processed INT(11) NOT NULL DEFAULT 0
+        );
     ```
-  
+
+ 
+
   - `DESC uploads`를 통해서 생성된 **uploads table**을 확인할 수 있습니다.
   
     - ![DESC uploads](./ReadMeImage/descUploads.png)
+
   
-  
-  
+
   - ```mysql
-  CREATE TABLE logs(
+CREATE TABLE logs(
         id BIGINT(20) NOT NULL PRIMARY KEY AUTO_INCREMENT,
       fileID BIGINT(20), json VARCHAR(255),
         logID BIGINT(20), reg BIGINT(20) NOT NULL,
@@ -400,3 +399,4 @@
   - `DESC logs`를 통해서 생성된 **logs table**을 확인할 수 있습니다.
     
     - ![DESC logs](./ReadMeImage/descLogs.png)
+
