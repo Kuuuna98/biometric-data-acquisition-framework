@@ -2,26 +2,20 @@
 <html>
 <head>
 	<title>Socket.IO chat</title>
-	<style>
-	  * { margin: 0; padding: 0; box-sizing: border-box; }
-	  body { font: 13px Helvetica, Arial; }
-	  .datatemp { display: none; }
-	  #dataView {
-	  	text-align: center;
-	  }
-	</style>
+	<link type="text/css" rel="stylesheet" href="board.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
+
 	
 	<script>
 		
 	var data = {};
 	var newCol = true;
 	var headers = null;
-	
+
 	$(function () {
 		var socket = io();
-		
+
 		socket.on('ack', function(msg){
 			var payload = JSON.parse(msg);
 			var device = data[payload.setNumber];
@@ -31,34 +25,34 @@
 			}
 			payload.reg = new Date().getTime();
 			updateMerge(device, payload);
-			
+
 			reloadView();
 		});
-		
+
 		socket.on('message', function(msg){
 			console.log(JSON.parse(msg));
 		});
-		
+
 		setInterval(reloadView, 1000);
 	});
-	
+
 	function reloadView() {
 		if (newCol) {
 			$("#dataView thead").empty();
 			$("#dataView tbody").empty();
 			$("#dataView tfoot").empty();
-			
+
 			headers = getCols();
-			
+
 			var $tr1 = $("<tr></tr>");
 			var $tr2 = $("<tr></tr>");
-			var $trt = $("<tr class='datatemp'></tr>");
+			var $trt = $("<tr class='dataTemp'></tr>");
 			$("#dataView thead").append($tr1).append($tr2);
 			$("#dataView tfoot").append($trt);
-			
+
 			$tr1.append("<td rowspan=2>UDID(setNumber)</td>");
 			$trt.append("<td dataAttr='setNumber'><b>#setNumber</b></td");
-			
+
 			for (var i = 0; i < headers.list.length; i++) {
 				$tr1.append("<td colspan=" + headers.attrs[headers.list[i]].length + ">" + headers.list[i] + "</td>");
 				for (var j = 0; j < headers.attrs[headers.list[i]].length; j++) {
@@ -68,20 +62,20 @@
 			}
 			newCol = false;
 		}
-		
+
 		var setNumberList = Object.keys(data);
 		for (var i = 0; i < setNumberList.length; i++) {
 			var dt = data[setNumberList[i]];
 			var $tr = $("#dataView tbody tr[setNumber='" + dt.setNumber + "']");
 			if ($tr.length == 0) {
 				// need new tr
-				$tr = $("#dataView tfoot .datatemp").clone();
-				$tr.removeClass("datatemp");
+				$tr = $("#dataView tfoot .dataTemp").clone();
+				$tr.removeClass("dataTemp");
 				$tr.attr("setNumber", dt.setNumber);
 				$tr.find("td[dataAttr='setNumber'] b").text(dt.setNumber);
 				$("#dataView tbody").append($tr);
 			}
-			
+
 			$tr.find("td[deviceAttr]").each(function(i, $td) {
 				$td = $($td);
 				try {
@@ -99,18 +93,18 @@
 					$td.text("-");
 				}
 			});
-			
+
 		}
 	}
-	
+
 	function updateMerge(device, payload) {
 		if (payload.deviceType == null) {
 			console.log("ERR No device type");
 			return;
 		}
 		newCol |= device[payload.deviceType] == null;
-		
-		device[payload.deviceType] = payload;		
+
+		device[payload.deviceType] = payload;
 	}
 	function getCols() {
 		var list = [];
@@ -125,8 +119,8 @@
 				if (list.indexOf(deviceType) == -1) {
 					list.push(deviceType);
 					deviceAttrs[deviceType] = Object.keys(data[setNumber][deviceType])
-													.filter(function(value) { 
-														return ["setNumber", "deviceType"].indexOf(value) == -1; 
+													.filter(function(value) {
+														return ["setNumber", "deviceType"].indexOf(value) == -1;
 													});
 				}
 			}
@@ -138,7 +132,7 @@
 
 </head>
 <body>
-	<table border="1" id="dataView">
+	<table id="dataView">
 		<thead>
 			<tr>
 				<th>UDID(setNumber)</th>
@@ -147,6 +141,7 @@
 		<tbody></tbody>
 		<tfoot></tfoot>
 	</table>
+	<script type="javascript" rel="script" src="board.js"></script>
 </body>
 </html>
     
