@@ -4,7 +4,7 @@
 
 
 
-## Development Environment (npm, nodeJS)
+## Development Environment (npm, nodeJS) 
 
 1. ##### `sudo apt-get install build-essential libssl-dev`
 
