@@ -143,8 +143,9 @@
 
 
 - Run
-  - ![run error](./ReadMeImage/error2.png)
-
+  
+- ![run error](./ReadMeImage/error2.png)
+  
 - ##### `gradle 3.1.4 -> 3.4.1 , 1.24.4 -> 1.25.4`
 
   - ![dependencies Version](./ReadMeImage/dependenciesVersion.png)
@@ -329,6 +330,12 @@
 
     - ![sensing data in web page](./ReadMeImage/sesorDataOnServer.png)
     - ![disconnect sensing data in web page](./ReadMeImage/sensingBoard.png)
+    
+    
+    
+    > 우선 변경한  css 이미지로서 추후에 수정하기
+    
+    - ![changedCss](./ReadMeImage/changedCss.png)
 
 
 
