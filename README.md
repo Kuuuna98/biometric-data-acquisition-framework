@@ -167,7 +167,7 @@
 
   - Nginx를 설치합니다.  `sudo apt install nginx`
   - 웹서버를 시작시킵니다. `sudo systemctl start nignx`
-  - Nginx 상태를 확인합니다. `systemctl statue nginx`
+  - Nginx 상태를 확인합니다. `systemctl status nginx`
   - ![install Nginx](./ReadMeImage/installNginx.png)
   - ![start Nginx](./ReadMeImage/startNginx.png)
 
