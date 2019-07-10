@@ -16,14 +16,14 @@
 
    - ![install libssl](./ReadMeImage/installLibssl.png)
 
-   
+
 
 2. ##### `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash`
 
    - curl을 이용해서 nvm을 설치합니다. (현재 설치하는 버전은 0.33.11입니다.)
    - ![1561377098138](./ReadMeImage/curlNvmInstall.png)
 
-   
+
 
 3. ##### `source ~/.bashrc`
 
@@ -40,7 +40,7 @@
    - ` 0.33.11` version이 맞게 설치되었는지 확인합니다.
    - ![1561377207497](./ReadMeImage/nvmVersion.png)
 
-   
+
 
 6. ##### `node --version`
 
@@ -48,7 +48,7 @@
 
    - ![1561377242602](./ReadMeImage/nodejsVersion.png)
 
-   
+
 
 7. ##### `npm --version`
 
@@ -61,40 +61,47 @@
 
 1. ##### `https://www.jetbrains.com/toolbox/app/?fromMenu`
 
-   - Download Toolbox APP
+   - Ubuntu에서 AndroidStudio를 설치하기위하여 JetBrain의 Toolbox를 활용합니다.
+   - 먼저 Toolbox APP의 파일확장자를 .TAR.GZ로 선택하여 다운로드합니다.
    - ![downloadToolbox](./ReadMeImage/downloadToolbox.png)
 
-   
+
 
 2. ##### Save and extract
 
+   - File을 저장 해야 하므로 Save File을 선택합니다.
    - ![saveFile](./ReadMeImage/saveFile.png)
-
-     
-
+   - 저장한 File은 .tar.gz로 압축되어있습니다.
+   - terminal창에서 cd./Downloads를 통해 다운받은 압축파일이 있는곳으로 이동합니다.
+   - tar –xvzf [파일명].tar.gz 명령어를 입력하여 파일 압축을 해제합니다.
+   - 안에 있는 실행파일을 실행합니다.
    - ![toolboxExtractAndRun](./ReadMeImage/toolboxExtractAndRun.png)
 
 3. ##### Install Android Studio
 
+   - Toolbox APP이 실행시키면 화면에 다운받은수있는 app들 목록이 보여집니다. 그중에서 Android Studio를 찾아 설치합니다.
    - ![install Android Studio](./ReadMeImage/installAndroidStudio.png)
 
-   
+
 
 4. ##### Run Android Studio
 
    - `Next` => `standard` => `Next` => `Next` => `Finish` 순서로 순차적으로 선택합니다.
 
-   
+
 
 5. ##### Setup
 
    - ![InstallingAndroidStudio](./ReadMeImage/InstallingAndroid.png)
 
-   
+
 
 6. ##### `configure` => `AVD Manager` => `Create Virtual Device`
 
    - Install `Pixel 2` => Download `Pie`
+   - Android Studio를 실행하면 나타나는 화면의 오른쪽 아래에 위치한 configure를 선택합니다. 그리고 위의 순서대로 선택하여 가상머신을 생성합니다.
+   - Android Studio에서 project를 연 상태에서는 상단에 위치한 Tools를 선택하면 AVD Manager를 찾을 수 있습니다.
+
 
 
 
@@ -108,7 +115,7 @@
 
 - ##### `ERROR: Manifest merger failed : Attribute application@appComponentFactory value=(android.support.v4.app.CoreComponentFactory) from [com.android.support:support-compat:28.0.0] AndroidManifest.xm:22:18-91`
 
-  - `gradle.properties`에 아래와 같이 추가하기
+  - Gradle Scripts의 `gradle.properties`에 아래와 같이 추가합니다.
     - `android.useAndroidX=true`
     - `android.enableJetifier=true`
 
@@ -117,13 +124,14 @@
   - 첫 번째 빌드
     - ![first build](./ReadMeImage/FirstBuild.png)
 
-  
+
 
   - 두 번째 빌드
 
   - ![second build](./ReadMeImage/NextBuild.png)
 
-    > *실제 환경에서는 해당 오류 발생하지 않음.*
+  - 가상머신에서 run할경우 첫번째 빌드는 성공했지만 두번째 빌드에서 오류가 발생하는 경우가 생겼습니다. 아직 이 오류의 원인은 발견하지 못했습니다.
+    > *해당 오류는 가상머신에서만 발생하였고 실제 환경에서 이 오류가 발생한적은 없습니다. *
 
 
 
@@ -132,7 +140,7 @@
   - Mysql
   - ![mysql error](./ReadMeImage/error1.png)
 
-  
+
 
 - Run
   - ![run error](./ReadMeImage/error2.png)
@@ -147,11 +155,8 @@
 
   - ![module Version](./ReadMeImage/moduleVersion.png)
 
-
-
-- ##### Execute test
-
-  - <img src="./ReadMeImage/E4sensingApp.jpg" width="300" alt="E4 Sensing App screenshot">
+- <img sr하기위해서`sudo apt install nginx`명령어를 입력합니다.
+  - eImage/E4sensingApp.jpg" width="300" alt="E4 Sensing App screenshot">
 
 
 
@@ -159,6 +164,9 @@
 
 - ##### Install nginx
 
+  - Nginx를 설치합니다.  `sudo apt install nginx`
+  - 웹서버를 시작시킵니다. `sudo systemctl start nignx`
+  - Nginx 상태를 확인합니다. `systemctl statue nginx`
   - ![install Nginx](./ReadMeImage/installNginx.png)
   - ![start Nginx](./ReadMeImage/startNginx.png)
 
@@ -166,33 +174,43 @@
 
 - ##### Add ufw
 
-  - ![add ufw](./ReadMeImage/addUfw.png)
+   - ufw는 ubuntu의 기본적인 방화벽입니다.
+   - `sudo ufw app list`  사용가능한 프로그램을 확인합니다.
+    - `sudo ufw allow ‘Nginx HTTP’` 방화벽에서 nginX로 접근을 허용합니다.
+  - `sudo ufw status` ufw 상태를 확인합니다.
+    - 만약 inactive(비활성화)상태라면 `sudo ufw enable`를 통해 활성화 시킵니다.
+    - ![add ufw](./ReadMeImage/addUfw.png)
 
 
 
 - ##### Allow permission AVD
 
   - Permission denied
+    - Ubuntu에서 가상머신을 실행하면  /dev/kvm에 현재 user가 접근할수없는 오류가 발생합니다.  
     - ![permission denied](./ReadMeImage/AVDPermissionDenied.png)
 
-  
+
 
   - `install qemu-kvm`
+      - qemu-kvm을 설치합니다.
     - ![install qemu-kvm](./ReadMeImage/installQemuKvm.png)
 
-  
+
 
   - Add user kvm
     - `sudo adduser 'user name' kvm`  Use first not second
+    - `ls –al /dev/kvm`으로 /dev/kvm의 그룹을 확인하면 kvm으로 설정되어있습니다.
+    - `grep kvm /etc/group` 명령어를 통해서 kvm user의 정보를 보고 현재 user가 없다면 `sudo adduser [username] kvm` 명령어를 통해서 등록합니다.
       - ![add user kvm](./ReadMeImage/adduserKvm.png)
 
-  
+
 
   - Permission allow
+    - 가상머신을 다시 실행하면 오류가 발생하지 않음을 확인할 수 있습니다.
     - ![permission allow](./ReadMeImage/permissionAllow1.png)
     - ![permission allow](./ReadMeImage/permissionAllow2.png)
 
-  
+
 
   - After run AVD screenshot
     - ![AVD](./ReadMeImage/AVD1.png)
@@ -214,7 +232,7 @@
 
   - `npm install after array-flatten arraybuffer.slice async-limiter backo2 base64-arraybuffer base64id better-assert bignumber.js blob body-parser busboy bytes callsite component-bind component-emitter component-inherit content-disposition content-type cookie cookie-signature core-util-is debug depd destroy dicer ee-first encodeurl engine.io engine.io-client engine.io-parser escape-html etag express express-fileupload finalhandler forwarded fresh has-binary2 has-cors http-errors iconv-lite indexof inherits ipaddr.js isarray media-typer merge-descriptors methods mime mime-db mime-types ms mysql string_decoder negotiator object-component on-finished parseqs parseuri parseurl path-to-regexp process-nextick-args proxy-addr qs range-parser raw-body readable-stream safe-buffer safer-buffer send serve-static setprototypeof socket.io ms socket.io-adapter socket.io-client socket.io-parser isarray sqlstring statuses streamsearch string_decoder to-array toidentifier type-is unpipe util-deprecate utils-merge vary ws xmlhttprequest-ssl yeast`
 
-    
+
 
   - ![install modules express, express-fileupload](./ReadMeImage/installModules1.png)
 
@@ -276,12 +294,12 @@
   - `다음에 연결됨`을 `호스트 전용 어댑터`로 설정합니다.
     - ![virtual machine network manager](./ReadMeImage/virtualBoxPortForwardingApater2.png)
 
-  
+
 
   - 가상머신을 재부팅하고 주소를 확인하면 `192.168.56.102`라고 DHCP를 통해서 ip주소가 자동할당된 것을 확인할 수 있습니다.
     - ![ifconfig virtual machine](./ReadMeImage/virtualMachineIfconfig.png)
 
-  
+
 
   - 이 주소는 local 서버의 경우이니 실제 환경에서는 고정시켜서 사용합니다.
 
@@ -323,7 +341,7 @@
     > 우선은 `Rootpass12#$`으로 설정을 해두었습니다. ( 추후에 강력하게 변경하기 )    
     > *시작시 `sudo` 조건 안주고 접근시 실행불가*
 
-  
+
 
   - password를 잊어버리더라도 Google에 `mysql password forgot`와 같은 방식으로 검색하면 방법이 있습니다.
   - ![install Mysql Server](./ReadMeImage/installMysqlServer.png)
@@ -346,7 +364,7 @@
 
   - ![add mysql ufw](./ReadMeImage/mysqlUfw.png)
 
-  
+
 
 - ##### workbench를 통해서 mysql DB에 접근합니다.
 
@@ -367,7 +385,7 @@
 
   - `CREATE DATABASE main;`
 
-  
+
 
 - ##### 아래의 명령어를 통해서 `uploads`와 `logs` table을 생성합니다.
 
@@ -387,11 +405,10 @@
     );
     ```
 
- 
+
 
 - `DESC uploads`를 통해서 생성된 **uploads table**을 확인할 수 있습니다.
   - ![DESC uploads](./ReadMeImage/descUploads.png)
 
 - `DESC logs`를 통해서 생성된 **logs table**을 확인할 수 있습니다.
   - ![DESC logs](./ReadMeImage/descLogs.png)
-
