@@ -1,0 +1,21 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+table{
+    border-collapse: collapse;
+    border: 1px black solid;
+    border-radius: 12px;
+    width: 100%;
+    min-height: 20vh ;
+}
+body {
+    font: 13px Helvetica, Arial;
+}
+.dataTemp {
+    display: none;
+}
+#dataView {
+    text-align: center;
+}
