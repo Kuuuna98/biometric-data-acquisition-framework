@@ -1,8 +1,81 @@
 <!doctype html>
 <html>
 <head>
-	<title>Socket.IO chat</title>
+	<title>E4 Sensing Board</title>
 	<link type="text/css" rel="stylesheet" href="board.css">
+	<style>
+		html{
+			background-color: rgba(255,232,222,0.5);
+		}
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		table{
+			border: 15px rgba(77,106,179,0.7) solid;
+			border-radius: 20px;
+			background-color: rgba(77,106,179,1);
+			width: 80%;
+			position: relative;
+			left: 10%;
+			min-height: 20vh;
+		}
+		.color_th1{
+			background-color: rgba(77,106,179,0.3);
+			color: black;
+		}
+		.color_th2{
+			background-color: rgba(173,196,255,1);
+			color: black;
+		}
+		.color_th3{
+			background-color: rgba(135,169,255,1);
+			color: black;
+		}
+		th, tr{
+			background-color: white;
+			height: 4vh;
+			font-size: 2.5vh;
+			font-weight: bold;
+		}
+		td{
+			border:1px rgba(77,106,179,1) solid;
+			background-color: rgba(255,220,135,0.3);
+			height: 4vh;
+			font-size: 2.5vh;
+			font-weight: bold;
+		}
+		body {
+			font: 13px Helvetica, Arial;
+		}
+		.dataTemp {
+			display: none;
+		}
+		#dataView {
+			text-align: center;
+		}
+		h1{
+			margin-top: 20px;
+			margin-bottom: 20px;
+			text-align: center;
+			background-color: rgba(77,106,179,0.7);
+			color: white;
+			padding-top: 1.5vh;
+			height: 10vh;
+			font-size: 6vh;
+			border-radius: 40px;
+			width: 60%;
+			position: relative;
+			left: 20%;
+		}
+		p{
+			font-size: 3vh;
+			margin-left: 10%;
+			padding: 2vh;
+			line-height:1.7em;
+		}
+	</style>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 
@@ -50,14 +123,14 @@
 			$("#dataView thead").append($tr1).append($tr2);
 			$("#dataView tfoot").append($trt);
 
-			$tr1.append("<td rowspan=2>UDID(setNumber)</td>");
-			$trt.append("<td dataAttr='setNumber'><b>#setNumber</b></td");
+			$tr1.append("<td class=\"color_th1\" rowspan=2>UDID(setNumber)</td>");
+			$trt.append("<td class=\"color_th1\" dataAttr='setNumber'><b>#setNumber</b></td");
 
 			for (var i = 0; i < headers.list.length; i++) {
-				$tr1.append("<td colspan=" + headers.attrs[headers.list[i]].length + ">" + headers.list[i] + "</td>");
+				$tr1.append("<td class=\"color_th2\" colspan=" + headers.attrs[headers.list[i]].length + ">" + headers.list[i] + "</td>");
 				for (var j = 0; j < headers.attrs[headers.list[i]].length; j++) {
-					$tr2.append("<td>" + headers.attrs[headers.list[i]][j] + "</td>");
-					$trt.append("<td deviceAttr='" + headers.list[i] + "' dataAttr='" + headers.attrs[headers.list[i]][j] + "'>" + headers.attrs[headers.list[i]][j] + "</td");
+					$tr2.append("<td class=\"color_th3\">" + headers.attrs[headers.list[i]][j] + "</td>");
+					$trt.append("<td  deviceAttr='" + headers.list[i] + "' dataAttr='" + headers.attrs[headers.list[i]][j] + "'>" + headers.attrs[headers.list[i]][j] + "</td");
 				}
 			}
 			newCol = false;
@@ -85,7 +158,7 @@
 						if (value > 60) {
 							$td.css("color", "white").css("background-color", "red");
 						} else {
-							$td.css("color", "black").css("background-color", "white");
+							$td.css("color", "black").css("background-color", "rgba(255,220,135,0.3)");
 						}
 					}
 					$td.text(value);
@@ -119,9 +192,9 @@
 				if (list.indexOf(deviceType) == -1) {
 					list.push(deviceType);
 					deviceAttrs[deviceType] = Object.keys(data[setNumber][deviceType])
-													.filter(function(value) {
-														return ["setNumber", "deviceType"].indexOf(value) == -1;
-													});
+					.filter(function(value) {
+						return ["setNumber", "deviceType"].indexOf(value) == -1;
+					});
 				}
 			}
 		}
@@ -132,6 +205,7 @@
 
 </head>
 <body>
+	<h1>E4 Sensing Data Board</h1><br/>
 	<table id="dataView">
 		<thead>
 			<tr>
@@ -141,6 +215,16 @@
 		<tbody></tbody>
 		<tfoot></tfoot>
 	</table>
+	<p>
+		<!--시간 괜찮을 때 클릭 시 정보 표시 수정-->
+		* <strong>UDID(setNumber)</strong> : UDID means User Device ID and number of device primary key <br/>
+		* <strong>sensingPhone1</strong> : This means <br/>
+		* <strong>sensorTag</strong> : This means <br/>
+		* <strong>accDelta</strong> : This means <br/>
+		* <strong>gyroDelta</strong> : This means <br/>
+		* <strong>locDelta</strong> : This means <br/>
+		* <strong>reg</strong> : This means maybe timer and this value is greater than sixty then background will change red to notify disconnect to server<br/>
+	</p>
 	<script type="javascript" rel="script" src="board.js"></script>
 </body>
 </html>
