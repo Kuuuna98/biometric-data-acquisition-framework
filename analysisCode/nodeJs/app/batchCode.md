@@ -160,7 +160,11 @@ readSQLiteDB 메소드는 db를 읽어 mysql 'main' database 'log' table에 삽�
 			});
 			
 			//db의 log table을 한번에 로드합니다.
-			//~~~~~~~~~~~~~~~~~
+			//each를 통해 구현하면 오래 걸리기도 하고
+			//스트리밍 기법과 큐 방식을 구현해보았으나 node가 싱글 스레드 방식이라 each에서 잠기는 현상이 발생하여 결국 메모리에 한번에 로드하고 잘라 보내는 방식을 선택하였습니다.
+			//로그 파일이 클 수록 메모리에 부하가 가므로 실험시 서버 메모리를 충분히 확보한 후 하는 것을 추천합니다.
+			//이러한 구조 상 cron batch 처리를 한번에 한 건만 하도록 막아두었습니다.
+			
 			db.all("SELECT * FROM log", function(err, rows) {
 				console.log("SQLITE "+row.length+" records);
 				rows= rows.map(function(r){
