@@ -130,9 +130,13 @@
 
   - ![second build](./ReadMeImage/NextBuild.png)
 
-  - 가상머신에서 run할경우 첫번째 빌드는 성공했지만 두번째 빌드에서 오류가 발생하는 경우가 생겼습니다. 아직 이 오류의 원인은 발견하지 못했습니다.
-    > *해당 오류는 가상머신에서만 발생하였고 실제 환경에서 이 오류가 발생한적은 없습니다. *
+  > 첫 Run을 실행한 후 다시 Run을 실행할 경우 FileNotFoundException이 발생했습니다.  
+ 
+  - ![해결 방법](./ReadMeImage/Fixgradle.PNG)
 
+   - `build.gradle (Module: app)`에서 `compileSdkVersion`과 `targetSdkVersion`을 28로 낮춘다.
+
+   > API 29 Platform 에서 지원하는 ThreadPoolExecutor.java 와 ForkJoinTask.java에서 오류가 발생하여 SDK를 수정하였습니다.
  - ##### accDelta, gyroDelta Sensing Error
 
 accDelta와 gyroDelta가 같은 값을 갖는 오류
