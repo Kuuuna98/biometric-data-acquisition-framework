@@ -132,7 +132,8 @@
 
   - 가상머신에서 run할경우 첫번째 빌드는 성공했지만 두번째 빌드에서 오류가 발생하는 경우가 생겼습니다. 아직 이 오류의 원인은 발견하지 못했습니다.
     > *해당 오류는 가상머신에서만 발생하였고 실제 환경에서 이 오류가 발생한적은 없습니다. *
-
+ > accDelta는 Accelerometer Sensor에 의한 SensorEvent 발생 시에만 증가하고
+ > gyroDelta는 Gyroscope Sensor에 의한 SensorEvent 발생 시에만 증가시켜야 둘이 같은 값을 갖지 않게 됩니다.
 
 
 - ##### Spring error  
