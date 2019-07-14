@@ -137,12 +137,12 @@
    - `build.gradle (Module: app)`에서 `compileSdkVersion`과 `targetSdkVersion`을 28로 낮춘다.
 
    > API 29 Platform 에서 지원하는 ThreadPoolExecutor.java 와 ForkJoinTask.java에서 오류가 발생하여 SDK를 수정하였습니다.
- - ##### accDelta, gyroDelta Sensing Error
+ - ##### Sensing data of SmartPhone have same value
 
 accDelta와 gyroDelta가 같은 값을 갖는 오류
 
-    LocationService.java 
-    -> private void getSensor(SensorEvent event) 
+`LocationService.java` > `getSensor`
+
     float[] values = event.values;  
     // Movement  
     float x = values[0];  
@@ -166,6 +166,43 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
 
  > accDelta는 Accelerometer Sensor에 의한 SensorEvent 발생 시에만 증가하고
  > gyroDelta는 Gyroscope Sensor에 의한 SensorEvent 발생 시에만 증가시켜야 둘이 같은 값을 갖지 않게 됩니다.
+- ##### Sensing data of Sensor have same value
+
+>센싱 데이터가 변하면  `BluetoothLeService.java` 에서 `onCharacteristicChanged`를 통해  `ACTION_DATA_NOTIFY`이 발생했다고 알리는데, 
+이 때 `SensorTagService.java`에서 `public class SensorTagReceiver`의 `onReceive`를 통해 발생한 action을 처리합니다.
+
+> 어떤 데이터가 변화했는지 확인해야 하므로 `Point3D prevAcc`와 `Point3D prevGyro`을 이용해 값을 비교하여 Delta값 증가시켜야 `accDelta`와 `gyroDelta`가 같은 값을 갖지 않습니다.
+
+`SensorTagServer.java` > `onReceive`
+
+    accDelta++;
+    gyroDelta++;
+  아래와 같이 수정
+
+    if(accValue.generateEvent(prevAcc)) accDelta++;  
+    else if(gyroValue.generateEvent(prevGyro)) gyroDelta++;
+
+`Point3D.java`에 다음과 같은 메소드 추가 ( 데이터 확인 후 추후에 변경 ) 
+
+*이벤트 발생 여부를 판단하는 메소드임*
+
+    public boolean generateEvent(Object obj){  
+   
+      if(obj == null) {  
+        if(this != null)return false;  
+        else return true;  
+      }  
+      if(getClass() != obj.getClass()) return false;  
+      Point3D other = (Point3D) obj;  
+      
+      if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))  
+        return true;  
+      if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))  
+        return true;  
+      if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))  
+        return true;  
+      return false;  
+    }
 
 
 - ##### Spring error  
