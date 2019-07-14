@@ -179,9 +179,15 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
     gyroDelta++;
   아래와 같이 수정
 
-    if(accValue.generateEvent(prevAcc)) accDelta++;  
-    else if(gyroValue.generateEvent(prevGyro)) gyroDelta++;
-
+    //prevAcc와 prevGyro를 이용해 값 비교하여 Delta값 증가  
+    if(accValue.generateEvent(prevAcc)) {  
+        accDelta++;  
+        prevAcc = accValue;  
+    }  
+    else if(gyroValue.generateEvent(prevGyro)) {  
+        gyroDelta++;  
+        prevGyro = gyroValue;  
+    }
 `Point3D.java`에 다음과 같은 메소드 추가 ( 데이터 확인 후 추후에 변경 ) 
 
 *이벤트 발생 여부를 판단하는 메소드임*
