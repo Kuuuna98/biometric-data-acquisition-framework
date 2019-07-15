@@ -531,6 +531,10 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
 
 - ##### 정상적으로 DB 안으로 data들이 저장되는 모습을 확인할 수 있습니다.
 
+  - 현재로서는 휴대폰에 저장된 DB의 크기가 너무 크면 전송시 서버에서 오류가 나옵니다.
+  
+  > 추후에 분할전송 등 해결방법 추가하겠습니다.
+
   - ![DB uploads](./ReadMeImage/uploadsDB.png)
 
   
