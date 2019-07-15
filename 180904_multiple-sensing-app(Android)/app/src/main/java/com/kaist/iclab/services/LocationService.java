@@ -52,11 +52,11 @@ public class LocationService extends Service {
     private String deviceSetName ="";
     private String smartphoneMode = "";
 
-    private double accX = 0; //ÀÌÀü ACCELEROMETER¼¾¼­·Î °¨ÁöÇÑ x°ªÀ» ÀúÀå
+    private double accX = 0; //ì´ì „ ACCELEROMETERì„¼ì„œë¡œ ê°ì§€í•œ xê°’ì„ ì €ìž¥
     private double accY = 0;
     private double accZ = 0;
 
-    private double gyroX = 0; //ÀÌÀü GYROSCOPE¼¾¼­·Î °¨ÁöÇÑ x°ªÀ» ÀúÀå
+    private double gyroX = 0; //ì´ì „ GYROSCOPEì„¼ì„œë¡œ ê°ì§€í•œ xê°’ì„ ì €ìž¥
     private double gyroY = 0;
     private double gyroZ = 0;
 
@@ -198,7 +198,8 @@ public class LocationService extends Service {
         float z = values[2];
         long actualTime = event.timestamp;
 
-        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && ((Math.abs(accX - x) > 0.1) ||(Math.abs(accY - y) > 0.1) ||(Math.abs(accZ - z) > 0.1))){ //¹Î°¨µµ ¹üÀ§ 0.1·Î ¼³Á¤
+        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && ((Math.abs(accX - x) > 0.3) ||(Math.abs(accY - y) > 0.3) ||(Math.abs(accZ - z) > 0.3))){ //ë¯¼ê°ë„ ë²”ìœ„ 0.3ë¡œ ì„¤ì •
+
             try {
                 accDelta++;
 
@@ -235,7 +236,7 @@ public class LocationService extends Service {
                 Log.e(TAG, e.getLocalizedMessage());
             }
         }
-       else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//¹Î°¨µµ ¹üÀ§ 1.0À¸·Î ¼³Á¤
+       else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//ë¯¼ê°ë„ ë²”ìœ„ 1.0ìœ¼ë¡œ ì„¤ì •
             try {
                 gyroDelta++;
 
