@@ -133,7 +133,8 @@ public class MainActivity extends AppCompatActivity {
     boolean done = false;
 
     //"http://168.188.127.108:5555/AppRating/FileReceiver.jsp"
-    String FILE_SERVER_URL = "http://suggestbot.kse.smoon.kr/upload/";
+    //String FILE_SERVER_URL = "http://suggestbot.kse.smoon.kr/upload/"; //origin
+    String FILE_SERVER_URL = "http://168.188.127.192/upload"; //modified
     String groupId = null;
     String userId = null;
     private String address = "";

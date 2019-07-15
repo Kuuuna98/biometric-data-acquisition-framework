@@ -131,7 +131,7 @@
   - ![second build](./ReadMeImage/NextBuild.png)
 
   > 첫 Run을 실행한 후 다시 Run을 실행할 경우 FileNotFoundException이 발생했습니다.  
- 
+
   - ![해결 방법](./ReadMeImage/Fixgradle.PNG)
 
    - `build.gradle (Module: app)`에서 `compileSdkVersion`과 `targetSdkVersion`을 28로 낮춘다.
@@ -151,7 +151,7 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
     long actualTime = event.timestamp;
     accDelta++;  
     gyroDelta++;
-       
+
   에서 아래와 같이 코드 수정하기 
 
     float[] values = event.values;  
@@ -193,7 +193,7 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
 *이벤트 발생 여부를 판단하는 메소드임*
 
     public boolean generateEvent(Object obj){  
-   
+       
       if(obj == null) {  
         if(this != null)return false;  
         else return true;  
@@ -233,6 +233,7 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
   - ![module Version](./ReadMeImage/moduleVersion.png)
 
 - <img sr하기위해서`sudo apt install nginx`명령어를 입력합니다.
+  
   - eImage/E4sensingApp.jpg" width="300" alt="E4 Sensing App screenshot">
 
 
@@ -456,11 +457,13 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
 
 
 
-- ##### `/upload`/를 통해서 접근할 시에는 3306포트로 nginx에서 포워딩해줍니다.
+- ##### `vi /etc/nginx/sites-available/default`를 통해서 다음과 같이 포워딩을 해줍니다.
 
-  - ![nginx port forwarding](./ReadMeImage/siteAvailableDB.png)
-
-
+  ![nginx default](./ReadMeImage/nginxDefault.png)
+  
+  ![siteAvailableDefault](./ReadMeImage/siteAvailableDefault.png)
+  
+  
 
 ## Make Mysql DB (uploads, logs)
 
@@ -491,7 +494,195 @@ accDelta와 gyroDelta가 같은 값을 갖는 오류
 
 
 - `DESC uploads`를 통해서 생성된 **uploads table**을 확인할 수 있습니다.
-  - ![DESC uploads](./ReadMeImage/descUploads.png)
-
+  
+- ![DESC uploads](./ReadMeImage/descUploads.png)
+  
+  
+  
 - `DESC logs`를 통해서 생성된 **logs table**을 확인할 수 있습니다.
+  
   - ![DESC logs](./ReadMeImage/descLogs.png)
+
+
+
+- ##### setting을 조금 더 해야 정상적으로 DB와 연결을 할 수 있습니다.
+
+  - `/var/lib/mysql`
+
+  - 아래와 같이 root login을 허용할 것인지에 대한 사항을 yes로 변경합니다.
+
+  - ![permit prohibit](./ReadMeImage/permitProhibit.png)
+
+    
+
+  - ![permit prohibit yes](./ReadMeImage/permitYes.png)
+
+
+
+- `vi /etc/mysql/my.cnf`를 통해서 아래의 bind-address 를 주석처리해줍니다.
+
+  ![mysql conf bind address](./ReadMeImage/mysqlConfBindAddress.png)
+
+
+
+- 
+
+  
+
+- ##### 정상적으로 DB 안으로 data들이 저장되는 모습을 확인할 수 있습니다.
+
+  - ![DB uploads](./ReadMeImage/uploadsDB.png)
+
+  
+
+- ##### 3306포트로 접근하기 위해서는 포트 개방신청서를 작성해야 하므로 추후에 신청하겠습니다.
+
+  > docker의 3306을 로컬 8080으로 접근할 수 있도록 시도를 먼저 해보겠습니다.
+
+
+
+## 윈도우10에서 Docker로 서버 구축하기
+
+1. ##### 우선 `win키 + x ` => `t`를 눌러서 작업관리자를 켭니다.
+
+   
+
+2. ##### `성능`을 통해서 파란색으로 박스쳐놓은 부분에 `가상화`가 사용으로 표시되었는지 확인하여 `cpu`가 가상화를 지원하는지를 확인합니다.
+
+   ### ![checkVirtualize](./ReadMeImage/checkVirtualize.png)
+
+   
+
+3. ##### `win키 + s`를 눌러서 검색창을 띄우고 `windows 기능 켜기/끄기`를 검색합니다.
+
+   
+
+4. ##### `windows 기능`에서 `Hyper-V`를 찾아서 체크를 합니다.
+
+   ![hyperV](./ReadMeImage/hyperV.png)
+
+   
+
+   ![adjustHyperV](./ReadMeImage/adjustHyperV.png)
+
+   
+
+   ![finishAdjust](./ReadMeImage/finishAdjust.png)
+
+   
+
+5. ##### 완료가 되었다면 `다시 시작`을 합니다.
+
+   
+
+6. ##### [https://docs.docker.com/](https://docs.docker.com/)에 들어갑니다.
+
+   
+
+7. ##### 좌측의 바에서 `Get Docker` => `Docker CE` => `Microsoft Windows` => `Download from Docker Hub` => `Please login to download` => `login`한 후에 다운을 받습니다.
+
+   > 귀찮으시다면 [다운로드 링크](https://download.docker.com/win/stable/Docker%20for%20Windows%20Installer.exe) 통해서도 가능합니다.
+   >
+   > 하지만 어차피 Docker를 사용하려면 ID가 필요해서 회원가입하는 것도 좋습니다.
+
+   
+
+8. ##### 다운로드 후 로그아웃 되었다가 다시 로그인합니다.
+
+   
+
+9. ##### 작은 고래모양이 추가되있는 모습을 볼 수 있습니다.
+
+   ![installedDocker](./ReadMeImage/installedDocker.png)
+
+   
+
+10. ##### 로그인을 해줍니다.
+
+    ![loginDocker](./ReadMeImage/loginDocker.png)
+
+    
+
+11. ##### Docker version을 확인해보았습니다.
+
+    ![docker version](./ReadMeImage/dockerVersion.png)
+
+    
+
+12. ##### Kitematic`을 설치해주는 것이 좋습니다.
+
+    1. `kitematic`은 Docker를 관리할 수 있는 GUI 툴입니다.
+
+       ![kitematic](./ReadMeImage/kitematic.png)
+
+    2. 다운받아서 압축해제 후에 폴더의 이름을 `Kitematic`으로 변경해주고 `C/Program Files/Docker`로 이동해주면 됩니다.
+
+    3. 만약 오류가 발생한다면 [kitematic](https://github.com/docker/kitematic/releases/tag/v0.17.7)에서 다운받는 방법으로 해결할 수 있습니다.
+
+    4. 다운 받은 파일의 이름을 kitematic으로 변경한 후에 `C:\Program Files\Docker` 로 옮겨주면 실행할 수 있습니다.
+
+       ![kitematic location](./ReadMeImage/kitematicLocataion.png)
+
+    
+
+13. ##### 이제 좌측 하단의 `DOCKER CLI`를 눌러서 powershell에서 작업을 할 수 있습니다.
+
+    
+
+14. ##### https://cloud.docker.com/u/clearlyhunch/repository/docker/clearlyhunch/iot_server2.1
+
+    
+
+15. ##### Follow this order to set docker iot_framework server.
+
+    1. `docker push clearlyhunch/iot_server2.1:tagname`
+
+    2. `docker run -it --name iot_server -p 80:80 -p 22:22 -p 3306:3306 clearlyhunch/iot_server2.1:tagname`
+
+    3. `chmod 755 -R /var/lib/mysql` 
+
+    4. `chown mysql:mysql -R /var/lib/mysql`
+
+    5. `service mysql start`
+
+    6. `service nginx start`
+
+    7. `service ssh start`
+
+    8. `forever start /home/serverNodeJs/app/app.js`
+
+       
+
+16. ##### 해당 Docker 이미지에는 DB와 연동할 수 있도록 필요한 apt 등을 모두 설치 후 세팅해두었습니다.
+
+    
+
+17. ##### Ubuntu server의 시간을 KST로 변경하기 위해서 `apt install tzdata`를 수행했습니다.
+
+    ![ubuntu tzselect](./ReadMeImage/ubuntuTzselect.png)
+
+    - 변경 후에 `UTC`가 `KST`로 변경된 것을 확인할 수 있습니다.
+
+      
+
+18. ##### ssh로 접근해서 사용할 수 있도록 22번 포트를 허용하고 `apt install openssh-server`를 통해서 설치를 해주었습니다.
+
+    ![install ssh](./ReadMeImage/installOpenssh.png)
+
+    
+
+    - `vi /etc/ssh/sshd-config`를 통해서 `PermitRootLogin`의 값을 `yes`로 변경하였습니다.
+
+    ![vi sshd config](./ReadMeImage/sshdConfig.png)
+
+    - `passwd root`로 root의 passwd를 지정합니다.
+
+      ![set root passwd](./ReadMeImage/passwdRoot.png)
+
+    ![sshd config yes](./ReadMeImage/sshdConfigYes.png)
+
+    
+
+    - 외부에서 접근할 수 있는 것을 확인하였습니다.
+
+    ![connect ssh](./ReadMeImage/connectSsh.png)

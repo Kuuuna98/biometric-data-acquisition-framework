@@ -217,13 +217,15 @@
 	</table>
 	<p>
 		<!--시간 괜찮을 때 클릭 시 정보 표시 수정-->
-		* <strong>UDID(setNumber)</strong> : UDID means User Device ID and number of device primary key <br/>
-		* <strong>sensingPhone1</strong> : This means <br/>
-		* <strong>sensorTag</strong> : This means <br/>
-		* <strong>accDelta</strong> : This means <br/>
-		* <strong>gyroDelta</strong> : This means <br/>
-		* <strong>locDelta</strong> : This means <br/>
-		* <strong>reg</strong> : This means maybe timer and this value is greater than sixty then background will change red to notify disconnect to server<br/>
+		* <strong>UDID(setNumber)</strong> : UDID means <u>User Device ID</u> and number of device primary key <br/>
+		* <strong>sensingPhone1</strong> : This means that current user smartphone mode is <u>multi-sensing</u>.<br/>
+		* <strong>sensingPhone2</strong> : This means that current user smartphone mode is <u>standalone</u>.<br/>
+		* <strong>audio guide</strong> : This means that current user smartphone mode is <u>audio guide</u>.<br/>
+		<!-- * <strong>sensorTag</strong> : This means <br/> -->
+		* <strong>accDelta</strong> : This means increased value when <u>inclination or shaking</u> is detected..<br/>
+		* <strong>gyroDelta</strong> : This means increased value when <u>rotation</u> is detected.<br/>
+		* <strong>locDelta</strong> : This means increased value when the <u>latitude or longitude</u> value provided by the GPS or network changes.<br/>
+		* <strong>reg</strong> : The meaning of this value is a <u>timer</u> that updates to zero as the information is updated<br/>and this value is greater than sixty then background will change red to notify disconnect to server.<br/>
 	</p>
 </body>
 </html>
