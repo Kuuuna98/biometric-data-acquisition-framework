@@ -64,7 +64,7 @@ function doUnzip(row, targetPath) {
 	console.log("압축해제 >> " + targetPath);
 	fs.createReadStream("uploads/" + row.fileName)
 	.pipe(unzip.Extract({ path: targetPath }))
-	.on("close", function() {
+	.on('close', function() {
 		console.log("완료");
 		loadSQLiteFile(row, targetPath);
 	});
