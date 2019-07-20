@@ -877,7 +877,8 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("update_date","The latest updated date: "+new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())));
             editor.commit();
 
-            //finish();
+            finish();
+	    //AsyncTask is not reusable
         }
     }
     private static final int BUFFER = 2048;
