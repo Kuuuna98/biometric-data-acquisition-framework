@@ -1,4 +1,4 @@
-package com.kaist.iclab.services;
+﻿package com.kaist.iclab.services;
 
 import android.Manifest;
 import android.app.NotificationManager;
@@ -196,83 +196,56 @@ public class LocationService extends Service {
         float x = values[0];
         float y = values[1];
         float z = values[2];
-        long actualTime = event.timestamp;
+        long actualTime = System.currentTimeMillis()/1000;
 
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && ((Math.abs(accX - x) > 0.3) ||(Math.abs(accY - y) > 0.3) ||(Math.abs(accZ - z) > 0.3))){ //민감도 범위 0.3로 설정
 
-            try {
                 accDelta++;
 
                 accX = x;
                 accY = y;
                 accZ = z;
 
-                ContentValues cv = new ContentValues();
-                String type ="Phone.ACC";
-                cv.put(DAO.LOG_FIELD_TYPE, type);
-                cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-                JSONObject json = new JSONObject();
-                json.put("x", x);
-                json.put("y", y);
-                json.put("z", z);
-                json.put("time", actualTime);
-                cv.put(DAO.LOG_FIELD_JSON, json.toString());
-
-                // bulk insert to improve async_query_handler
-                if (BULK_COUNT < Constants.DB_BULK_RATE -1){
-                    multipleSensorData[BULK_COUNT] = cv;
-                    BULK_COUNT++;
-                }else{
-                    multipleSensorData[BULK_COUNT] = cv;
-                    BULK_COUNT = 0;
-                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleSensorData);
-                }
-                //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
-                //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
-                mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
-                Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z );
-            } catch (Exception e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            }
         }
        else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//민감도 범위 1.0으로 설정
-            try {
+
                 gyroDelta++;
 
                 gyroX = x;
                 gyroY = y;
                 gyroZ = z;
 
-                ContentValues cv = new ContentValues();
-                String type = "Phone.GYRO";
-                cv.put(DAO.LOG_FIELD_TYPE, type);
-                cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-                JSONObject json = new JSONObject();
-                json.put("x", x);
-                json.put("y", y);
-                json.put("z", z);
-                json.put("time", actualTime);
-                cv.put(DAO.LOG_FIELD_JSON, json.toString());
-
-                // bulk insert to improve async_query_handler
-                if (BULK_COUNT < Constants.DB_BULK_RATE -1){
-                    multipleSensorData[BULK_COUNT] = cv;
-                    BULK_COUNT++;
-                }else{
-                    multipleSensorData[BULK_COUNT] = cv;
-                    BULK_COUNT = 0;
-                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleSensorData);
-                }
-                //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
-                //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
-                mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
-                Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z );
-            } catch (Exception e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            }
         }
+	  try {
+            ContentValues cv = new ContentValues();
+            String type = event.sensor.getType() == Sensor.TYPE_ACCELEROMETER ? "Phone.ACC" : "Phone.GYRO";
+            cv.put(DAO.LOG_FIELD_TYPE, type);
+            cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
+            JSONObject json = new JSONObject();
+            json.put("x", x);
+            json.put("y", y);
+            json.put("z", z);
+            json.put("time", actualTime);
+            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+
+            // bulk insert to improve async_query_handler
+            if (BULK_COUNT < Constants.DB_BULK_RATE -1){
+                multipleSensorData[BULK_COUNT] = cv;
+                BULK_COUNT++;
+            }else{
+                multipleSensorData[BULK_COUNT] = cv;
+                BULK_COUNT = 0;
+                final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+                handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleSensorData);
+            }
+            //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
+            //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+            mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
+            Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z +", acc:" + accDelta + ", gyro: " + gyroDelta + ", loc:"+locDelta);
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+
     }
 
 
@@ -428,7 +401,7 @@ public class LocationService extends Service {
             values.put(DAO.LOG_FIELD_REG, new Date().getTime());
             JSONObject json = new JSONObject();
             json.put("Provider", location.getProvider());
-            json.put("Time", location.getTime());
+            json.put("Time", location.getTime()/1000);
             json.put("Accuracy", location.getAccuracy());
             json.put("Bearing", location.getBearing());
             json.put("Latitude", location.getLatitude());
