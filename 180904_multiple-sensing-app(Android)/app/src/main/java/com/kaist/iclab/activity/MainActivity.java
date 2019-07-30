@@ -1,4 +1,4 @@
-package com.kaist.iclab.activity;
+﻿package com.kaist.iclab.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
     //"http://168.188.127.108:5555/AppRating/FileReceiver.jsp"
     //String FILE_SERVER_URL = "http://suggestbot.kse.smoon.kr/upload/"; //origin
-    String FILE_SERVER_URL = "http://168.188.127.192/upload"; //modified
+    String FILE_SERVER_URL = "http://168.188.127.175/upload"; //modified
     String groupId = null;
     String userId = null;
     private String address = "";
@@ -393,11 +393,13 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener pOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+	long actualTime = System.currentTimeMillis()/1000;
             switch (v.getId()){
                 case R.id.button_e4_scan:
                     mButtonE4Scan.setEnabled(false);
                     mButtonE4Stop.setEnabled(true);
                     E4serviceIntent.putExtra("device_set_name", deviceSetName);
+		markingSensor(actualTime,"E4 StartTracking");
                     startService(E4serviceIntent);
                     break;
 
@@ -405,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
                     mButtonE4Scan.setEnabled(true);
                     mButtonE4Stop.setEnabled(false);
                     stopService(E4serviceIntent);
+		markingSensor(actualTime,"E4 StopTracking");
                     break;
 
                 case R.id.button_smartphone_scan:
@@ -413,18 +416,21 @@ public class MainActivity extends AppCompatActivity {
                     LocationServiceIntent.putExtra("device_set_name", deviceSetName);
                     LocationServiceIntent.putExtra("smartphone_mode", smartphone_mode);
                     startService(LocationServiceIntent);
+		markingSensor(actualTime,"SmartPhone StartTracking");
                     break;
 
                 case R.id.button_smartphone_stop:
                     mButtonSmartphoneSensingStart.setEnabled(true);
                     mButtonSmartphoneSensingStop.setEnabled(false);
                     stopService(LocationServiceIntent);
+		markingSensor(actualTime, "SmartPhone StopTracking");
                     break;
 
                 case R.id.button_sensortag_scan:
                     mButtonSensorTagStart.setEnabled(false);
                     mButtonSensorTagStop.setEnabled(true);
                     SensorTagListActivityIntent.putExtra("device_set_name", deviceSetName);
+		markingSensor(actualTime,"SensorTag StartTracking");
                     startActivityForResult(SensorTagListActivityIntent,REQUEST_CODE);
                     break;
 
@@ -439,6 +445,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //stop service
                     stopService(SensorTagServiceIntent);
+		markingSensor(actualTime,"SensorTag StopTracking");
                     break;
 
                 case R.id.button_dbexport:
@@ -569,7 +576,23 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
+    private void markingSensor(long actualTime, String status_message){
+        try {
+            ContentValues values = new ContentValues();
+            values.put(DAO.LOG_FIELD_TYPE, "MainActivity");
+            values.put(DAO.LOG_FIELD_REG, new Date().getTime());
+            JSONObject json = new JSONObject();
+            json.put("status", status_message);
+            json.put("time", actualTime);
+            values.put(DAO.LOG_FIELD_JSON, json.toString());
+            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+            };
+            handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
 
+        } catch (Exception e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+    }
 
     private void mark(boolean start) {
         try {
