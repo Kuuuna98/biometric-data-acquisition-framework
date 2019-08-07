@@ -64,7 +64,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     private int bvpDelta;
     private int ibiDelta;
     private int gsrDelta;
-    private int tempDelta;
+    private int tempDelta; 
 
     private PowerManager mPowermanager;
     private PowerManager.WakeLock mWakeLock;
@@ -349,7 +349,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
         //galvanic skin response
-        // >>ÇÇºÎ¸¦ ÅëÇØ ÃøÁ¤µÇ´Â Àü±âÀû È°µ¿(¹İÀÀ)À» ¸»ÇÏ¸ç, Á¤¼­ÀûÀÎ °¢¼º »óÅÂ¸¦ ³ªÅ¸³»´Â ÁöÇ¥·Î È°¿ëµÈ´Ù.
+        // >>í”¼ë¶€ë¥¼ í†µí•´ ì¸¡ì •ë˜ëŠ” ì „ê¸°ì  í™œë™(ë°˜ì‘)ì„ ë§í•˜ë©°, ì •ì„œì ì¸ ê°ì„± ìƒíƒœë¥¼ ë‚˜íƒ€ë‚´ëŠ” ì§€í‘œë¡œ í™œìš©ëœë‹¤.
         try {
             gsrDelta++;
             ContentValues cv = new ContentValues();
@@ -366,7 +366,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 //            cv.put(DAO.LOG_FIELD_JSON, json.toString());
 //            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
 //            };
-//            /*tokenÃ³¸®*/
+//            /*tokenì²˜ë¦¬*/
 //            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_GSR, cv);
 
            asyncBulkHandler(cv,type);
@@ -379,7 +379,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-        //Blood Volume Pulse (: Ç÷¾× ¾ç,,¸Æ¹Ú)
+        //Blood Volume Pulse (: í˜ˆì•¡ ì–‘,,ë§¥ë°•)
         try {
             bvpDelta++;
             ContentValues cv = new ContentValues();
@@ -399,7 +399,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
 //            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
 //            };
-//            /*tokenÃ³¸®*/
+//            /*tokenì²˜ë¦¬*/
 //            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_BVP, cv);
 
             Log.d(TAG, type + ":BVP: " + bvp);
@@ -411,7 +411,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
-        //½ÉÀåÀÌ ¶Ù´Â ½Ã°£ °£°İ(IBI: Inter Beat Interval)
+        //ì‹¬ì¥ì´ ë›°ëŠ” ì‹œê°„ ê°„ê²©(IBI: Inter Beat Interval)
         try {
             ibiDelta++;
             ContentValues cv = new ContentValues();
@@ -430,7 +430,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
 //            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
 //            };
-//            /*tokenÃ³¸®*/
+//            /*tokenì²˜ë¦¬*/
 //            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_IBI, cv);
 
             Log.d(TAG, type + ":IBI: " + ibi);
@@ -441,7 +441,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
-    //Ã¼¿Â
+    //ì²´ì˜¨
         try {
             tempDelta++;
             ContentValues cv = new ContentValues();
@@ -461,7 +461,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 //            //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
 //            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
 //            };
-//            /*tokenÃ³¸®*/
+//            /*tokenì²˜ë¦¬*/
 //            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, cv);
             Log.d(TAG, type + ":SKIN_TEMP: " + temp);
         } catch (Exception e) {
@@ -472,7 +472,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-    //¿òÁ÷ÀÓ °¨Áö
+    //ì›€ì§ì„ ê°ì§€
         try {
             accDelta++;
             ContentValues cv = new ContentValues();
@@ -496,7 +496,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
 //            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
 //            };
-//            /*tokenÃ³¸®*/
+//            /*tokenì²˜ë¦¬*/
 //            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_ACC, cv);
 
             Log.d(TAG, type + ":x: " + x+", y: " + y+", z: " + z);
