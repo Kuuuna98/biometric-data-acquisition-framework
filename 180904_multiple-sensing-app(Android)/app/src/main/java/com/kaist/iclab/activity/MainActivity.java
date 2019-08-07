@@ -1,4 +1,4 @@
-﻿package com.kaist.iclab.activity;
+package com.kaist.iclab.activity;
 
 import android.Manifest;
 import android.app.Activity;
