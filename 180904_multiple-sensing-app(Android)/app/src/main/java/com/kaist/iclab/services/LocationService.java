@@ -1,4 +1,4 @@
-﻿package com.kaist.iclab.services;
+package com.kaist.iclab.services;
 
 import android.Manifest;
 import android.app.NotificationManager;
