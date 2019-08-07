@@ -1,4 +1,4 @@
-﻿package com.kaist.iclab.datamanager;
+package com.kaist.iclab.datamanager;
 
 import android.content.ContentValues;
 import android.content.Context;
