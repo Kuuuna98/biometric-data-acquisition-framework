@@ -2,6 +2,7 @@ package com.kaist.iclab.services;
 
 import android.app.NotificationManager;
 import android.app.Service;
+import android.bluetooth.BluetoothAdapter;
 import android.content.AsyncQueryHandler;
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,6 +48,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     private String E4deviceName = "";
     private String deviceSetName ="";
+    private String phoneNumber = "";
 
     private NotificationManager nManager = null;
     private NotificationCompat.Builder ncomp;
@@ -107,6 +109,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         initEmpaticaDeviceManager();
         if (intent != null){
             deviceSetName = intent.getStringExtra("device_set_name");
+            phoneNumber  = intent.getStringExtra("phone_number");
         }
         return START_STICKY;
     }
@@ -301,17 +304,14 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     @Override
     public void didRequestEnableBluetooth() {
         // doing in Activity
+        /**************/
+//        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
     // Bulk Insert
-    synchronized public void asyncBulkHandler(ContentValues cv){
+   synchronized public void asyncBulkHandler(final ContentValues cv, final String type){
         // bulk insert to improve async_query_handler
-        if (BULK_COUNT < Constants.DB_BULK_RATE -1){
-            multipleE4Data[BULK_COUNT] = cv;
-            BULK_COUNT++;
-        }else{
-            multipleE4Data[BULK_COUNT] = cv;
-            BULK_COUNT = 0;
 
             // avoid Can't create handler inside thread that has not called Looper.prepare()
             Handler mHandler = new Handler(Looper.getMainLooper());
@@ -319,28 +319,57 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
                 @Override
                 public void run() {
                     final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleE4Data);
+
+                    switch (type){
+                        case "E4.TEMPERATURE":
+                            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, cv);
+                            break;
+                        case "E4.BVP":
+                            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_BVP, cv);
+                            break;
+                        case "E4.GSR":
+                            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_GSR, cv);
+                            break;
+                        case "E4.IBI":
+                            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_IBI, cv);
+                            break;
+                        case "E4.ACC":
+                            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_ACC, cv);
+
+                            break;
+
+                    }
+
                 }
             }, 0);
         }
-    }
+
 
     // EmpaDataDelegate
     @Override
     public void didReceiveGSR(float gsr, double timestamp) {
-
+        //galvanic skin response
+        // >>피부를 통해 측정되는 전기적 활동(반응)을 말하며, 정서적인 각성 상태를 나타내는 지표로 활용된다.
         try {
             gsrDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.GSR";
+         //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("gsr", gsr);
-            json.put("E4_time", timestamp);
-            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+            cv.put(DAO.LOG_FIELD_SENSINGDATA, gsr);
+            cv.put(DAO.LOG_FIELD_TIME, timestamp);
 
-            asyncBulkHandler(cv);
+//            JSONObject json = new JSONObject();
+//            json.put("gsr", gsr);
+//            json.put("E4_time", timestamp);
+//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+//            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//            };
+//            /*token처리*/
+//            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_GSR, cv);
+
+           asyncBulkHandler(cv,type);
             //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
             Log.d(TAG, type + ":GSR: " + gsr);
         } catch (Exception e) {
@@ -350,20 +379,28 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveBVP(float bvp, double timestamp) {
-
+        //Blood Volume Pulse (: 혈액 양,,맥박)
         try {
             bvpDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.BVP";
+         //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("BVP", bvp);
-            json.put("E4_time", timestamp);
+            cv.put(DAO.LOG_FIELD_SENSINGDATA, bvp);
+            cv.put(DAO.LOG_FIELD_TIME, timestamp);
 
-            cv.put(DAO.LOG_FIELD_JSON, json.toString());
-            asyncBulkHandler(cv);
+//            JSONObject json = new JSONObject();
+//            json.put("BVP", bvp);
+//            json.put("E4_time", timestamp);
+//
+// cv.put(DAO.LOG_FIELD_JSON, json.toString());
+            asyncBulkHandler(cv,type);
             //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+//            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//            };
+//            /*token처리*/
+//            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_BVP, cv);
 
             Log.d(TAG, type + ":BVP: " + bvp);
             HRV = bvp;
@@ -374,19 +411,27 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveIBI(float ibi, double timestamp) {
+        //심장이 뛰는 시간 간격(IBI: Inter Beat Interval)
         try {
             ibiDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.IBI";
+         //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("IBI", ibi);
-            json.put("E4_time", timestamp);
-
-            cv.put(DAO.LOG_FIELD_JSON, json.toString());
-            asyncBulkHandler(cv);
+            cv.put(DAO.LOG_FIELD_SENSINGDATA, ibi);
+            cv.put(DAO.LOG_FIELD_TIME, timestamp);
+//            JSONObject json = new JSONObject();
+//            json.put("IBI", ibi);
+//            json.put("E4_time", timestamp);
+//
+//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+            asyncBulkHandler(cv,type);
             //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+//            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//            };
+//            /*token처리*/
+//            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_IBI, cv);
 
             Log.d(TAG, type + ":IBI: " + ibi);
         } catch (Exception e) {
@@ -396,21 +441,28 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
-
+    //체온
         try {
             tempDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.TEMPERATURE";
+        //    cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("skin_temp", temp);
-            json.put("E4_time", timestamp);
+            cv.put(DAO.LOG_FIELD_SENSINGDATA, temp);
+            cv.put(DAO.LOG_FIELD_TIME, timestamp);
 
-            cv.put(DAO.LOG_FIELD_JSON, json.toString());
-            asyncBulkHandler(cv);
-            //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
-
+//            JSONObject json = new JSONObject();
+//            json.put("skin_temp", temp);
+//            json.put("E4_time", timestamp);
+//
+//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+           asyncBulkHandler(cv,type);
+//            //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+//            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//            };
+//            /*token처리*/
+//            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, cv);
             Log.d(TAG, type + ":SKIN_TEMP: " + temp);
         } catch (Exception e) {
             Log.e(TAG, e.getLocalizedMessage());
@@ -420,29 +472,37 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-
+    //움직임 감지
         try {
             accDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.ACC";
+      //      cv.put(DAO.LOG_FIELD_PhoneNumber, phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("x", x);
-            json.put("y", y);
-            json.put("z", z);
-            json.put("E4_time", timestamp);
+            cv.put(DAO.LOG_FIELD_X, x);
+            cv.put(DAO.LOG_FIELD_Y, y);
+            cv.put(DAO.LOG_FIELD_Z, z);
+            cv.put(DAO.LOG_FIELD_TIME, timestamp);
 
-            cv.put(DAO.LOG_FIELD_JSON, json.toString());
-            asyncBulkHandler(cv);
+//            JSONObject json = new JSONObject();
+//            json.put("x", x);
+//            json.put("y", y);
+//            json.put("z", z);
+//            json.put("E4_time", timestamp);
+//
+//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+                     asyncBulkHandler(cv,type);
 
-            //mDBhandler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+//            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//            };
+//            /*token처리*/
+//            handler.startInsert(-1, null, DataProvider.CONTENT_URI_E4_ACC, cv);
 
-            Log.d(TAG, type + ": X,Y,Z: " + x + ", " + y + ", " + z);
-        } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.d(TAG, type + ":x: " + x+", y: " + y+", z: " + z);
+        }catch(Exception e){
+            Log.e(TAG,e.getLocalizedMessage());
         }
-
     }
 
     Handler mDBHandler = new Handler(Looper.getMainLooper()) {

@@ -27,6 +27,7 @@ import android.util.Log;
 import com.goebl.david.Webb;
 import com.kaist.iclab.R;
 import com.kaist.iclab.activity.MainActivity;
+import com.kaist.iclab.activity.SettingsActivity;
 import com.kaist.iclab.datamanager.DAO;
 import com.kaist.iclab.datamanager.DataProvider;
 import com.kaist.iclab.datamanager.DatabaseHandler;
@@ -51,6 +52,7 @@ public class LocationService extends Service {
 
     private String deviceSetName ="";
     private String smartphoneMode = "";
+    private String phoneNumber = "";
 
     private double accX = 0; //이전 ACCELEROMETER센서로 감지한 x값을 저장
     private double accY = 0;
@@ -124,6 +126,7 @@ public class LocationService extends Service {
         super.onStartCommand(intent, flags, startId);
         deviceSetName = intent.getStringExtra("device_set_name");
         smartphoneMode = intent.getStringExtra("smartphone_mode");
+        phoneNumber = intent.getStringExtra("phone_number");
         return START_STICKY;
     }
 
@@ -196,54 +199,110 @@ public class LocationService extends Service {
         float x = values[0];
         float y = values[1];
         float z = values[2];
-        long actualTime = System.currentTimeMillis()/1000;
-
+        long actualTime = System.currentTimeMillis();
+        Log.d(TAG, String.valueOf(System.currentTimeMillis()));
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && ((Math.abs(accX - x) > 0.3) ||(Math.abs(accY - y) > 0.3) ||(Math.abs(accZ - z) > 0.3))){ //민감도 범위 0.3로 설정
 
-                accDelta++;
+            accDelta++;
 
-                accX = x;
-                accY = y;
-                accZ = z;
+            accX = x;
+            accY = y;
+            accZ = z;
 
-        }
-       else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//민감도 범위 1.0으로 설정
+            try {
+                ContentValues cv = new ContentValues();
+                String type =  "Phone.ACC" ;
+               // cv.put(DAO.LOG_FIELD_PhoneNumber, MainActivity.PhoneNumeber());
+                cv.put(DAO.LOG_FIELD_TYPE, type);
+                cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
+                cv.put(DAO.LOG_FIELD_X, x);
+                cv.put(DAO.LOG_FIELD_Y, y);
+                cv.put(DAO.LOG_FIELD_Z, z);
+                cv.put(DAO.LOG_FIELD_TIME, actualTime);
 
-                gyroDelta++;
+//            JSONObject json = new JSONObject();
+//            json.put("x", x);
+//            json.put("y", y);
+//            json.put("z", z);
+//            json.put("time", actualTime);
+//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
 
-                gyroX = x;
-                gyroY = y;
-                gyroZ = z;
+                // bulk insert to improve async_query_handler
+//                if (BULK_COUNT < Constants.DB_BULK_RATE -1){
+//                    multipleSensorData[BULK_COUNT] = cv;
+//                    BULK_COUNT++;
+//                }else{
+//                    multipleSensorData[BULK_COUNT] = cv;
+//                    BULK_COUNT = 0;
+//                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+//                    /*token처리*/
+//                        handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_ACC, multipleSensorData) ;
+//                }
+                //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
+                //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
 
-        }
-	  try {
-            ContentValues cv = new ContentValues();
-            String type = event.sensor.getType() == Sensor.TYPE_ACCELEROMETER ? "Phone.ACC" : "Phone.GYRO";
-            cv.put(DAO.LOG_FIELD_TYPE, type);
-            cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("x", x);
-            json.put("y", y);
-            json.put("z", z);
-            json.put("time", actualTime);
-            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+                AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+                };
+                handler.startInsert(-1, null, DataProvider.CONTENT_URI_Phone_ACC, cv);
 
-            // bulk insert to improve async_query_handler
-            if (BULK_COUNT < Constants.DB_BULK_RATE -1){
-                multipleSensorData[BULK_COUNT] = cv;
-                BULK_COUNT++;
-            }else{
-                multipleSensorData[BULK_COUNT] = cv;
-                BULK_COUNT = 0;
-                final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-                handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleSensorData);
+                mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
+                Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z +", acc:" + accDelta + ", gyro: " + gyroDelta + ", loc:"+locDelta);
+            } catch (Exception e) {
+                Log.e(TAG, e.getLocalizedMessage());
             }
-            //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
-            //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
-            mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
-            Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z +", acc:" + accDelta + ", gyro: " + gyroDelta + ", loc:"+locDelta);
-        } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
+
+        }
+        else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//민감도 범위 1.0으로 설정
+
+            gyroDelta++;
+
+            gyroX = x;
+            gyroY = y;
+            gyroZ = z;
+
+            try {
+                ContentValues cv = new ContentValues();
+                String type =  "Phone.GYRO";
+              //  cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
+                cv.put(DAO.LOG_FIELD_TYPE, type);
+                cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
+                cv.put(DAO.LOG_FIELD_X, x);
+                cv.put(DAO.LOG_FIELD_Y, y);
+                cv.put(DAO.LOG_FIELD_Z, z);
+                cv.put(DAO.LOG_FIELD_TIME, actualTime);
+
+//            JSONObject json = new JSONObject();
+//            json.put("x", x);
+//            json.put("y", y);
+//            json.put("z", z);
+//            json.put("time", actualTime);
+//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+
+                // bulk insert to improve async_query_handler
+//                if (BULK_COUNT < Constants.DB_BULK_RATE -1){
+//                    multipleSensorData[BULK_COUNT] = cv;
+//                    BULK_COUNT++;
+//                }else{
+//                    multipleSensorData[BULK_COUNT] = cv;
+//                    BULK_COUNT = 0;
+//                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+//                    /*token처리*/
+//
+//                        handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_GYRO, multipleSensorData);
+//
+//                }
+
+                AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+                };
+                handler.startInsert(-1, null, DataProvider.CONTENT_URI_Phone_GYRO, cv);
+
+                //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
+                //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+                mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
+                Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z +", acc:" + accDelta + ", gyro: " + gyroDelta + ", loc:"+locDelta);
+            } catch (Exception e) {
+                Log.e(TAG, e.getLocalizedMessage());
+            }
         }
 
     }
@@ -397,22 +456,29 @@ public class LocationService extends Service {
             locDelta++;
 
             ContentValues values = new ContentValues();
+           // values.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             values.put(DAO.LOG_FIELD_TYPE, "LocationService");
             values.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("Provider", location.getProvider());
-            json.put("Time", location.getTime()/1000);
-            json.put("Accuracy", location.getAccuracy());
-            json.put("Bearing", location.getBearing());
-            json.put("Latitude", location.getLatitude());
-            json.put("Longitude", location.getLongitude());
-            json.put("Speed", location.getSpeed());
+            values.put(DAO.LOG_FIELD_LAT, location.getLatitude());
+            values.put(DAO.LOG_FIELD_LONG, location.getLongitude());
+            values.put(DAO.LOG_FIELD_TIME, location.getTime());
 
-            values.put(DAO.LOG_FIELD_JSON, json.toString());
+//            JSONObject json = new JSONObject();
+//            json.put("Provider", location.getProvider());
+//            json.put("Time", location.getTime()/1000);
+//            json.put("Accuracy", location.getAccuracy());
+//            json.put("Bearing", location.getBearing());
+//            json.put("Latitude", location.getLatitude());
+//            json.put("Longitude", location.getLongitude());
+//            json.put("Speed", location.getSpeed());
+//
+//            values.put(DAO.LOG_FIELD_JSON, json.toString());
+
 
             AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
             };
-            handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
+            /*token처리*/
+            handler.startInsert(-1, null, DataProvider.CONTENT_URI_LocationService, values);
 
             broadcastMessage("Location", location.toString());
         } catch (Exception e) {

@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -52,7 +53,7 @@ import com.kaist.iclab.devices.BleDeviceInfo;
 import com.kaist.iclab.services.BluetoothLeService;
 import com.kaist.iclab.services.E4Service;
 import com.kaist.iclab.services.LocationService;
-import com.kaist.iclab.services.SensorTagService;
+//import com.kaist.iclab.services.SensorTagService;
 import com.kaist.iclab.util.Constants;
 import com.kaist.iclab.util.CustomToast;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -63,12 +64,14 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -95,14 +98,14 @@ public class MainActivity extends AppCompatActivity {
     private Button mButtonSmartphoneSensingStart;
     private Button mButtonSmartphoneSensingStop;
 
-    private Button mButtonSensorTagStart;
-    private Button mButtonSensorTagStop;
+    //private Button mButtonSensorTagStart;
+    //private Button mButtonSensorTagStop;
 
-    private Button mButtonDBExport;
+  //  private Button mButtonDBExport;
     private Button mButtonFileTransfer;
 
     private Button mButtonCheckDBInsert;
-    private Button mButtonRenameVideo;
+   // private Button mButtonRenameVideo;
 
     private TextView mTextUpdatedDate;
     private TextView mTextInfo;
@@ -162,13 +165,13 @@ public class MainActivity extends AppCompatActivity {
         mButtonSmartphoneSensingStop = (Button)findViewById(R.id.button_smartphone_stop);
         mButtonSmartphoneSensingStop.setOnClickListener(pOnClickListener);
 
-        mButtonSensorTagStart = (Button)findViewById(R.id.button_sensortag_scan);
+/*        mButtonSensorTagStart = (Button)findViewById(R.id.button_sensortag_scan);
         mButtonSensorTagStart.setOnClickListener(pOnClickListener);
         mButtonSensorTagStop = (Button)findViewById(R.id.button_sensortag_stop);
         mButtonSensorTagStop.setOnClickListener(pOnClickListener);
 
         mButtonDBExport = (Button)findViewById(R.id.button_dbexport);
-        mButtonDBExport.setOnClickListener(pOnClickListener);
+        mButtonDBExport.setOnClickListener(pOnClickListener);*/
 
         mButtonFileTransfer = (Button)findViewById(R.id.button_filetransfer);
         mButtonFileTransfer.setOnClickListener(pOnClickListener);
@@ -176,8 +179,8 @@ public class MainActivity extends AppCompatActivity {
         mButtonCheckDBInsert = (Button)findViewById(R.id.button_check_db_insert);
         mButtonCheckDBInsert.setOnClickListener(pOnClickListener);
 
-        mButtonRenameVideo = (Button)findViewById(R.id.button_rename_video);
-        mButtonRenameVideo.setOnClickListener(pOnClickListener);
+//        mButtonRenameVideo = (Button)findViewById(R.id.button_rename_video);
+//        mButtonRenameVideo.setOnClickListener(pOnClickListener);
 
         mTextUpdatedDate = (TextView)findViewById(R.id.text_update_date);
         mTextInfo = (TextView)findViewById(R.id.text_info);
@@ -186,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
         E4serviceIntent = new Intent(this, E4Service.class);
         LocationServiceIntent = new Intent(this, LocationService.class);
-        SensorTagListActivityIntent = new Intent(this, SensorTagListActivity.class);
-        SensorTagServiceIntent = new Intent(this, SensorTagService.class);
+     //   SensorTagListActivityIntent = new Intent(this, SensorTagListActivity.class);
+      //  SensorTagServiceIntent = new Intent(this, SensorTagService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -209,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         initEmpaticaDeviceManager();
-        mark(true);
+        //mark(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -318,15 +321,18 @@ public class MainActivity extends AppCompatActivity {
             mButtonSmartphoneSensingStart.setEnabled(true);
             mButtonSmartphoneSensingStop.setEnabled(false);
         }
-        if (isSensorTagServiceRunning()){
+    /*    if (isSensorTagServiceRunning()){
             mButtonSensorTagStart.setEnabled(false);
             mButtonSensorTagStop.setEnabled(true);
         }else{
             mButtonSensorTagStart.setEnabled(true);
             mButtonSensorTagStop.setEnabled(false);
-        }
+        }*/
 
     }
+
+
+
     public boolean isE4ServiceRunning()
     {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -340,13 +346,13 @@ public class MainActivity extends AppCompatActivity {
     }
     public boolean isSensorTagServiceRunning()
     {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
-        {
-            if (SensorTagService.class.getName().equals(service.service.getClassName()))
-                return true;
-        }
+//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//
+//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
+//        {
+//            if (SensorTagService.class.getName().equals(service.service.getClassName()))
+//                return true;
+//        }
         return false;
     }
     public boolean isLocationServiceRunning()
@@ -393,13 +399,13 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener pOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-	long actualTime = System.currentTimeMillis()/1000;
+            long actualTime = System.currentTimeMillis()/1000;
             switch (v.getId()){
                 case R.id.button_e4_scan:
                     mButtonE4Scan.setEnabled(false);
                     mButtonE4Stop.setEnabled(true);
                     E4serviceIntent.putExtra("device_set_name", deviceSetName);
-		markingSensor(actualTime,"E4 StartTracking");
+                    markingSensor(actualTime,"E4 StartTracking");
                     startService(E4serviceIntent);
                     break;
 
@@ -407,7 +413,7 @@ public class MainActivity extends AppCompatActivity {
                     mButtonE4Scan.setEnabled(true);
                     mButtonE4Stop.setEnabled(false);
                     stopService(E4serviceIntent);
-		markingSensor(actualTime,"E4 StopTracking");
+                    markingSensor(actualTime,"E4 StopTracking");
                     break;
 
                 case R.id.button_smartphone_scan:
@@ -416,21 +422,21 @@ public class MainActivity extends AppCompatActivity {
                     LocationServiceIntent.putExtra("device_set_name", deviceSetName);
                     LocationServiceIntent.putExtra("smartphone_mode", smartphone_mode);
                     startService(LocationServiceIntent);
-		markingSensor(actualTime,"SmartPhone StartTracking");
+                    markingSensor(actualTime,"SmartPhone StartTracking");
                     break;
 
                 case R.id.button_smartphone_stop:
                     mButtonSmartphoneSensingStart.setEnabled(true);
                     mButtonSmartphoneSensingStop.setEnabled(false);
                     stopService(LocationServiceIntent);
-		markingSensor(actualTime, "SmartPhone StopTracking");
+                    markingSensor(actualTime, "SmartPhone StopTracking");
                     break;
 
-                case R.id.button_sensortag_scan:
+            /*    case R.id.button_sensortag_scan:
                     mButtonSensorTagStart.setEnabled(false);
                     mButtonSensorTagStop.setEnabled(true);
                     SensorTagListActivityIntent.putExtra("device_set_name", deviceSetName);
-		markingSensor(actualTime,"SensorTag StartTracking");
+                    markingSensor(actualTime,"SensorTag StartTracking");
                     startActivityForResult(SensorTagListActivityIntent,REQUEST_CODE);
                     break;
 
@@ -445,12 +451,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //stop service
                     stopService(SensorTagServiceIntent);
-		markingSensor(actualTime,"SensorTag StopTracking");
-                    break;
+                    markingSensor(actualTime,"SensorTag StopTracking");
+                    break;*/
 
-                case R.id.button_dbexport:
-                    SQLiteExport();
-                    break;
+//                case R.id.button_dbexport:
+//                    SQLiteExport();
+//                    break;
 
                 case R.id.button_filetransfer:
                     mTransferAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -466,17 +472,83 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.button_check_db_insert:
-                    Cursor cursor = getContentResolver().query(DataProvider.CONTENT_URI_LOG, new String[] {"count(*)"},null,null,null);
-                    if (cursor.getCount() == 0){
-                        cursor.close();
-                        mTextNumberOfRecords.setText("# of records: no result");
+//                    Cursor cursor = getContentResolver().query(DataProvider.CONTENT_URI_LOG, new String[] {"count(*)"},null,null,null);
+//
+//                    if (cursor.getCount() != 0){
+//                        cursor.close();
+//                        mTextNumberOfRecords.setText("# of records: no result");
+//                    }
+//                    else {
+//                        cursor.moveToFirst();
+//                        int result = cursor.getInt(0);
+//                        mTextNumberOfRecords.setText("# of records: "+result);
+//                        cursor.close();
+//                    }
+
+                    Cursor cursor1 = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor2 = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor3 = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor4 = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor5 = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor6 = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor7 = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor8 = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, new String[] {"count(*)"},null,null,null);
+                    Cursor cursor9 = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, new String[] {"count(*)"},null,null,null);
+
+                    int result1 = 0, result2=0, result3=0, result4=0, result5=0,result6=0,result7=0,result8=0,result9=0;
+
+                    if(cursor1.getCount() != 0) {
+                        cursor1.moveToFirst();
+                        result1 = cursor1.getInt(0);
                     }
-                    else{
-                        cursor.moveToFirst();
-                        int result = cursor.getInt(0);
-                        mTextNumberOfRecords.setText("# of records: "+result);
-                        cursor.close();
+                    if(cursor2.getCount() != 0){
+                        cursor2.moveToFirst();
+                        result2 = cursor2.getInt(0);
                     }
+                    if(cursor3.getCount() != 0){
+                        cursor3.moveToFirst();
+                        result3 = cursor3.getInt(0);
+                    }
+                    if(cursor4.getCount() != 0){
+                        cursor4.moveToFirst();
+                        result4 = cursor4.getInt(0);
+                    }
+                    if(cursor5.getCount() != 0){
+                        cursor5.moveToFirst();
+                        result5 = cursor5.getInt(0);
+                    }
+                    if(cursor6.getCount() != 0){
+                        cursor6.moveToFirst();
+                        result6 = cursor6.getInt(0);
+                    }
+                    if(cursor7.getCount() != 0) {
+                        cursor7.moveToFirst();
+                        result7 = cursor7.getInt(0);
+                    }
+                    if(cursor8.getCount() != 0){
+                        cursor8.moveToFirst();
+                        result8 = cursor8.getInt(0);
+                    }
+                    if(cursor9.getCount() != 0){
+                        cursor9.moveToFirst();
+                        result9 = cursor9.getInt(0);
+                    }
+
+                    int result = result1 + result2 + result3 + result4 + result5 + result6 + result7 + result8 + result9;
+
+
+                    if (result == 0) mTextNumberOfRecords.setText("# of records: no result");
+                    else mTextNumberOfRecords.setText("# of records: "+result);
+
+                    cursor1.close();
+                    cursor2.close();
+                    cursor3.close();
+                    cursor4.close();
+                    cursor5.close();
+                    cursor6.close();
+                    cursor7.close();
+                    cursor8.close();
+                    cursor9.close();
 
                     /*final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
                     ContentValues[] multipleSensorData;
@@ -502,16 +574,16 @@ public class MainActivity extends AppCompatActivity {
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleSensorData);*/
 
                     break;
-                case R.id.button_rename_video:
-                    renameRecentRecordVideo();
-                    break;
+//                case R.id.button_rename_video:
+//                    renameRecentRecordVideo();
+//                    break;
                 default:
                     break;
             }
         }
     };
 
-    private void setConnection(BleDeviceInfo bleDeviceInfo, boolean isConnection) {
+   /* private void setConnection(BleDeviceInfo bleDeviceInfo, boolean isConnection) {
         BluetoothLeService bluetoothLeService = BluetoothLeService.getInstance();
         BluetoothManager bluetoothManager = bluetoothLeService.getBtManager();
 
@@ -527,39 +599,9 @@ public class MainActivity extends AppCompatActivity {
             bluetoothLeService.disconnect(address);
 
         Log.d(TAG, String.format("setConnection address = %s, isConnection = %s",address, isConnection));
-    }
+    }*/
 
-    public void SQLiteExport() {
-        try {
-            File internal = Environment.getDataDirectory();
-            File external = Environment.getExternalStorageDirectory();
 
-            File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
-            if (external.canWrite()) {
-                File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
-                File exportDB = new File(external, "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())) + ".db");
-
-                if (currentDB.exists()) {
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(exportDB).getChannel();
-
-                    dst.transferFrom(src, 0, src.size());
-
-                    src.close();
-                    dst.close();
-
-                    Log.d("Ria", ">>> SQLite > SQLiteExport");
-                    Toast.makeText(getApplicationContext(), "DB export success !", Toast.LENGTH_LONG).show();
-                }
-            }
-        } catch (Exception e) {
-
-        }
-    }
 
     public void SQLiteDelete(){
         /* Instead of deleting DB file, trigger query to delete all rows from the table.
@@ -569,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
         currentDB.delete();
         */
         AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
-        handler.startDelete(-1, null, DataProvider.CONTENT_URI_LOG,null ,null);
+        handler.startDelete(-1, null, DataProvider.CONTENT_URI_MainActivity,null ,null);
 
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("delete_date","The last deletion: "+new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())));
@@ -581,33 +623,36 @@ public class MainActivity extends AppCompatActivity {
             ContentValues values = new ContentValues();
             values.put(DAO.LOG_FIELD_TYPE, "MainActivity");
             values.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            JSONObject json = new JSONObject();
-            json.put("status", status_message);
-            json.put("time", actualTime);
-            values.put(DAO.LOG_FIELD_JSON, json.toString());
+            values.put(DAO.LOG_FIELD_TIME, actualTime);
+            values.put(DAO.LOG_FIELD_MARK, status_message);
+//            JSONObject json = new JSONObject();
+//            json.put("status", status_message);
+//            json.put("time", actualTime);
+//            values.put(DAO.LOG_FIELD_JSON, json.toString());
             AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
             };
-            handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
+          //  handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
+            handler.startInsert(-1, null, DataProvider.CONTENT_URI_MainActivity, values);
 
         } catch (Exception e) {
             Log.e(TAG, e.getLocalizedMessage());
         }
     }
 
-    private void mark(boolean start) {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(DAO.LOG_FIELD_TYPE, "MainActivity");
-            values.put(DAO.LOG_FIELD_REG, new Date().getTime());
-            values.put(DAO.LOG_FIELD_JSON, start ? "StartTracking" : "StopTracking");
-
-            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
-            };
-            handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
-        } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
-        }
-    }
+//    private void mark(boolean start) {
+//        try {
+//            ContentValues values = new ContentValues();
+//            values.put(DAO.LOG_FIELD_TYPE, "MainActivity");
+//            values.put(DAO.LOG_FIELD_REG, new Date().getTime());
+//            values.put(DAO.LOG_FIELD_JSON, start ? "StartTracking" : "StopTracking");
+//
+//            AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//            };
+//            handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
+//        } catch (Exception e) {
+//            Log.e(TAG, e.getLocalizedMessage());
+//        }
+//    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -693,25 +738,343 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Update a label with some text, making sure this is run in the UI thread
-    private void updateLabel(final TextView label, final String text) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                label.setText(text);
-            }
-        });
-    }
+//    // Update a label with some text, making sure this is run in the UI thread
+//    private void updateLabel(final TextView label, final String text) {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                label.setText(text);
+//            }
+//        });
+//    }
 
     private void doSubmit() {
-        saveInfo();
-        SQLiteExport();
-
+       // saveInfo();
+      //  SQLiteExport();
+      //  SQLitetoCSV();
         addFilesToZip();
         mCompressFiles = new CompressFiles();
         mCompressFiles.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    public String SQLitetoCSV() {
+        try {
+
+            File internal = Environment.getDataDirectory();
+            File external = Environment.getExternalStorageDirectory();
+
+            File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
+            if (!directory.exists()) { directory.mkdirs(); }
+
+            if (external.canWrite()) {
+                int i=1;
+                File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
+                String file = "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd").format(new Date(System.currentTimeMillis()));
+                File directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
+
+                while (directory2.exists()) {
+                    directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
+                }
+                directory2.mkdirs();
+
+                /*E4*/
+                CSVE4_ACC(directory2.getAbsolutePath());
+                CSVE4_IBI(directory2.getAbsolutePath());
+                CSVE4_GSR(directory2.getAbsolutePath());
+                CSVE4_TEM(directory2.getAbsolutePath());
+                CSVE4_BVP(directory2.getAbsolutePath());
+
+                /*Phone_ACC*/
+                CSVPhone_ACC(directory2.getAbsolutePath());
+                CSVPhone_GYRO(directory2.getAbsolutePath());
+                CSVPhone_LOC(directory2.getAbsolutePath());
+                CSV_MAIN(directory2.getAbsolutePath());
+
+                    Toast.makeText(getApplicationContext(), "csv File make success !", Toast.LENGTH_LONG).show();
+
+                return directory2.getAbsolutePath();
+            }
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    private void CSVE4_ACC(String path){
+        try {
+        String exportDB = path+"/E4_ACC.csv";
+
+        FileWriter fileWriter = new FileWriter(exportDB);
+        BufferedWriter fw = new BufferedWriter(fileWriter);
+
+        String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
+        fw.write(Result);
+        Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, null,null,null,null);
+
+        while(iCursor.moveToNext()){
+            int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+            String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+            double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
+            double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
+            double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
+            long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+            long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+            Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
+            fw.write(Result);
+        }
+        iCursor.close();
+        fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSVE4_IBI(String path){
+        try {
+            String exportDB = path+"/E4_IBI.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , IBI , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSVE4_GSR(String path){
+        try {
+            String exportDB = path+"/E4_GSR.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , GSR , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSVE4_BVP(String path){
+        try {
+            String exportDB = path+"/E4_BVP.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , BVP , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSVE4_TEM(String path){
+        try {
+            String exportDB = path+"/E4_TEMPERATURE.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , SKIN_TEMP , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+
+    private void CSVPhone_ACC(String path){
+        try {
+            String exportDB = path+"/Phone_ACC.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
+                double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
+                double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSVPhone_GYRO(String path){
+        try {
+            String exportDB = path+"/Phone_GYRO.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
+                double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
+                double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSVPhone_LOC(String path){
+        try {
+            String exportDB = path+"/LocationService.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , Latitude , Longtitude , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                double tempLAT = iCursor.getDouble(iCursor.getColumnIndex("Latitude"));
+                double tempLONG = iCursor.getDouble(iCursor.getColumnIndex("Longtitude"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempLAT+ " , " + tempLONG+ " , "+ tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+    private void CSV_MAIN(String path){
+        try {
+            String exportDB = path+"/MainActivity.csv";
+
+            FileWriter fileWriter = new FileWriter(exportDB);
+            BufferedWriter fw = new BufferedWriter(fileWriter);
+
+            String Result = "id , PhoneNumber , type , mark , time , reg \r\n";
+            fw.write(Result);
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+
+            while(iCursor.moveToNext()){
+                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+                String tempMark = iCursor.getString(iCursor.getColumnIndex("mark"));
+                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+
+                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempMark+ " , " + tempTime+ " , " + tempReg + " \n";
+                fw.write(Result);
+            }
+            iCursor.close();
+            fw.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public void SQLiteExport() {
+        try {
+            File internal = Environment.getDataDirectory();
+            File external = Environment.getExternalStorageDirectory();
+
+            File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            if (external.canWrite()) {
+                File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
+                File exportDB = new File(external, "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())) + ".db");
+
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(exportDB).getChannel();
+
+                    dst.transferFrom(src, 0, src.size());
+
+                    src.close();
+                    dst.close();
+
+                    Log.d("Ria", ">>> SQLite > SQLiteExport");
+                    Toast.makeText(getApplicationContext(), "DB export success !", Toast.LENGTH_LONG).show();
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
     private void saveInfo() {
         try {
             JSONObject json = new JSONObject();
@@ -736,21 +1099,32 @@ public class MainActivity extends AppCompatActivity {
     private void addFilesToZip() {
 
         try {
-            ApplicationInfo applicationInfo = getBaseContext().getPackageManager().getApplicationInfo(getBaseContext().getPackageName(), PackageManager.GET_META_DATA);
+          //  ApplicationInfo applicationInfo = getBaseContext().getPackageManager().getApplicationInfo(getBaseContext().getPackageName(), PackageManager.GET_META_DATA);
             String name = "sensors_data.db";
-            String path = getBaseContext().getDatabasePath(name).getPath();
+            String path = SQLitetoCSV();
+          //  String path = getBaseContext().getDatabasePath(name).getPath();
 
-            Log.i(TAG, "db Path = " + path);
+            mFilePathList.add(path+"/E4_ACC.csv");
+            mFilePathList.add(path+"/E4_BVP.csv");
+            mFilePathList.add(path+"/E4_IBI.csv");
+            mFilePathList.add(path+"/E4_GSR.csv");
+            mFilePathList.add(path+"/E4_TEMPERATURE.csv");
+            mFilePathList.add(path+"/Phone_ACC.csv");
+            mFilePathList.add(path+"/Phone_GYRO.csv");
+            mFilePathList.add(path+"/LocationService.csv");
+            mFilePathList.add(path+"/MainActivity.csv");
 
-            mFilePathList.add(path);
-            mFilePathList.add(infoPath);
+
+          //  Log.i(TAG, "db Path = " + path);
+//            mFilePathList.add(path);
+           // mFilePathList.add(infoPath);
             //mFilePathList.add(getRecentRecordVideo()); // server can't receive big size of file.
         } catch (Exception e) {
             Log.i(TAG, e.toString());
         }
     }
 
-    public String getRecentRecordVideo() {
+   /* public String getRecentRecordVideo() {
         String path = Environment.getExternalStorageDirectory().toString()+"/DCIM/Look&Tell";
         Log.d("Files", "Path: " + path);
         File directory = new File(path);
@@ -795,7 +1169,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-    }
+    }*/
 
     public static File getOgetOutputZipFileutputZipFile(String fileName) {
         //File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "output");
@@ -807,7 +1181,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
-
+/*
+    mCompressFiles = new CompressFiles();
+        mCompressFiles.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+*/
     private class CompressFiles extends AsyncTask<Void, Integer, Boolean> {
 
         ProgressDialog asyncDialog;
@@ -900,8 +1277,8 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("update_date","The latest updated date: "+new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())));
             editor.commit();
 
+            SQLiteDelete();
             finish();
-	    //AsyncTask is not reusable
         }
     }
     private static final int BUFFER = 2048;
