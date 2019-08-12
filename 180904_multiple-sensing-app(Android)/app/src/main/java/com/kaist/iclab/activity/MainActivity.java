@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -89,20 +90,23 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final int REQUEST_CODE = 11;
     private static final int REQUEST_CANCLE_CODE = 22;
+    private static final int REQUEST_FILE_CHOOSE = 533;
+    public static int phone_insert = 0;
+    public static int e4_insert = 0;
 
     private final int DEVICE_ID = 2;
 
-    private Button mButtonE4Scan;
-    private Button mButtonE4Stop;
+    public static Button mButtonE4Scan;
+    public static Button mButtonE4Stop;
 
-    private Button mButtonSmartphoneSensingStart;
-    private Button mButtonSmartphoneSensingStop;
+    public static Button mButtonSmartphoneSensingStart;
+    public static Button mButtonSmartphoneSensingStop;
 
     //private Button mButtonSensorTagStart;
     //private Button mButtonSensorTagStop;
 
   //  private Button mButtonDBExport;
-    private Button mButtonFileTransfer;
+  public static Button mButtonFileTransfer;
 
     private Button mButtonCheckDBInsert;
    // private Button mButtonRenameVideo;
@@ -116,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent LocationServiceIntent;
     private Intent SensorTagListActivityIntent;
     private Intent SensorTagServiceIntent;
-
+    
     private BluetoothLeService mBluetoothLeService = null;
 
     private BluetoothDevice mConnectedBLEDevice;
@@ -321,6 +325,12 @@ public class MainActivity extends AppCompatActivity {
             mButtonSmartphoneSensingStart.setEnabled(true);
             mButtonSmartphoneSensingStop.setEnabled(false);
         }
+
+        if(isLocationServiceRunning() || isE4ServiceRunning()){
+            mButtonFileTransfer.setEnabled(false);
+        }else{
+            mButtonFileTransfer.setEnabled(true);
+        }
     /*    if (isSensorTagServiceRunning()){
             mButtonSensorTagStart.setEnabled(false);
             mButtonSensorTagStop.setEnabled(true);
@@ -399,13 +409,17 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener pOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            long actualTime = System.currentTimeMillis()/1000;
+            double actualTime = System.currentTimeMillis();
             switch (v.getId()){
                 case R.id.button_e4_scan:
                     mButtonE4Scan.setEnabled(false);
                     mButtonE4Stop.setEnabled(true);
+                    mButtonFileTransfer.setEnabled(false);
                     E4serviceIntent.putExtra("device_set_name", deviceSetName);
-                    markingSensor(actualTime,"E4 StartTracking");
+
+                    e4_insert = 1;
+
+                    markingSensor(actualTime,"E4");
                     startService(E4serviceIntent);
                     break;
 
@@ -413,23 +427,85 @@ public class MainActivity extends AppCompatActivity {
                     mButtonE4Scan.setEnabled(true);
                     mButtonE4Stop.setEnabled(false);
                     stopService(E4serviceIntent);
-                    markingSensor(actualTime,"E4 StopTracking");
+
+                    e4_insert = 0;
+                    E4Service.resetTemp();
+                    markingSensor(actualTime, "E4");
+
+
+                    int db_e4_insert = 1;
+                    int db_e4_phone_insert = 1;
+
+                    Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
+                    while( db_e4_insert == 1 ){
+                        try{
+                          //  if(cursor_main.getCount() != 0 ){
+                            cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
+                            if(cursor_main.moveToFirst()){
+                                db_e4_insert = cursor_main.getInt(cursor_main.getColumnIndex("mark_e4"));
+                                db_e4_phone_insert = cursor_main.getInt(cursor_main.getColumnIndex("mark_phone"));
+                            }
+                        } catch (Exception e) {
+                        }
+                    }
+                    cursor_main.close();
+
+                    if( db_e4_insert==0 && db_e4_phone_insert== 0 ) {
+                        mButtonFileTransfer.setEnabled(true);
+                    }
+
+
                     break;
 
                 case R.id.button_smartphone_scan:
                     mButtonSmartphoneSensingStart.setEnabled(false);
                     mButtonSmartphoneSensingStop.setEnabled(true);
+                    mButtonFileTransfer.setEnabled(false);
                     LocationServiceIntent.putExtra("device_set_name", deviceSetName);
                     LocationServiceIntent.putExtra("smartphone_mode", smartphone_mode);
                     startService(LocationServiceIntent);
-                    markingSensor(actualTime,"SmartPhone StartTracking");
+                    phone_insert = 1;
+
+                    markingSensor(actualTime, "Phone");
                     break;
 
                 case R.id.button_smartphone_stop:
+                    stopService(LocationServiceIntent);
+
+
                     mButtonSmartphoneSensingStart.setEnabled(true);
                     mButtonSmartphoneSensingStop.setEnabled(false);
-                    stopService(LocationServiceIntent);
-                    markingSensor(actualTime, "SmartPhone StopTracking");
+
+                    phone_insert = 0;
+                    LocationService.resetTemp();
+
+                    markingSensor(actualTime,"Phone");
+                  //  if( mButtonE4Scan.isEnabled() && mButtonSmartphoneSensingStart.isEnabled() ) mButtonFileTransfer.setEnabled(true);
+
+                    int  db_phone_e4_insert = 1;
+                     int db_phone_insert = 1;
+
+                     cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
+               while( db_phone_insert == 1 ){
+                try{
+                    cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
+                //    if(cursor_main.getCount() != 0 ){
+                       if(cursor_main.moveToFirst()) {
+                           db_phone_e4_insert = cursor_main.getInt(cursor_main.getColumnIndex("mark_e4"));
+                           db_phone_insert = cursor_main.getInt(cursor_main.getColumnIndex("mark_phone"));
+
+                           //  }
+                       }
+            } catch (Exception e) {
+            }
+               }
+                    cursor_main.close();
+                    if( db_phone_e4_insert ==0 && db_phone_insert ==0 ) {
+                        mButtonFileTransfer.setEnabled(true);
+                    }
+
+
+
                     break;
 
             /*    case R.id.button_sensortag_scan:
@@ -459,119 +535,35 @@ public class MainActivity extends AppCompatActivity {
 //                    break;
 
                 case R.id.button_filetransfer:
-                    mTransferAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
-                            doSubmit();
-                        } });
-                    mTransferAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        } });
-                    mTransferAlert.show();
+                    Intent intent_file = new Intent(
+                            getApplicationContext(), // 현재화면의 제어권자
+                            FileChooseActivity.class); // 다음넘어갈 화면
+                    startActivityForResult(intent_file, REQUEST_FILE_CHOOSE);
+                    //startActivity(intent_file);
+                    //finish();
+
+                    /*Log.d(TAG, "onClick: TESTESTEST");
+                    for ( String temp : getIntent().getStringArrayExtra("transeferList")){
+                        Log.d(TAG, "transeferList: " + temp);
+                    }*/
+
+//                    mTransferAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
+//                            doSubmit();
+//                        } });
+//                    mTransferAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            finish();
+//                        } });
+//                    mTransferAlert.show();
                     break;
 
                 case R.id.button_check_db_insert:
-//                    Cursor cursor = getContentResolver().query(DataProvider.CONTENT_URI_LOG, new String[] {"count(*)"},null,null,null);
-//
-//                    if (cursor.getCount() != 0){
-//                        cursor.close();
-//                        mTextNumberOfRecords.setText("# of records: no result");
-//                    }
-//                    else {
-//                        cursor.moveToFirst();
-//                        int result = cursor.getInt(0);
-//                        mTextNumberOfRecords.setText("# of records: "+result);
-//                        cursor.close();
-//                    }
-
-                    Cursor cursor1 = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor2 = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor3 = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor4 = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor5 = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor6 = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor7 = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor8 = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, new String[] {"count(*)"},null,null,null);
-                    Cursor cursor9 = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, new String[] {"count(*)"},null,null,null);
-
-                    int result1 = 0, result2=0, result3=0, result4=0, result5=0,result6=0,result7=0,result8=0,result9=0;
-
-                    if(cursor1.getCount() != 0) {
-                        cursor1.moveToFirst();
-                        result1 = cursor1.getInt(0);
-                    }
-                    if(cursor2.getCount() != 0){
-                        cursor2.moveToFirst();
-                        result2 = cursor2.getInt(0);
-                    }
-                    if(cursor3.getCount() != 0){
-                        cursor3.moveToFirst();
-                        result3 = cursor3.getInt(0);
-                    }
-                    if(cursor4.getCount() != 0){
-                        cursor4.moveToFirst();
-                        result4 = cursor4.getInt(0);
-                    }
-                    if(cursor5.getCount() != 0){
-                        cursor5.moveToFirst();
-                        result5 = cursor5.getInt(0);
-                    }
-                    if(cursor6.getCount() != 0){
-                        cursor6.moveToFirst();
-                        result6 = cursor6.getInt(0);
-                    }
-                    if(cursor7.getCount() != 0) {
-                        cursor7.moveToFirst();
-                        result7 = cursor7.getInt(0);
-                    }
-                    if(cursor8.getCount() != 0){
-                        cursor8.moveToFirst();
-                        result8 = cursor8.getInt(0);
-                    }
-                    if(cursor9.getCount() != 0){
-                        cursor9.moveToFirst();
-                        result9 = cursor9.getInt(0);
-                    }
-
-                    int result = result1 + result2 + result3 + result4 + result5 + result6 + result7 + result8 + result9;
-
+                    int result = InsertDBcheck();
 
                     if (result == 0) mTextNumberOfRecords.setText("# of records: no result");
                     else mTextNumberOfRecords.setText("# of records: "+result);
-
-                    cursor1.close();
-                    cursor2.close();
-                    cursor3.close();
-                    cursor4.close();
-                    cursor5.close();
-                    cursor6.close();
-                    cursor7.close();
-                    cursor8.close();
-                    cursor9.close();
-
-                    /*final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-                    ContentValues[] multipleSensorData;
-                    multipleSensorData = new ContentValues[1000];
-
-                    ContentValues cv = new ContentValues();
-                    String type = "Phone.ACC";
-                    cv.put(DAO.LOG_FIELD_TYPE, type);
-                    cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-
-                    try {
-                        JSONObject json = new JSONObject();
-                        json.put("x", "1");
-                        json.put("y", "2");
-                        json.put("z", "3");
-                        cv.put(DAO.LOG_FIELD_JSON, json.toString());
-                    } catch (Exception e) {
-                        Log.e(TAG, e.getLocalizedMessage());
-                    }
-                    for (int i=0; i< 1000; i++){
-                        multipleSensorData[i] = cv;
-                    }
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_LOG, multipleSensorData);*/
 
                     break;
 //                case R.id.button_rename_video:
@@ -601,6 +593,77 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, String.format("setConnection address = %s, isConnection = %s",address, isConnection));
     }*/
 
+   /*protected void onActivityResult( int reqestCode, int resultCode, Intent data){
+
+   }*/
+
+
+   public int InsertDBcheck(){
+
+       Cursor cursor1 = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, new String[] {"count(*)"},null,null,null);
+       Cursor cursor2 = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, new String[] {"count(*)"},null,null,null);
+       Cursor cursor3 = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, new String[] {"count(*)"},null,null,null);
+       Cursor cursor4 = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, new String[] {"count(*)"},null,null,null);
+       Cursor cursor5 = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, new String[] {"count(*)"},null,null,null);
+       Cursor cursor6 = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, new String[] {"count(*)"},null,null,null);
+       Cursor cursor7 = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, new String[] {"count(*)"},null,null,null);
+       Cursor cursor8 = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, new String[] {"count(*)"},null,null,null);
+   //    Cursor cursor9 = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, new String[] {"count(*)"},null,null,null);
+
+       int result1 = 0, result2=0, result3=0, result4=0, result5=0,result6=0,result7=0,result8=0,result9=0;
+
+       if(cursor1.getCount() != 0) {
+           cursor1.moveToFirst();
+           result1 = cursor1.getInt(0);
+       }
+       if(cursor2.getCount() != 0){
+           cursor2.moveToFirst();
+           result2 = cursor2.getInt(0);
+       }
+       if(cursor3.getCount() != 0){
+           cursor3.moveToFirst();
+           result3 = cursor3.getInt(0);
+       }
+       if(cursor4.getCount() != 0){
+           cursor4.moveToFirst();
+           result4 = cursor4.getInt(0);
+       }
+       if(cursor5.getCount() != 0){
+           cursor5.moveToFirst();
+           result5 = cursor5.getInt(0);
+       }
+       if(cursor6.getCount() != 0){
+           cursor6.moveToFirst();
+           result6 = cursor6.getInt(0);
+       }
+       if(cursor7.getCount() != 0) {
+           cursor7.moveToFirst();
+           result7 = cursor7.getInt(0);
+       }
+       if(cursor8.getCount() != 0){
+           cursor8.moveToFirst();
+           result8 = cursor8.getInt(0);
+       }
+//       if(cursor9.getCount() != 0){
+//           cursor9.moveToFirst();
+//           result9 = cursor9.getInt(0);
+//       }
+
+       int result = result1 + result2 + result3 + result4 + result5 + result6 + result7 + result8 ;
+
+
+       cursor1.close();
+       cursor2.close();
+       cursor3.close();
+       cursor4.close();
+       cursor5.close();
+       cursor6.close();
+       cursor7.close();
+       cursor8.close();
+    //   cursor9.close();
+
+       return result;
+   }
 
 
     public void SQLiteDelete(){
@@ -618,13 +681,14 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    private void markingSensor(long actualTime, String status_message){
+    private void markingSensor(double actualTime ,String type){
         try {
             ContentValues values = new ContentValues();
             values.put(DAO.LOG_FIELD_TYPE, "MainActivity");
             values.put(DAO.LOG_FIELD_REG, new Date().getTime());
             values.put(DAO.LOG_FIELD_TIME, actualTime);
-            values.put(DAO.LOG_FIELD_MARK, status_message);
+            values.put(DAO.LOG_FIELD_MARK_E4, e4_insert);
+            values.put(DAO.LOG_FIELD_MARK_SmartPhone, phone_insert);
 //            JSONObject json = new JSONObject();
 //            json.put("status", status_message);
 //            json.put("time", actualTime);
@@ -633,6 +697,14 @@ public class MainActivity extends AppCompatActivity {
             };
           //  handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, values);
             handler.startInsert(-1, null, DataProvider.CONTENT_URI_MainActivity, values);
+
+            ContentValues S_time = new ContentValues();
+            S_time.put(DAO.LOG_FIELD_TIME, actualTime);
+            AsyncQueryHandler time_handler = new AsyncQueryHandler(getContentResolver()) {
+            };
+
+            if(type == "E4") time_handler.startInsert(-1, null, DataProvider.CONTENT_URI_SensingTime_E4, S_time);
+            else time_handler.startInsert(-1, null, DataProvider.CONTENT_URI_SensingTime_Phone, S_time);
 
         } catch (Exception e) {
             Log.e(TAG, e.getLocalizedMessage());
@@ -736,6 +808,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "no one selection", Toast.LENGTH_SHORT).show();
             }
         }
+        else if (requestCode == REQUEST_FILE_CHOOSE){
+            Log.d(TAG, "testwhynot: " + data.getExtras().getString("test"));
+            String[] transeferList = data.getExtras().getStringArray("transferList" );
+            Log.d(TAG, "testtransefertest: " + transeferList[0]);
+            Log.d(TAG, "testtransefertest: " + transeferList.toString());
+
+            for ( String temp : transeferList){
+                Log.d(TAG, "testtranseferList: " + temp);
+            }
+            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
+            doSubmit();
+        }
     }
 
 //    // Update a label with some text, making sure this is run in the UI thread
@@ -748,14 +832,59 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //    }
 
-    private void doSubmit() {
+    public void doSubmit() {
        // saveInfo();
-      //  SQLiteExport();
-      //  SQLitetoCSV();
-        addFilesToZip();
-        mCompressFiles = new CompressFiles();
+        SQLiteExport();
+      // SQLitetoCSV();
+     addFilesToZip();
+       mCompressFiles = new CompressFiles();
         mCompressFiles.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
+
+//    public String SQLitetoCSV() {
+//        try {
+//
+//            File internal = Environment.getDataDirectory();
+//            File external = Environment.getExternalStorageDirectory();
+//
+//            File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
+//            if (!directory.exists()) { directory.mkdirs(); }
+//
+//            if (external.canWrite()) {
+//                int i=1;
+//                File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
+//                String file = "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd").format(new Date(System.currentTimeMillis()));
+//                File directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
+//
+//                while (directory2.exists()) {
+//                    directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
+//                }
+//                directory2.mkdirs();
+//
+//                CSV_ALL(directory2.getAbsolutePath());
+//
+////                /*E4*/
+////                CSVE4_ACC(directory2.getAbsolutePath());
+////                CSVE4_IBI(directory2.getAbsolutePath());
+////                CSVE4_GSR(directory2.getAbsolutePath());
+////                CSVE4_TEM(directory2.getAbsolutePath());
+////                CSVE4_BVP(directory2.getAbsolutePath());
+////
+////                /*Phone_ACC*/
+////                CSVPhone_ACC(directory2.getAbsolutePath());
+////                CSVPhone_GYRO(directory2.getAbsolutePath());
+////                CSVPhone_LOC(directory2.getAbsolutePath());
+////                CSV_MAIN(directory2.getAbsolutePath());
+//
+//                    Toast.makeText(getApplicationContext(), "csv File make success !", Toast.LENGTH_LONG).show();
+//
+//                return directory2.getAbsolutePath();
+//            }
+//        } catch (Exception e) {
+//
+//        }
+//        return null;
+//    }
 
     public String SQLitetoCSV() {
         try {
@@ -766,9 +895,11 @@ public class MainActivity extends AppCompatActivity {
             File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
             if (!directory.exists()) { directory.mkdirs(); }
 
+
             if (external.canWrite()) {
                 int i=1;
-                File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
+            //    File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
+
                 String file = "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd").format(new Date(System.currentTimeMillis()));
                 File directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
 
@@ -777,20 +908,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 directory2.mkdirs();
 
-                /*E4*/
-                CSVE4_ACC(directory2.getAbsolutePath());
-                CSVE4_IBI(directory2.getAbsolutePath());
-                CSVE4_GSR(directory2.getAbsolutePath());
-                CSVE4_TEM(directory2.getAbsolutePath());
-                CSVE4_BVP(directory2.getAbsolutePath());
+                CSV_E4(directory2.getAbsolutePath());
+                CSV_Phone(directory2.getAbsolutePath());
 
-                /*Phone_ACC*/
-                CSVPhone_ACC(directory2.getAbsolutePath());
-                CSVPhone_GYRO(directory2.getAbsolutePath());
-                CSVPhone_LOC(directory2.getAbsolutePath());
-                CSV_MAIN(directory2.getAbsolutePath());
-
-                    Toast.makeText(getApplicationContext(), "csv File make success !", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "csv File make success !", Toast.LENGTH_LONG).show();
 
                 return directory2.getAbsolutePath();
             }
@@ -800,249 +921,737 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void CSVE4_ACC(String path){
+    private void CSV_E4(String path){
         try {
-        String exportDB = path+"/E4_ACC.csv";
-
-        FileWriter fileWriter = new FileWriter(exportDB);
-        BufferedWriter fw = new BufferedWriter(fileWriter);
-
-        String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
-        fw.write(Result);
-        Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, null,null,null,null);
-
-        while(iCursor.moveToNext()){
-            int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-            String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-            double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
-            double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
-            double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
-            long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-            long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-            Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
-            fw.write(Result);
-        }
-        iCursor.close();
-        fw.close();
-        } catch (Exception e) {
-        }
-    }
-    private void CSVE4_IBI(String path){
-        try {
-            String exportDB = path+"/E4_IBI.csv";
+            String exportDB = path+"/E4.csv";
 
             FileWriter fileWriter = new FileWriter(exportDB);
             BufferedWriter fw = new BufferedWriter(fileWriter);
 
-            String Result = "id , PhoneNumber , type , IBI , time , reg \r\n";
+            int id = 0;
+            double ex_time=0;
+
+            String Result = "id , PhoneNumber , time , E4_TEMP , E4_BVP , E4_IBI , E4_accX , E4_accY , E4_accZ , E4_GSR \r\n";
             fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, null,null,null,null);
+
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_SensingTime_E4, null,null,null,"time ASC");
+            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+
+            Cursor cursor_E4Acc  = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, null,null,null,null);
+            Cursor cursor_E4BVP  = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, null,null,null,null);
+            Cursor cursor_E4TEMP  = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, null,null,null,null);
+            Cursor cursor_E4IBI  = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, null,null,null,null);
+            Cursor cursor_E4GSR  = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, null,null,null,null);
+
+            String E4_TEMP = " , ";
+            String E4_BVP = " , ";
+            String E4_IBI= " , ";
+            String E4_acc = " , , , ";
+            String E4_GSR= " ";
+
+            boolean E4Staus = false;
 
             while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+                double tempTime = iCursor.getDouble(iCursor.getColumnIndex("time"));
+                if(ex_time != tempTime){
+                    ex_time = tempTime;
 
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
+                    if(cursor_main.moveToNext()){
+                        double time_main = cursor_main.getDouble(cursor_main.getColumnIndex("time"));
+                        if(time_main == ex_time){
+
+                            int tempe4 = cursor_main.getInt(cursor_main.getColumnIndex("mark_e4"));
+
+                            if(tempe4 == 0) E4Staus = false;
+                            else E4Staus = true;
+
+                        }else{
+                            cursor_main.moveToPrevious();
+                        }
+                    }
+
+                    if (cursor_E4TEMP.moveToNext()) {
+                        double time_tem = cursor_E4TEMP.getDouble(cursor_E4TEMP.getColumnIndex("time"));
+
+                        while(time_tem < ex_time) {
+                            cursor_E4TEMP.moveToNext();
+                            time_tem = cursor_E4TEMP.getDouble(cursor_E4TEMP.getColumnIndex("time"));
+                        }
+
+                        if (time_tem == ex_time && E4Staus) {
+                            double tempData = cursor_E4TEMP.getDouble(cursor_E4TEMP.getColumnIndex("data"));
+                            E4_TEMP = tempData + " , ";
+                        } else if(time_tem > ex_time){
+                            cursor_E4TEMP.moveToPrevious();
+                        }
+                    }
+                    if (cursor_E4BVP.moveToNext()) {
+                        double time_bvp = cursor_E4BVP.getDouble(cursor_E4BVP.getColumnIndex("time"));
+
+                        while(time_bvp < ex_time) {
+                            cursor_E4BVP.moveToNext();
+                            time_bvp = cursor_E4BVP.getDouble(cursor_E4BVP.getColumnIndex("time"));
+                        }
+
+                        if (time_bvp == ex_time && E4Staus) {
+                            double tempData = cursor_E4BVP.getDouble(cursor_E4BVP.getColumnIndex("data"));
+                            E4_BVP = tempData + " , ";
+                        } else if(time_bvp > ex_time){
+                            cursor_E4BVP.moveToPrevious();
+                        }
+                    }
+                    if (cursor_E4IBI.moveToNext()) {
+                        double time_ibi = cursor_E4IBI.getDouble(cursor_E4IBI.getColumnIndex("time"));
+
+                        while(time_ibi < ex_time) {
+                            cursor_E4IBI.moveToNext();
+                            time_ibi = cursor_E4IBI.getDouble(cursor_E4IBI.getColumnIndex("time"));
+
+                        }
+
+                        if (time_ibi == ex_time && E4Staus) {
+                            double tempData = cursor_E4IBI.getDouble(cursor_E4IBI.getColumnIndex("data"));
+                            E4_IBI = tempData + " , ";
+                        } else if(time_ibi > ex_time){
+                            cursor_E4IBI.moveToPrevious();
+                        }
+                    }
+                    if (cursor_E4Acc.moveToNext()) {
+                        double time_acc = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("time"));
+
+                        while(time_acc < ex_time) {
+                            cursor_E4Acc.moveToNext();
+                            time_acc = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("time"));
+
+                        }
+
+                        if (time_acc == ex_time&&E4Staus) {
+                            double tempX = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("x"));
+                            double tempY = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("y"));
+                            double tempZ = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("z"));
+                            E4_acc = tempX + " , " + tempY + " , " + tempZ + " , ";
+                        } else if(time_acc>ex_time){
+                            cursor_E4Acc.moveToPrevious();
+                        }
+                    }
+                    if (cursor_E4GSR.moveToNext()) {
+                        double time_gsr = cursor_E4GSR.getDouble(cursor_E4GSR.getColumnIndex("time"));
+
+                        while(time_gsr < ex_time) {
+                            cursor_E4GSR.moveToNext();
+                            time_gsr = cursor_E4GSR.getDouble(cursor_E4GSR.getColumnIndex("time"));
+
+                        }
+
+                        if (time_gsr == ex_time&&E4Staus) {
+                            double tempData = cursor_E4GSR.getDouble(cursor_E4GSR.getColumnIndex("data"));
+                            E4_GSR = tempData + "  ";
+                        } else if(time_gsr > ex_time){
+                            cursor_E4GSR.moveToPrevious();
+                        }
+                    }
+
+
+                    if(!E4Staus){
+                        E4_TEMP=" , ";
+                        E4_BVP = " , ";
+                        E4_IBI = " , ";
+                        E4_acc = " , , , ";
+                        E4_GSR = "  ";
+                    }
+
+                    Result = id++ + "," +phoneNumber + ", " + tempTime + " , "+E4_TEMP+E4_BVP+E4_IBI+E4_acc+E4_GSR+" \n";
+                    fw.write(Result);
+                }
             }
             iCursor.close();
+            cursor_E4Acc.close();
+            cursor_E4BVP.close();
+            cursor_E4GSR.close();
+            cursor_E4IBI.close();
+            cursor_E4TEMP.close();
+            cursor_main.close();
+
             fw.close();
+
+
+
         } catch (Exception e) {
         }
     }
-    private void CSVE4_GSR(String path){
+    private void CSV_Phone(String path){
         try {
-            String exportDB = path+"/E4_GSR.csv";
+            String exportDB = path+"/Phone.csv";
 
             FileWriter fileWriter = new FileWriter(exportDB);
             BufferedWriter fw = new BufferedWriter(fileWriter);
 
-            String Result = "id , PhoneNumber , type , GSR , time , reg \r\n";
+            int id = 0;
+            double ex_time=0;
+
+            String Result = "id , PhoneNumber , time  , Phone_accX , Phone_accY , Phone_accZ , Phone_gyroX , Phone_gyroY , Phone_gyroZ ,  Phone_longitude , Phone_latitude \r\n";
             fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, null,null,null,null);
+
+            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_SensingTime_Phone, null,null,null,"time ASC");
+            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+            Cursor cursor_PhoneAcc  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, null,null,null,null);
+            Cursor cursor_PhoneGyro  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, null,null,null,null);
+            Cursor cursor_PhoneLocation  = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, null,null,null,null);
+
+            String Phone_acc = " , , , " ;
+            String Phone_gyro = " , , , " ;
+            String Phone_location = " , ";
+
+            boolean SmartPhoneStatus = false;
 
             while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+                double tempTime = iCursor.getDouble(iCursor.getColumnIndex("time"));
+                if(ex_time != tempTime){
+                    ex_time = tempTime;
 
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
+                    if(cursor_main.moveToNext()){
+                        double time_main = cursor_main.getDouble(cursor_main.getColumnIndex("time"));
+                        if(time_main == ex_time){
+
+                            int tempphone = cursor_main.getInt(cursor_main.getColumnIndex("mark_phone"));
+
+
+                            if(tempphone == 0) SmartPhoneStatus = false;
+                            else SmartPhoneStatus = true;
+
+                        }else{
+                            cursor_main.moveToPrevious();
+                        }
+                    }
+
+                    if (cursor_PhoneAcc.moveToNext()) {
+                       double time_acc = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("time"));
+
+                            while(time_acc < ex_time) {
+                                cursor_PhoneAcc.moveToNext();
+                                time_acc = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("time"));
+                            }
+
+                        if (time_acc == ex_time && SmartPhoneStatus) {
+                            double tempX = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("x"));
+                            double tempY = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("y"));
+                            double tempZ = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("z"));
+                            Phone_acc = tempX + " , " + tempY + " , " + tempZ + " , ";
+                        }else if(time_acc > ex_time){
+                            cursor_PhoneGyro.moveToPrevious();
+                        }
+
+                    }
+                    if (cursor_PhoneGyro.moveToNext()) {
+                        double time_gyro = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("time"));
+                        while(time_gyro < ex_time){
+                            cursor_PhoneGyro.moveToNext();
+                            time_gyro = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("time"));
+                        }
+                        if (time_gyro == ex_time&& SmartPhoneStatus) {
+                            double tempX = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("x"));
+                            double tempY = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("y"));
+                            double tempZ = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("z"));
+                            Phone_gyro = tempX + " , " + tempY + " , " + tempZ + " , ";
+                        } else if(time_gyro > ex_time){
+                            cursor_PhoneGyro.moveToPrevious();
+
+                        }
+                    }
+                    if (cursor_PhoneLocation.moveToNext()) {
+                        double time_location = cursor_PhoneLocation.getDouble(cursor_PhoneLocation.getColumnIndex("time"));
+
+                        while(time_location < ex_time){
+                            cursor_PhoneLocation.moveToNext();
+                            time_location = cursor_PhoneLocation.getDouble(cursor_PhoneLocation.getColumnIndex("time"));
+                        }
+
+                        if (time_location == ex_time&& SmartPhoneStatus) {
+                            double tempLa = cursor_PhoneLocation.getDouble(cursor_PhoneLocation.getColumnIndex("Latitude"));
+                            double tempLo = cursor_PhoneLocation.getDouble(cursor_PhoneLocation.getColumnIndex("Longitude"));
+                            Phone_location = tempLo + " , " + tempLa;
+                        } else if(time_location > ex_time){
+                            cursor_PhoneLocation.moveToPrevious();
+                        }
+                    }
+
+
+
+                    if(!SmartPhoneStatus){
+                        Phone_acc = " , , , ";
+                        Phone_gyro = " , , , ";
+                        Phone_location = " , ";
+                    }
+
+
+                    Result = id++ + "," +phoneNumber + ", " + tempTime + " , "  + Phone_acc+Phone_gyro+ Phone_location +" \n";
+                    fw.write(Result);
+                }
             }
             iCursor.close();
+            cursor_main.close();
+            cursor_PhoneAcc.close();
+            cursor_PhoneGyro.close();
+            cursor_PhoneLocation.close();
+
             fw.close();
+
+
+
         } catch (Exception e) {
         }
     }
-    private void CSVE4_BVP(String path){
-        try {
-            String exportDB = path+"/E4_BVP.csv";
 
-            FileWriter fileWriter = new FileWriter(exportDB);
-            BufferedWriter fw = new BufferedWriter(fileWriter);
-
-            String Result = "id , PhoneNumber , type , BVP , time , reg \r\n";
-            fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, null,null,null,null);
-
-            while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
-            }
-            iCursor.close();
-            fw.close();
-        } catch (Exception e) {
-        }
-    }
-    private void CSVE4_TEM(String path){
-        try {
-            String exportDB = path+"/E4_TEMPERATURE.csv";
-
-            FileWriter fileWriter = new FileWriter(exportDB);
-            BufferedWriter fw = new BufferedWriter(fileWriter);
-
-            String Result = "id , PhoneNumber , type , SKIN_TEMP , time , reg \r\n";
-            fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, null,null,null,null);
-
-            while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
-            }
-            iCursor.close();
-            fw.close();
-        } catch (Exception e) {
-        }
-    }
-
-    private void CSVPhone_ACC(String path){
-        try {
-            String exportDB = path+"/Phone_ACC.csv";
-
-            FileWriter fileWriter = new FileWriter(exportDB);
-            BufferedWriter fw = new BufferedWriter(fileWriter);
-
-            String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
-            fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, null,null,null,null);
-
-            while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
-                double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
-                double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
-            }
-            iCursor.close();
-            fw.close();
-        } catch (Exception e) {
-        }
-    }
-    private void CSVPhone_GYRO(String path){
-        try {
-            String exportDB = path+"/Phone_GYRO.csv";
-
-            FileWriter fileWriter = new FileWriter(exportDB);
-            BufferedWriter fw = new BufferedWriter(fileWriter);
-
-            String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
-            fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, null,null,null,null);
-
-            while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
-                double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
-                double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
-            }
-            iCursor.close();
-            fw.close();
-        } catch (Exception e) {
-        }
-    }
-    private void CSVPhone_LOC(String path){
-        try {
-            String exportDB = path+"/LocationService.csv";
-
-            FileWriter fileWriter = new FileWriter(exportDB);
-            BufferedWriter fw = new BufferedWriter(fileWriter);
-
-            String Result = "id , PhoneNumber , type , Latitude , Longtitude , time , reg \r\n";
-            fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, null,null,null,null);
-
-            while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                double tempLAT = iCursor.getDouble(iCursor.getColumnIndex("Latitude"));
-                double tempLONG = iCursor.getDouble(iCursor.getColumnIndex("Longtitude"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempLAT+ " , " + tempLONG+ " , "+ tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
-            }
-            iCursor.close();
-            fw.close();
-        } catch (Exception e) {
-        }
-    }
-    private void CSV_MAIN(String path){
-        try {
-            String exportDB = path+"/MainActivity.csv";
-
-            FileWriter fileWriter = new FileWriter(exportDB);
-            BufferedWriter fw = new BufferedWriter(fileWriter);
-
-            String Result = "id , PhoneNumber , type , mark , time , reg \r\n";
-            fw.write(Result);
-            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
-
-            while(iCursor.moveToNext()){
-                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
-                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
-                String tempMark = iCursor.getString(iCursor.getColumnIndex("mark"));
-                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
-                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
-
-                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempMark+ " , " + tempTime+ " , " + tempReg + " \n";
-                fw.write(Result);
-            }
-            iCursor.close();
-            fw.close();
-        } catch (Exception e) {
-        }
-    }
+//    private void CSV_ALL(String path){
+//        try {
+//            String exportDB = path+"/ALL.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            int id = 0;
+//            double ex_time=0;
+//
+//            String Result = "id , PhoneNumber , time  , Phone_accX , Phone_accY , Phone_accZ , Phone_gyroX , Phone_gyroY , Phone_gyroZ ,  Phone_longitude , Phone_latitude , E4_TEMP , E4_BVP , E4_IBI , E4_accX , E4_accY , E4_accZ , E4_GSR \r\n";
+//            fw.write(Result);
+//
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_SensingTime, null,null,null,"time ASC");
+//            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+//            Cursor cursor_PhoneAcc  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, null,null,null,null);
+//            Cursor cursor_PhoneGyro  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, null,null,null,null);
+//            Cursor cursor_E4Acc  = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, null,null,null,null);
+//            Cursor cursor_E4BVP  = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, null,null,null,null);
+//            Cursor cursor_E4TEMP  = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, null,null,null,null);
+//            Cursor cursor_E4IBI  = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, null,null,null,null);
+//            Cursor cursor_E4GSR  = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, null,null,null,null);
+//            Cursor cursor_PhoneLocation  = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, null,null,null,null);
+//
+//          //  String ing = " , ";
+//            String Phone_acc = " , , , " ;
+//            String Phone_gyro = " , , , " ;
+//            String Phone_location = " , , ";
+//            String E4_TEMP = " , ";
+//            String E4_BVP = " , ";
+//            String E4_IBI= " , ";
+//            String E4_acc = " , , , ";
+//            String E4_GSR= " ";
+//
+//            boolean E4Staus = false;
+//            boolean SmartPhoneStatus = false;
+//
+//            while(iCursor.moveToNext()){
+//                double tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                if(ex_time != tempTime){
+//                    ex_time = tempTime;
+//
+//                    if(cursor_main.moveToNext()){
+//                        double time_main = cursor_main.getLong(cursor_main.getColumnIndex("time"));
+//                              if(time_main == ex_time){
+//                                  String tempMark = " " ;
+//
+//                                  int tempe4 = cursor_main.getInt(cursor_main.getColumnIndex("mark_e4"));
+//                                  int tempphone = cursor_main.getInt(cursor_main.getColumnIndex("mark_phone"));
+//
+//                                  if(tempe4 == 0) E4Staus = false;
+//                                  else E4Staus = true;
+//
+//                                  if(tempphone == 0) SmartPhoneStatus = false;
+//                                  else SmartPhoneStatus = true;
+//
+//                              }else{
+//                                  cursor_main.moveToPrevious();
+//                              }
+//                          }
+//
+//                        if (cursor_PhoneAcc.moveToNext()) {
+//                            double time_acc = cursor_PhoneAcc.getLong(cursor_PhoneAcc.getColumnIndex("time"));
+//
+//                            if (time_acc == ex_time && SmartPhoneStatus) {
+//                                double tempX = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("x"));
+//                                double tempY = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("y"));
+//                                double tempZ = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("z"));
+//                                Phone_acc = tempX + " , " + tempY + " , " + tempZ + " , ";
+//                            } else if(time_acc > ex_time) {
+//                                cursor_PhoneAcc.moveToPrevious();
+//                            }
+////                            else if(!SmartPhoneStatus){
+////                                  Phone_acc = " , , , ";
+////                            }
+//                        }
+//                        if (cursor_PhoneGyro.moveToNext()) {
+//                            double time_gyro = cursor_PhoneGyro.getLong(cursor_PhoneGyro.getColumnIndex("time"));
+//
+//                            if (time_gyro == ex_time&& SmartPhoneStatus) {
+//                                double tempX = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("x"));
+//                                double tempY = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("y"));
+//                                double tempZ = cursor_PhoneGyro.getDouble(cursor_PhoneGyro.getColumnIndex("z"));
+//                                Phone_gyro = tempX + " , " + tempY + " , " + tempZ + " , ";
+//                            } else if(time_gyro > ex_time){
+//                                cursor_PhoneGyro.moveToPrevious();
+//
+//                            }
+////                            else if(!SmartPhoneStatus){
+////                                Phone_gyro = " , , , ";
+////                            }
+//                        }
+//                        if (cursor_PhoneLocation.moveToNext()) {
+//                            double time_location = cursor_PhoneLocation.getLong(cursor_PhoneLocation.getColumnIndex("time"));
+//                            if (time_location == ex_time&& SmartPhoneStatus) {
+//                                double tempLa = cursor_PhoneLocation.getDouble(cursor_PhoneLocation.getColumnIndex("Latitude"));
+//                                double tempLo = cursor_PhoneLocation.getDouble(cursor_PhoneLocation.getColumnIndex("Longitude"));
+//                                Phone_location = tempLo + " , " + tempLa + " , ";
+//                            } else if(time_location > ex_time){
+//                                cursor_PhoneLocation.moveToPrevious();
+//                            }
+////                            else if(!SmartPhoneStatus){
+////                                    Phone_location = " , , ";
+////                            }
+//                        }
+//
+//
+//                        if (cursor_E4TEMP.moveToNext()) {
+//                            double time_tem = cursor_E4TEMP.getLong(cursor_E4TEMP.getColumnIndex("time"));
+//                            if (time_tem == ex_time && E4Staus) {
+//                                double tempData = cursor_E4TEMP.getDouble(cursor_E4TEMP.getColumnIndex("data"));
+//                                E4_TEMP = tempData + " , ";
+//                            } else if(time_tem > ex_time){
+//                                cursor_E4TEMP.moveToPrevious();
+//                            }
+////                            else if(!E4Staus){
+////                                E4_TEMP=" , ";
+////                            }
+//                        }
+//                        if (cursor_E4BVP.moveToNext()) {
+//                            double time_bvp = cursor_E4BVP.getLong(cursor_E4BVP.getColumnIndex("time"));
+//                            if (time_bvp == ex_time && E4Staus) {
+//                                double tempData = cursor_E4BVP.getDouble(cursor_E4BVP.getColumnIndex("data"));
+//                                E4_BVP = tempData + " , ";
+//                            } else if(time_bvp > ex_time){
+//                                cursor_E4BVP.moveToPrevious();
+//                            }
+////                            else if(!E4Staus){
+////                                E4_BVP = " , ";
+////                            }
+//                        }
+//                        if (cursor_E4IBI.moveToNext()) {
+//                            double time_ibi = cursor_E4IBI.getLong(cursor_E4IBI.getColumnIndex("time"));
+//                            if (time_ibi == ex_time && E4Staus) {
+//                                double tempData = cursor_E4IBI.getDouble(cursor_E4IBI.getColumnIndex("data"));
+//                                E4_IBI = tempData + " , ";
+//                            } else if(time_ibi > ex_time){
+//                                cursor_E4IBI.moveToPrevious();
+//                            }
+////                            else if(!E4Staus){
+////                                E4_IBI = " , ";
+////                            }
+//                        }
+//                        if (cursor_E4Acc.moveToNext()) {
+//                            double time_acc = cursor_E4Acc.getLong(cursor_E4Acc.getColumnIndex("time"));
+//                            if (time_acc == ex_time&&E4Staus) {
+//                                double tempX = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("x"));
+//                                double tempY = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("y"));
+//                                double tempZ = cursor_E4Acc.getDouble(cursor_E4Acc.getColumnIndex("z"));
+//                                E4_acc = tempX + " , " + tempY + " , " + tempZ + " , ";
+//                            } else if(time_acc>ex_time){
+//                                cursor_E4Acc.moveToPrevious();
+//                            }
+////                            else if(!E4Staus){
+////                                E4_acc = " , , , ";
+////                            }
+//                        }
+//                        if (cursor_E4GSR.moveToNext()) {
+//                            double time_gsr = cursor_E4GSR.getLong(cursor_E4GSR.getColumnIndex("time"));
+//                            if (time_gsr == ex_time&&E4Staus) {
+//                                double tempData = cursor_E4GSR.getDouble(cursor_E4GSR.getColumnIndex("data"));
+//                                E4_GSR = tempData + "  ";
+//                            } else if(time_gsr > ex_time){
+//                                cursor_E4GSR.moveToPrevious();
+//                            }
+////                            else if(!E4Staus){
+////                                 E4_GSR = "  ";
+////                            }
+//                        }
+//
+//
+//                    if(!SmartPhoneStatus){
+//                        Phone_acc = " , , , ";
+//                        Phone_gyro = " , , , ";
+//                        Phone_location = " , , ";
+//                    }
+//
+//                    if(!E4Staus){
+//                        E4_TEMP=" , ";
+//                        E4_BVP = " , ";
+//                        E4_IBI = " , ";
+//                        E4_acc = " , , , ";
+//                        E4_GSR = "  ";
+//                    }
+//
+//                    Result = id++ + "," +phoneNumber + ", " + tempTime + " , "  + Phone_acc+Phone_gyro+ Phone_location +E4_TEMP+E4_BVP+E4_IBI+E4_acc+E4_GSR+" \n";
+//                    fw.write(Result);
+//                }
+//            }
+//            iCursor.close();
+//            cursor_E4Acc.close();
+//            cursor_E4BVP.close();
+//            cursor_E4GSR.close();
+//            cursor_E4IBI.close();
+//            cursor_E4TEMP.close();
+//            cursor_main.close();
+//            cursor_PhoneAcc.close();
+//            cursor_PhoneGyro.close();
+//            cursor_PhoneLocation.close();
+//
+//           fw.close();
+//
+//
+//
+//        } catch (Exception e) {
+//        }
+//    }
+//
+//    private void CSVE4_ACC(String path){
+//        try {
+//        String exportDB = path+"/E4_ACC.csv";
+//
+//        FileWriter fileWriter = new FileWriter(exportDB);
+//        BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//        String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
+//        fw.write(Result);
+//        Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, null,null,null,null);
+//
+//        while(iCursor.moveToNext()){
+//            int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//            String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//            double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
+//            double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
+//            double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
+//            long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//            long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//            Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
+//            fw.write(Result);
+//        }
+//        iCursor.close();
+//        fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVE4_IBI(String path){
+//        try {
+//            String exportDB = path+"/E4_IBI.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , IBI , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_IBI, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVE4_GSR(String path){
+//        try {
+//            String exportDB = path+"/E4_GSR.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , GSR , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_GSR, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVE4_BVP(String path){
+//        try {
+//            String exportDB = path+"/E4_BVP.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , BVP , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVE4_TEM(String path){
+//        try {
+//            String exportDB = path+"/E4_TEMPERATURE.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , SKIN_TEMP , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_E4_TEMPERATURE, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempData = iCursor.getDouble(iCursor.getColumnIndex("data"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempData+ " , "+ tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVPhone_ACC(String path){
+//        try {
+//            String exportDB = path+"/Phone_ACC.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
+//                double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
+//                double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVPhone_GYRO(String path){
+//        try {
+//            String exportDB = path+"/Phone_GYRO.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , x , y , z , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempX = iCursor.getDouble(iCursor.getColumnIndex("x"));
+//                double tempY = iCursor.getDouble(iCursor.getColumnIndex("y"));
+//                double tempZ = iCursor.getDouble(iCursor.getColumnIndex("z"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempX+ " , " + tempY+ " , " + tempZ+ " , " + tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSVPhone_LOC(String path){
+//        try {
+//            String exportDB = path+"/LocationService.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , Latitude , Longtitude , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                double tempLAT = iCursor.getDouble(iCursor.getColumnIndex("Latitude"));
+//                double tempLONG = iCursor.getDouble(iCursor.getColumnIndex("Longitude"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempLAT+ " , " + tempLONG+ " , "+ tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
+//    private void CSV_MAIN(String path){
+//        try {
+//            String exportDB = path+"/MainActivity.csv";
+//
+//            FileWriter fileWriter = new FileWriter(exportDB);
+//            BufferedWriter fw = new BufferedWriter(fileWriter);
+//
+//            String Result = "id , PhoneNumber , type , mark , time , reg \r\n";
+//            fw.write(Result);
+//            Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+//
+//            while(iCursor.moveToNext()){
+//                int tempID = iCursor.getInt(iCursor.getColumnIndex("_id"));
+//                String tempType = iCursor.getString(iCursor.getColumnIndex("type"));
+//                String tempMark = iCursor.getString(iCursor.getColumnIndex("mark"));
+//                long tempTime = iCursor.getLong(iCursor.getColumnIndex("time"));
+//                long tempReg = iCursor.getLong(iCursor.getColumnIndex("reg"));
+//
+//                Result = tempID + " , " +phoneNumber + " , " + tempType + " , " + tempMark+ " , " + tempTime+ " , " + tempReg + " \n";
+//                fw.write(Result);
+//            }
+//            iCursor.close();
+//            fw.close();
+//        } catch (Exception e) {
+//        }
+//    }
 
     public void SQLiteExport() {
         try {
@@ -1100,19 +1709,23 @@ public class MainActivity extends AppCompatActivity {
 
         try {
           //  ApplicationInfo applicationInfo = getBaseContext().getPackageManager().getApplicationInfo(getBaseContext().getPackageName(), PackageManager.GET_META_DATA);
-            String name = "sensors_data.db";
+//            String name = "sensors_data.db";
             String path = SQLitetoCSV();
-          //  String path = getBaseContext().getDatabasePath(name).getPath();
 
-            mFilePathList.add(path+"/E4_ACC.csv");
-            mFilePathList.add(path+"/E4_BVP.csv");
-            mFilePathList.add(path+"/E4_IBI.csv");
-            mFilePathList.add(path+"/E4_GSR.csv");
-            mFilePathList.add(path+"/E4_TEMPERATURE.csv");
-            mFilePathList.add(path+"/Phone_ACC.csv");
-            mFilePathList.add(path+"/Phone_GYRO.csv");
-            mFilePathList.add(path+"/LocationService.csv");
-            mFilePathList.add(path+"/MainActivity.csv");
+            mFilePathList.add(path+"/E4.csv");
+            mFilePathList.add(path+"/Phone.csv");
+
+          //  String path = getBaseContext().getDatabasePath(name).getPath();
+//            mFilePathList.add(path+"/ALL.csv");
+//            mFilePathList.add(path+"/E4_ACC.csv");
+//            mFilePathList.add(path+"/E4_BVP.csv");
+//            mFilePathList.add(path+"/E4_IBI.csv");
+//            mFilePathList.add(path+"/E4_GSR.csv");
+//            mFilePathList.add(path+"/E4_TEMPERATURE.csv");
+//            mFilePathList.add(path+"/Phone_ACC.csv");
+//            mFilePathList.add(path+"/Phone_GYRO.csv");
+//            mFilePathList.add(path+"/LocationService.csv");
+//            mFilePathList.add(path+"/MainActivity.csv");
 
 
           //  Log.i(TAG, "db Path = " + path);
@@ -1209,6 +1822,7 @@ public class MainActivity extends AppCompatActivity {
         protected Boolean doInBackground(Void... urls) {
             file = getOgetOutputZipFileutputZipFile("Log.zip");
             Log.i(TAG, file.toString());
+
             String zipFileName;
             if (file != null) {
                 zipFileName = file.getAbsolutePath();

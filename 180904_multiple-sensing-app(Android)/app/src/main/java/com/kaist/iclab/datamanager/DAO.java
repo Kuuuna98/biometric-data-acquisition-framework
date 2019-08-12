@@ -87,7 +87,7 @@ public class DAO extends SQLiteOpenHelper {
                 LOG_FIELD_X + " LONG NOT NULL, " +
                 LOG_FIELD_Y + " LONG NOT NULL, " +
                 LOG_FIELD_Z + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -97,6 +97,7 @@ public class DAO extends SQLiteOpenHelper {
          //       LOG_FIELD_PhoneNumber + " TEXT NOT NULL, " +
                 LOG_FIELD_TYPE + " TEXT NOT NULL, " +
                 LOG_FIELD_SENSINGDATA + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -106,7 +107,7 @@ public class DAO extends SQLiteOpenHelper {
            //     LOG_FIELD_PhoneNumber + " TEXT NOT NULL, " +
                 LOG_FIELD_TYPE + " TEXT NOT NULL, " +
                 LOG_FIELD_SENSINGDATA + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -116,7 +117,7 @@ public class DAO extends SQLiteOpenHelper {
              //   LOG_FIELD_PhoneNumber + " TEXT NOT NULL, " +
                 LOG_FIELD_TYPE + " TEXT NOT NULL, " +
                 LOG_FIELD_SENSINGDATA + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -126,7 +127,7 @@ public class DAO extends SQLiteOpenHelper {
         //        LOG_FIELD_PhoneNumber + " TEXT NOT NULL, " +
                 LOG_FIELD_TYPE + " TEXT NOT NULL, " +
                 LOG_FIELD_SENSINGDATA + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -139,7 +140,7 @@ public class DAO extends SQLiteOpenHelper {
                 LOG_FIELD_X + " LONG NOT NULL, " +
                 LOG_FIELD_Y + " LONG NOT NULL, " +
                 LOG_FIELD_Z + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -151,7 +152,7 @@ public class DAO extends SQLiteOpenHelper {
                 LOG_FIELD_X + " LONG NOT NULL, " +
                 LOG_FIELD_Y + " LONG NOT NULL, " +
                 LOG_FIELD_Z + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -162,7 +163,7 @@ public class DAO extends SQLiteOpenHelper {
                 LOG_FIELD_TYPE + " TEXT NOT NULL, " +
                 LOG_FIELD_LAT + " LONG NOT NULL, " +
                 LOG_FIELD_LONG + " LONG NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
                 ");");
 
@@ -171,9 +172,22 @@ public class DAO extends SQLiteOpenHelper {
                 "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
        //         LOG_FIELD_PhoneNumber + " TEXT NOT NULL, " +
                 LOG_FIELD_TYPE + " TEXT NOT NULL, " +
-                LOG_FIELD_MARK + " TEXT NOT NULL, " +
-                LOG_FIELD_TIME + " LONG NOT NULL, " +
+                LOG_FIELD_MARK_E4 + " INT NOT NULL, " +
+                LOG_FIELD_MARK_SmartPhone + " INT NOT NULL, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL, " +
                 LOG_FIELD_REG + " LONG NOT NULL" +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                SensingTime_e4 +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL " +
+                ");");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS " +
+                SensingTime_phone +
+                "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LOG_FIELD_TIME + " DOUBLE NOT NULL " +
                 ");");
     }
 
@@ -188,22 +202,28 @@ public class DAO extends SQLiteOpenHelper {
     public static String Phone_GYRO = "Phone_GYRO";
     public static String MainActivity = "MainActivity";
 
+    public static String SensingTime_e4 = "SensingTime_e4";
+    public static String SensingTime_phone = "SensingTime_phone";
+
     public static int NEW = 0;
 
-  //  public static String TABLE_LOG = "log";
+    //  public static String TABLE_LOG = "log";
     // public static String TABLE_REVIEW = "review";
 
     public static String LOG_FIELD_TYPE = "type";
     public static String LOG_FIELD_JSON = "json";
     public static String LOG_FIELD_REG = "reg";
     public static String LOG_FIELD_TIME = "time";
-    public static String LOG_FIELD_MARK = "mark";
+
+    public static String LOG_FIELD_MARK_E4 = "mark_e4";
+    public static String LOG_FIELD_MARK_SmartPhone = "mark_phone";
+
     public static String LOG_FIELD_X = "x";
     public static String LOG_FIELD_Y = "y";
     public static String LOG_FIELD_Z = "z";
     public static String LOG_FIELD_SENSINGDATA = "data";
     public static String LOG_FIELD_LAT = "Latitude";
-    public static String LOG_FIELD_LONG = "Longtitude";
+    public static String LOG_FIELD_LONG = "Longitude";
   //  public static String LOG_FIELD_PhoneNumber = "PhoneNumber";
 
     public static int NEW_E4ACC = 0;
@@ -215,6 +235,8 @@ public class DAO extends SQLiteOpenHelper {
     public static int NEW_PHGYRO = 0;
     public static int NEW_LOC = 0;
     public static int NEW_MAIN = 0;
+    public static int NEW_SensingTime_e4 = 0;
+    public static int NEW_SensingTime_phone = 0;
 
 
 
@@ -358,6 +380,34 @@ public class DAO extends SQLiteOpenHelper {
         return id;
     }
 
+    /*TimeWrite*/
+    public long writeTime_E4(long id, ContentValues contentValues) throws Exception {
+        Log.d(TAG, "writeTime:");
+        SQLiteDatabase database = getWritableDatabase();
+        //database.beginTransaction();
+        if (id == NEW_SensingTime_e4) {
+            id = database.insert(SensingTime_e4, null, contentValues);
+            //database.setTransactionSuccessful();
+            //database.endTransaction();
+        } else {
+            database.update(SensingTime_e4, contentValues, "_id = ?", new String[]{ id + "" });
+        }
+        return id;
+    }
+
+    public long writeTime_Phone(long id, ContentValues contentValues) throws Exception {
+        Log.d(TAG, "writeTime:");
+        SQLiteDatabase database = getWritableDatabase();
+        //database.beginTransaction();
+        if (id == NEW_SensingTime_phone) {
+            id = database.insert(SensingTime_phone, null, contentValues);
+            //database.setTransactionSuccessful();
+            //database.endTransaction();
+        } else {
+            database.update(SensingTime_phone, contentValues, "_id = ?", new String[]{ id + "" });
+        }
+        return id;
+    }
 
 
 
@@ -373,8 +423,9 @@ public class DAO extends SQLiteOpenHelper {
         database.delete(LocationService,null, null);
         database.delete(Phone_GYRO,null, null);
         database.delete(Phone_ACC,null, null);
-        return database.delete(MainActivity,null, null);
-
+        database.delete(SensingTime_e4,null, null);
+        database.delete(SensingTime_phone,null, null);
+        return  database.delete(MainActivity,null, null);
         // database.delete(TABLE_LOG,null, null);
     }
 
@@ -395,45 +446,50 @@ public class DAO extends SQLiteOpenHelper {
 //        return getReadableDatabase().query(TABLE_LOG, projection, selection, selectionArgs, null, null, null);
 //    }
 
+    public Cursor querySensingTime_E4(String[] projection, String selection, String[] selectionArgs) {
+        return getReadableDatabase().query(SensingTime_e4, projection, selection, selectionArgs, null, null, "time ASC");
+    }
+
+    public Cursor querySensingTime_Phone(String[] projection, String selection, String[] selectionArgs) {
+        return getReadableDatabase().query(SensingTime_phone, projection, selection, selectionArgs, null, null, "time ASC");
+    }
+
     public Cursor queryE4TEMCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(E4_TEMPERATURE, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(E4_TEMPERATURE, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryE4IBICount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(E4_IBI, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(E4_IBI, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryE4GSRCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(E4_GSR, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(E4_GSR, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryE4BVPCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(E4_BVP, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(E4_BVP, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryE4ACCCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(E4_ACC, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(E4_ACC, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryPHGYROCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(Phone_GYRO, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(Phone_GYRO, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryPHACCCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(Phone_ACC, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(Phone_ACC, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
     public Cursor queryLocationCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(LocationService, projection, selection, selectionArgs, null, null, null);
+        return getReadableDatabase().query(LocationService, projection, selection, selectionArgs, null, null, "time ASC");
     }
 
-    public Cursor queryMainCount(String[] projection, String selection, String[] selectionArgs) {
-        return getReadableDatabase().query(MainActivity, projection, selection, selectionArgs, null, null, null);
+    public Cursor queryMainCount(String[] projection, String selection, String[] selectionArgs, String orderBy) {
+        return getReadableDatabase().query(MainActivity, projection, selection, selectionArgs, null, null, orderBy);
     }
 
-    public Cursor selectPhoneACC(){
-        return getReadableDatabase().rawQuery( "SELECT * FROM Phone_ACC;", null);
-      //  return getReadableDatabase().query(Phone_ACC, null, null, null, null, null, null);
-    }
+
 
 }

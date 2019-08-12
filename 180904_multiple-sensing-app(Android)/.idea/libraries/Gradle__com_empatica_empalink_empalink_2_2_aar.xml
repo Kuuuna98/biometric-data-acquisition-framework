@@ -1,11 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.empatica.empalink:empalink:2.2@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bcb569cab7c5da36261f460ec98e396b/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6270d0fe7cc35aebfda9710706f61d66/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bcb569cab7c5da36261f460ec98e396b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bcb569cab7c5da36261f460ec98e396b/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6270d0fe7cc35aebfda9710706f61d66/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6270d0fe7cc35aebfda9710706f61d66/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -22,6 +22,7 @@ public class DataProvider extends ContentProvider {
     public static final String PROVIDER_NAME = "com.kaist.iclab.multisensing.datamanager";
     public static final Uri CONTENT_URI_LOG = Uri.parse("content://" + PROVIDER_NAME + "/log");
 
+    public static final Uri CONTENT_URI_SensingTime_E4 = Uri.parse("content://" + PROVIDER_NAME + "/SensingTime_E4");
     public static final Uri CONTENT_URI_E4_ACC = Uri.parse("content://" + PROVIDER_NAME + "/E4_ACC");
     public static final Uri CONTENT_URI_E4_BVP = Uri.parse("content://" + PROVIDER_NAME + "/E4_BVP");
     public static final Uri CONTENT_URI_E4_IBI = Uri.parse("content://" + PROVIDER_NAME + "/E4_IBI");
@@ -29,9 +30,8 @@ public class DataProvider extends ContentProvider {
     public static final Uri CONTENT_URI_E4_GSR = Uri.parse("content://" + PROVIDER_NAME + "/E4_GSR");
     public static final Uri CONTENT_URI_LocationService = Uri.parse("content://" + PROVIDER_NAME + "/LocationService");
 
+    public static final Uri CONTENT_URI_SensingTime_Phone = Uri.parse("content://" + PROVIDER_NAME + "/SensingTime_Phone");
     public static final Uri CONTENT_URI_Phone_ACC = Uri.parse("content://" + PROVIDER_NAME + "/Phone_ACC");
-    public static final Uri CONTENT_URI_Phone_ACC_SEL = Uri.parse("content://" + PROVIDER_NAME + "/Phone_ACC_SEL");
-
     public static final Uri CONTENT_URI_Phone_GYRO = Uri.parse("content://" + PROVIDER_NAME + "/Phone_GYRO");
     public static final Uri CONTENT_URI_MainActivity = Uri.parse("content://" + PROVIDER_NAME + "/MainActivity");
 
@@ -43,17 +43,23 @@ public class DataProvider extends ContentProvider {
     private static final int RANGE = 20;
     private static final int REVIEW = 30;
 
-    private static final int E4_ACC = 40;
+    private static final int SensingTime_E4 = 40;
     private static final int E4_BVP = 41;
     private static final int E4_GSR = 42;
     private static final int E4_IBI = 43;
     private static final int E4_TEMPERATURE = 44;
-    private static final int LocationService = 50;
-    private static final int Phone_ACC = 60;
-    private static final int Phone_ACC_SEL = 61;
+    private static final int E4_ACC = 45;
 
-    private static final int Phone_GYRO = 70;
+    private static final int SensingTime_Phone = 50;
+    private static final int Phone_ACC = 51;
+    private static final int Phone_GYRO = 52;
+    private static final int LocationService = 53;
+
     private static final int MainActivity = 80;
+
+
+
+
 
 
 
@@ -73,7 +79,9 @@ public class DataProvider extends ContentProvider {
         uriMatcher.addURI(PROVIDER_NAME, "E4_TEMPERATURE", E4_TEMPERATURE);
         uriMatcher.addURI(PROVIDER_NAME, "LocationService", LocationService);
         uriMatcher.addURI(PROVIDER_NAME, "Phone_ACC", Phone_ACC);
-        uriMatcher.addURI(PROVIDER_NAME, "Phone_ACC_SEL", Phone_ACC_SEL);
+        uriMatcher.addURI(PROVIDER_NAME, "SensingTime_E4", SensingTime_E4);
+        uriMatcher.addURI(PROVIDER_NAME, "SensingTime_Phone", SensingTime_Phone);
+
 
 
         uriMatcher.addURI(PROVIDER_NAME, "Phone_GYRO", Phone_GYRO);
@@ -132,8 +140,11 @@ public class DataProvider extends ContentProvider {
                     //if (selectionArgs != null && selectionArgs.length == 1 && selection == null) selection = "_id = ?";
                     return dao.queryE4TEMCount(projection, selection, selectionArgs);
                 }
-                case Phone_ACC_SEL:{
-                    return dao.selectPhoneACC();
+                case SensingTime_E4:{
+                    return dao.querySensingTime_E4(projection,selection,selectionArgs);
+                }
+                case SensingTime_Phone:{
+                    return dao.querySensingTime_Phone(projection,selection,selectionArgs);
                 }
                 case Phone_ACC:{
                     //if (selectionArgs != null && selectionArgs.length == 1 && selection == null) selection = "_id = ?";
@@ -149,7 +160,7 @@ public class DataProvider extends ContentProvider {
                 }
                 case MainActivity:{
                     //if (selectionArgs != null && selectionArgs.length == 1 && selection == null) selection = "_id = ?";
-                    return dao.queryMainCount(projection, selection, selectionArgs);
+                    return dao.queryMainCount(projection, selection, selectionArgs, sortOrder);
                 }
 
             }
@@ -179,6 +190,22 @@ public class DataProvider extends ContentProvider {
 //                    lastId = id;
 //                    return Uri.withAppendedPath(CONTENT_URI_LOG, id + "");
 //                }
+                case SensingTime_E4: {
+                    Log.d(TAG, "CP insert: "+uri);
+                    long id = dao.writeTime_E4(DAO.NEW_SensingTime_e4, values);
+                    Log.d(TAG, "new id: " + id);
+                    //showToast("DP: "+ id);
+                    lastId = id;
+                    return Uri.withAppendedPath(CONTENT_URI_SensingTime_E4, id + "");
+                }
+                case SensingTime_Phone: {
+                    Log.d(TAG, "CP insert: "+uri);
+                    long id = dao.writeTime_Phone(DAO.NEW_SensingTime_phone, values);
+                    Log.d(TAG, "new id: " + id);
+                    //showToast("DP: "+ id);
+                    lastId = id;
+                    return Uri.withAppendedPath(CONTENT_URI_SensingTime_Phone, id + "");
+                }
                 case E4_ACC: {
                     Log.d(TAG, "CP insert: "+uri);
                     long id = dao.writeE4ACC(DAO.NEW_E4ACC, values);
@@ -285,7 +312,13 @@ public class DataProvider extends ContentProvider {
 //        if (match == LOG) {
 //            return insertInBulk(getDatabase(), DAO.TABLE_LOG, values);
 //        }else
-        if (match == E4_ACC) {
+        if (match == SensingTime_E4) {
+            return insertInBulk(getDatabase(), DAO.SensingTime_e4, values);
+        }
+        else if (match == SensingTime_Phone) {
+            return insertInBulk(getDatabase(), DAO.SensingTime_phone, values);
+        }
+        else if (match == E4_ACC) {
             return insertInBulk(getDatabase(), DAO.E4_ACC, values);
         }else if (match == E4_BVP) {
             return insertInBulk(getDatabase(), DAO.E4_BVP, values);

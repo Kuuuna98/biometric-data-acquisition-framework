@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Telephony;
 import android.support.v4.app.ActivityCompat;
@@ -72,8 +73,13 @@ public class LocationService extends Service {
 
     private String mNotiMessage = "";
 
-    private ContentValues[] multipleSensorData;
-    private int BULK_COUNT=0;
+    private ContentValues[] multipleSensorData_acc;
+    private ContentValues[] mTime_acc;
+    private static int BULK_COUNT_acc=0;
+
+    private ContentValues[] multipleSensorData_gyro;
+    private ContentValues[] mTime_gyro;
+    private static int BULK_COUNT_gyro=0;
 
     String serverURL = "http://168.188.127.108:5555/AppRating/FileReceiver.jsp";
 
@@ -199,71 +205,67 @@ public class LocationService extends Service {
         float x = values[0];
         float y = values[1];
         float z = values[2];
-        long actualTime = System.currentTimeMillis();
-        Log.d(TAG, String.valueOf(System.currentTimeMillis()));
-        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && ((Math.abs(accX - x) > 0.3) ||(Math.abs(accY - y) > 0.3) ||(Math.abs(accZ - z) > 0.3))){ //민감도 범위 0.3로 설정
+        double actualTime = System.currentTimeMillis();
 
+        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && ((Math.abs(accX - x) > 0.3) ||(Math.abs(accY - y) > 0.3) ||(Math.abs(accZ - z) > 0.3))) { //민감도 범위 0.3로 설정
             accDelta++;
-
             accX = x;
             accY = y;
             accZ = z;
-
-            try {
-                ContentValues cv = new ContentValues();
-                String type =  "Phone.ACC" ;
-               // cv.put(DAO.LOG_FIELD_PhoneNumber, MainActivity.PhoneNumeber());
-                cv.put(DAO.LOG_FIELD_TYPE, type);
-                cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
-                cv.put(DAO.LOG_FIELD_X, x);
-                cv.put(DAO.LOG_FIELD_Y, y);
-                cv.put(DAO.LOG_FIELD_Z, z);
-                cv.put(DAO.LOG_FIELD_TIME, actualTime);
-
-//            JSONObject json = new JSONObject();
-//            json.put("x", x);
-//            json.put("y", y);
-//            json.put("z", z);
-//            json.put("time", actualTime);
-//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
-
-                // bulk insert to improve async_query_handler
-//                if (BULK_COUNT < Constants.DB_BULK_RATE -1){
-//                    multipleSensorData[BULK_COUNT] = cv;
-//                    BULK_COUNT++;
-//                }else{
-//                    multipleSensorData[BULK_COUNT] = cv;
-//                    BULK_COUNT = 0;
-//                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-//                    /*token처리*/
-//                        handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_ACC, multipleSensorData) ;
-//                }
-                //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
-                //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
-
-                AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
-                };
-                handler.startInsert(-1, null, DataProvider.CONTENT_URI_Phone_ACC, cv);
-
-                mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
-                Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z +", acc:" + accDelta + ", gyro: " + gyroDelta + ", loc:"+locDelta);
-            } catch (Exception e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            }
-
-        }
-        else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//민감도 범위 1.0으로 설정
-
+        } else if(event.sensor.getType()==Sensor.TYPE_GYROSCOPE && ((Math.abs(Math.abs(gyroX) - Math.abs(x)) > 1.0) ||(Math.abs(Math.abs(gyroY) - Math.abs(y)) > 1.0) ||(Math.abs(Math.abs(gyroZ) - Math.abs(z)) > 1.0))){//민감도 범위 1.0으로 설정
             gyroDelta++;
-
             gyroX = x;
             gyroY = y;
             gyroZ = z;
+        }
 
+        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+            try {
+                ContentValues cv = new ContentValues();
+                String type =  "Phone.ACC" ;
+                // cv.put(DAO.LOG_FIELD_PhoneNumber, MainActivity.PhoneNumeber());
+                cv.put(DAO.LOG_FIELD_TYPE, type);
+                cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
+                cv.put(DAO.LOG_FIELD_X, x);
+                cv.put(DAO.LOG_FIELD_Y, y);
+                cv.put(DAO.LOG_FIELD_Z, z);
+                cv.put(DAO.LOG_FIELD_TIME, actualTime);
+                Log.d("time check 1", String.valueOf(actualTime));
+                ContentValues S_time = new ContentValues();
+                S_time.put(DAO.LOG_FIELD_TIME, actualTime);
+                Log.d("time check 2", String.valueOf(actualTime));
+                // bulk insert to improve async_query_handler
+                if (BULK_COUNT_acc < Constants.DB_BULK_RATE -1){
+                    multipleSensorData_acc[BULK_COUNT_acc] = cv;
+                    mTime_acc[BULK_COUNT_acc] = S_time;
+                    BULK_COUNT_acc++;
+                }else{
+                    multipleSensorData_acc[BULK_COUNT_acc] = cv;
+                    mTime_acc[BULK_COUNT_acc] = S_time;
+                    BULK_COUNT_acc = 0;
+                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+                    /*token처리*/
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_ACC, multipleSensorData_acc) ;
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_Phone, mTime_acc) ;
+                }
+                //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
+                //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
+//                AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//                };
+//                handler.startInsert(-1, null, DataProvider.CONTENT_URI_Phone_ACC, cv);
+
+                mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
+                Log.d(TAG, type +": X,Y,Z: " + x + ", " + y + ", " + z +", acc:" + accDelta + ", gyro: " + gyroDelta + ", loc:"+locDelta);
+            } catch (Exception e) {
+                Log.e(TAG, e.getLocalizedMessage());
+            }
+
+
+        }else{
             try {
                 ContentValues cv = new ContentValues();
                 String type =  "Phone.GYRO";
-              //  cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
+                //  cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
                 cv.put(DAO.LOG_FIELD_TYPE, type);
                 cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
                 cv.put(DAO.LOG_FIELD_X, x);
@@ -271,31 +273,29 @@ public class LocationService extends Service {
                 cv.put(DAO.LOG_FIELD_Z, z);
                 cv.put(DAO.LOG_FIELD_TIME, actualTime);
 
-//            JSONObject json = new JSONObject();
-//            json.put("x", x);
-//            json.put("y", y);
-//            json.put("z", z);
-//            json.put("time", actualTime);
-//            cv.put(DAO.LOG_FIELD_JSON, json.toString());
+
+                ContentValues S_time = new ContentValues();
+                S_time.put(DAO.LOG_FIELD_TIME, actualTime);
+
 
                 // bulk insert to improve async_query_handler
-//                if (BULK_COUNT < Constants.DB_BULK_RATE -1){
-//                    multipleSensorData[BULK_COUNT] = cv;
-//                    BULK_COUNT++;
-//                }else{
-//                    multipleSensorData[BULK_COUNT] = cv;
-//                    BULK_COUNT = 0;
-//                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-//                    /*token처리*/
-//
-//                        handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_GYRO, multipleSensorData);
-//
-//                }
+                if (BULK_COUNT_gyro < Constants.DB_BULK_RATE -1){
+                    multipleSensorData_gyro[BULK_COUNT_gyro] = cv;
+                    mTime_gyro[BULK_COUNT_gyro] = S_time;
+                    BULK_COUNT_gyro++;
+                }else{
+                    multipleSensorData_gyro[BULK_COUNT_gyro] = cv;
+                    mTime_gyro[BULK_COUNT_gyro] = S_time;
+                    BULK_COUNT_gyro = 0;
+                    final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+                    /*token처리*/
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_GYRO, multipleSensorData_gyro);
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_Phone, mTime_gyro);
+                }
 
-                AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
-                };
-                handler.startInsert(-1, null, DataProvider.CONTENT_URI_Phone_GYRO, cv);
-
+//                AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {
+//                };
+//                handler.startInsert(-1, null, DataProvider.CONTENT_URI_Phone_GYRO, cv);
                 //AsyncQueryHandler handler = new AsyncQueryHandler(getContentResolver()) {};
                 //handler.startInsert(-1, null, DataProvider.CONTENT_URI_LOG, cv);
                 mNotiMessage = "X,Y,Z: " + x + ", " + y + ", " + z;
@@ -304,6 +304,7 @@ public class LocationService extends Service {
                 Log.e(TAG, e.getLocalizedMessage());
             }
         }
+
 
     }
 
@@ -340,7 +341,37 @@ public class LocationService extends Service {
             sensorManager = null;
         } catch (Exception e) {}
 
+//        if( MainActivity.mButtonE4Scan.isEnabled() && MainActivity.mButtonSmartphoneSensingStart.isEnabled() ) MainActivity.mButtonFileTransfer.setEnabled(true);
+
         Disable(); // notification
+     //   lastBulkHandler();
+    }
+
+    public static void resetTemp(){
+        BULK_COUNT_gyro = 0;
+        BULK_COUNT_acc = 0;
+    }
+    synchronized public void lastBulkHandler(){
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+
+                if (BULK_COUNT_acc <= Constants.DB_BULK_RATE -1){
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_ACC, multipleSensorData_acc);
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_Phone, mTime_acc);
+                    BULK_COUNT_acc = 0;
+                }
+
+                if (BULK_COUNT_gyro <= Constants.DB_BULK_RATE -1){
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_GYRO, multipleSensorData_gyro);
+                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_Phone, mTime_gyro);
+                    BULK_COUNT_gyro = 0;
+                }
+
+            }
+        }, 0);
     }
 
     private void Enable(){
@@ -353,8 +384,10 @@ public class LocationService extends Service {
         mWakeLock.acquire();        ncomp = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 
         // Array of Content Values Init.
-        multipleSensorData = new ContentValues[Constants.DB_BULK_RATE];
-
+        multipleSensorData_acc = new ContentValues[Constants.DB_BULK_RATE];
+        mTime_acc = new ContentValues[Constants.DB_BULK_RATE];
+        multipleSensorData_gyro = new ContentValues[Constants.DB_BULK_RATE];
+        mTime_gyro = new ContentValues[Constants.DB_BULK_RATE];
     }
     private void Disable(){
         nManager.cancel(NOTIFYID_SMARTPHONE);
@@ -454,14 +487,14 @@ public class LocationService extends Service {
         Log.d(TAG, "onLocationChanged: " + location);
         try {
             locDelta++;
-
+            double LocationactualTime = location.getTime();
             ContentValues values = new ContentValues();
            // values.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             values.put(DAO.LOG_FIELD_TYPE, "LocationService");
             values.put(DAO.LOG_FIELD_REG, new Date().getTime());
             values.put(DAO.LOG_FIELD_LAT, location.getLatitude());
             values.put(DAO.LOG_FIELD_LONG, location.getLongitude());
-            values.put(DAO.LOG_FIELD_TIME, location.getTime());
+            values.put(DAO.LOG_FIELD_TIME, LocationactualTime);
 
 //            JSONObject json = new JSONObject();
 //            json.put("Provider", location.getProvider());
@@ -479,6 +512,14 @@ public class LocationService extends Service {
             };
             /*token처리*/
             handler.startInsert(-1, null, DataProvider.CONTENT_URI_LocationService, values);
+
+            ContentValues S_time = new ContentValues();
+            S_time.put(DAO.LOG_FIELD_TIME, LocationactualTime);
+            AsyncQueryHandler time_handler = new AsyncQueryHandler(getContentResolver()) {
+            };
+            time_handler.startInsert(-1, null, DataProvider.CONTENT_URI_SensingTime_Phone, S_time);
+
+
 
             broadcastMessage("Location", location.toString());
         } catch (Exception e) {
