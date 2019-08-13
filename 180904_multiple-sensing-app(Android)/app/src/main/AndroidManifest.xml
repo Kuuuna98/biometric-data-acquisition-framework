@@ -74,8 +74,6 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
-        <activity android:name=".activity.FileChooseActivity"
-            android:label="FileChooser"></activity>
     </application>
 
 </manifest>

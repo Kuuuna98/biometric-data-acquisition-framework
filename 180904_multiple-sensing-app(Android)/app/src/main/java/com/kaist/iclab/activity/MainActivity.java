@@ -1,7 +1,6 @@
 package com.kaist.iclab.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ProgressDialog;
@@ -91,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final int REQUEST_CODE = 11;
     private static final int REQUEST_CANCLE_CODE = 22;
-    private static final int REQUEST_FILE_CHOOSE = 533;
     public static int phone_insert = 0;
     public static int e4_insert = 0;
 
@@ -288,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressLint("InvalidWakeLockTag")
     @Override
     protected void onResume() {
         super.onResume();
@@ -537,24 +534,10 @@ public class MainActivity extends AppCompatActivity {
 //                    break;
 
                 case R.id.button_filetransfer:
-                    doSubmit(null);
-                    //SQLiteExport();
-                    Intent intent_file = new Intent(
-                            getApplicationContext(), // 현재화면의 제어권자
-                            FileChooseActivity.class); // 다음넘어갈 화면
-                    startActivityForResult(intent_file, REQUEST_FILE_CHOOSE);
-                    //startActivity(intent_file);
-                    //finish();
-
-                    /*Log.d(TAG, "onClick: TESTESTEST");
-                    for ( String temp : getIntent().getStringArrayExtra("transeferList")){
-                        Log.d(TAG, "transeferList: " + temp);
-                    }*/
-
                     mTransferAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
-                            doSubmit(null);
+                            doSubmit();
                         } });
                     mTransferAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -596,10 +579,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, String.format("setConnection address = %s, isConnection = %s",address, isConnection));
     }*/
-
-   /*protected void onActivityResult( int reqestCode, int resultCode, Intent data){
-
-   }*/
 
 
    public int InsertDBcheck(){
@@ -812,20 +791,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "no one selection", Toast.LENGTH_SHORT).show();
             }
         }
-        else if (requestCode == REQUEST_FILE_CHOOSE){
-            Log.d(TAG, "testwhynot: " + data.getExtras().getString("test"));
-            String[] transeferList = data.getExtras().getStringArray("transferList" );
-            Log.d(TAG, "testtransefertest: " + transeferList[0]);
-            Log.d(TAG, "testtransefertest: " + transeferList.toString());
-
-            zipChoose(transeferList);
-
-            for ( String temp : transeferList){
-                Log.d(TAG, "testtranseferList: " + temp);
-            }
-            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
-            doSubmit(transeferList);
-        }
     }
 
 //    // Update a label with some text, making sure this is run in the UI thread
@@ -838,12 +803,12 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //    }
 
-    private void doSubmit(String[] fileList) {
-        // saveInfo();
-        SQLiteExport();
-        // SQLitetoCSV();
-        addFilesToZip(fileList);
-        mCompressFiles = new CompressFiles();
+    private void doSubmit() {
+       // saveInfo();
+       SQLiteExport();
+      // SQLitetoCSV();
+     addFilesToZip();
+       mCompressFiles = new CompressFiles();
         mCompressFiles.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -901,28 +866,24 @@ public class MainActivity extends AppCompatActivity {
             File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
             if (!directory.exists()) { directory.mkdirs(); }
 
-
             if (external.canWrite()) {
                 int i=1;
             //    File currentDB = new File(internal, "/data/com.kaist.iclab/databases/sensors_data.db");
 
-                /*String file = "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd").format(new Date(System.currentTimeMillis()));
+                String file = "/E4_Sensing/"+ phoneNumber+"_" + new SimpleDateFormat("yyyy.MM.dd").format(new Date(System.currentTimeMillis()));
                 File directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
 
                 while (directory2.exists()) {
                     directory2 = new File(external.getAbsolutePath() + file+"_"+i++);
                 }
-                directory2.mkdirs();*/
+                directory2.mkdirs();
 
-                //CSV_E4(directory2.getAbsolutePath());
-                //CSV_Phone(directory2.getAbsolutePath());
-                CSV_E4(directory.getAbsolutePath());
-                CSV_Phone(directory.getAbsolutePath());
+                CSV_E4(directory2.getAbsolutePath());
+                CSV_Phone(directory2.getAbsolutePath());
 
                 Toast.makeText(getApplicationContext(), "csv File make success !", Toast.LENGTH_LONG).show();
 
-                //return directory2.getAbsolutePath();
-                return directory.getAbsolutePath();
+                return directory2.getAbsolutePath();
             }
         } catch (Exception e) {
 
@@ -932,8 +893,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void CSV_E4(String path){
         try {
-            //String exportDB = path+"/E4.csv";
-            String exportDB = path+"/"+ phoneNumber+ "_" +new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis()))+"_E4.csv";
+            String exportDB = path+"/E4.csv";
 
             FileWriter fileWriter = new FileWriter(exportDB);
             BufferedWriter fw = new BufferedWriter(fileWriter);
@@ -1091,7 +1051,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void CSV_Phone(String path){
         try {
-            String exportDB = path + "/" + phoneNumber+ "_" +  new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())) + "_Phone.csv";
+            String exportDB = path+"/Phone.csv";
 
             FileWriter fileWriter = new FileWriter(exportDB);
             BufferedWriter fw = new BufferedWriter(fileWriter);
@@ -1148,7 +1108,7 @@ public class MainActivity extends AppCompatActivity {
                             double tempZ = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("z"));
                             Phone_acc = tempX + " , " + tempY + " , " + tempZ + " , ";
                         }else if(time_acc > ex_time){
-                            cursor_PhoneGyro.moveToPrevious();
+                            cursor_PhoneAcc.moveToPrevious();
                         }
 
                     }
@@ -1715,19 +1675,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void addFilesToZip(String[] fileList) {
+    private void addFilesToZip() {
 
         try {
           //  ApplicationInfo applicationInfo = getBaseContext().getPackageManager().getApplicationInfo(getBaseContext().getPackageName(), PackageManager.GET_META_DATA);
 //            String name = "sensors_data.db";
             String path = SQLitetoCSV();
 
-            for (String fileName : fileList){
-                mFilePathList.add(path+fileName);
-            }
-
-            //mFilePathList.add(path+"/E4.csv");
-            //mFilePathList.add(path+"/Phone.csv");
+            mFilePathList.add(path+"/E4.csv");
+            mFilePathList.add(path+"/Phone.csv");
 
           //  String path = getBaseContext().getDatabasePath(name).getPath();
 //            mFilePathList.add(path+"/ALL.csv");
@@ -1799,8 +1755,8 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
     public static File getOgetOutputZipFileutputZipFile(String fileName) {
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "output");
-        //File mediaStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        //File mediaStorageDir = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "output");
+        File mediaStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
                 return null;
@@ -1939,242 +1895,5 @@ public class MainActivity extends AppCompatActivity {
     }
     public void setCompressProgress(int filesCompressionCompleted) {
         mCompressFiles.publish(filesCompressionCompleted);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-    public void zipChoose(String[] fileList){
-        byte[] buf = new byte[4096];
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/E4_Sensing/Zip/";
-        File file = new File(path);
-        if (!file.exists()){
-            file.mkdir();
-        }
-
-        String zipFileName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/E4_Sensing/Zip/" + phoneNumber + "_" + new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date(System.currentTimeMillis())) + ".zip";
-
-        try {
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
-
-            for (int i=0; i<fileList.length; i++) {
-                FileInputStream in = new FileInputStream(fileList[i]);
-
-                ZipEntry ze = new ZipEntry(fileList[i]);
-                out.putNextEntry(ze);
-
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-
-                out.closeEntry();
-                in.close();
-
-            }
-
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
