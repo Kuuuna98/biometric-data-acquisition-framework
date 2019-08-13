@@ -1,5 +1,6 @@
 package com.kaist.iclab.services;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -142,6 +143,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         }
         return START_STICKY;
     }
+    @SuppressLint("InvalidWakeLockTag")
     private void Enable(){
         InitNotification();
         mNotificationUpdateHandler.postDelayed(UpdateNotification,   Constants.UPDATE_INTERVAL);
@@ -152,18 +154,18 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         mWakeLock.acquire();
 
         // Array of Content Values Init.
-        multipleE4Data_acc = new ContentValues[Constants.DB_BULK_RATE];
-        multipleE4Data_bvp = new ContentValues[Constants.DB_BULK_RATE];
-        multipleE4Data_gsr = new ContentValues[Constants.DB_BULK_RATE];
-        multipleE4Data_ibi = new ContentValues[Constants.DB_BULK_RATE];
-        multipleE4Data_temp = new ContentValues[Constants.DB_BULK_RATE];
+        multipleE4Data_acc = new ContentValues[Constants.HIGH_DB_BULK_RATE];
+        multipleE4Data_bvp = new ContentValues[Constants.HIGH_DB_BULK_RATE];
+        multipleE4Data_gsr = new ContentValues[Constants.LOW_DB_BULK_RATE];
+        multipleE4Data_ibi = new ContentValues[Constants.IBI_DB_BULK_RATE];
+        multipleE4Data_temp = new ContentValues[Constants.LOW_DB_BULK_RATE];
 
         //   multipleE4_time = new ContentValues[Constants.DB_BULK_RATE];
-        mE4time_acc = new ContentValues[Constants.DB_BULK_RATE];
-        mE4time_bvp = new ContentValues[Constants.DB_BULK_RATE];
-        mE4time_gsr = new ContentValues[Constants.DB_BULK_RATE];
-        mE4time_ibi = new ContentValues[Constants.DB_BULK_RATE];
-        mE4time_temp = new ContentValues[Constants.DB_BULK_RATE];
+        mE4time_acc = new ContentValues[Constants.HIGH_DB_BULK_RATE];
+        mE4time_bvp = new ContentValues[Constants.HIGH_DB_BULK_RATE];
+        mE4time_gsr = new ContentValues[Constants.LOW_DB_BULK_RATE];
+        mE4time_ibi = new ContentValues[Constants.IBI_DB_BULK_RATE];
+        mE4time_temp = new ContentValues[Constants.LOW_DB_BULK_RATE];
     }
     private void Disable(){
         nManager.cancel(NOTIFYID_E4);
@@ -356,7 +358,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         switch (type) {
             case "E4.TEMPERATURE":{
 
-                if (BULK_COUNT_temp < Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_temp < Constants.LOW_DB_BULK_RATE -1){
                     multipleE4Data_temp[BULK_COUNT_temp] = cv;
                     mE4time_temp[BULK_COUNT_temp] = S_time;
                     BULK_COUNT_temp++;
@@ -381,7 +383,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
             case "E4.BVP":{
 
-                if (BULK_COUNT_bvp < Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_bvp < Constants.HIGH_DB_BULK_RATE -1){
                     multipleE4Data_bvp[BULK_COUNT_bvp] = cv;
                     mE4time_bvp[BULK_COUNT_bvp] = S_time;
                     BULK_COUNT_bvp++;
@@ -406,7 +408,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             }
             case "E4.GSR":{
 
-                if (BULK_COUNT_gsr < Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_gsr < Constants.LOW_DB_BULK_RATE -1){
                     multipleE4Data_gsr[BULK_COUNT_gsr] = cv;
                     mE4time_gsr[BULK_COUNT_gsr] = S_time;
                     BULK_COUNT_gsr++;
@@ -431,7 +433,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             }
             case "E4.IBI":{
 
-                if (BULK_COUNT_ibi < Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_ibi < Constants.IBI_DB_BULK_RATE -1){
                     multipleE4Data_ibi[BULK_COUNT_ibi] = cv;
                     mE4time_ibi[BULK_COUNT_ibi] = S_time;
                     BULK_COUNT_ibi++;
@@ -456,7 +458,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             }
             case "E4.ACC":{
 
-                if (BULK_COUNT_acc < Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_acc < Constants.HIGH_DB_BULK_RATE -1){
                     multipleE4Data_acc[BULK_COUNT_acc] = cv;
                     mE4time_acc[BULK_COUNT_acc] = S_time;
                     BULK_COUNT_acc++;
@@ -493,31 +495,31 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             public void run() {
                 final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
 
-                if (BULK_COUNT_acc <= Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_acc <= Constants.HIGH_DB_BULK_RATE -1){
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_ACC, multipleE4Data_acc);
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_acc);
                     BULK_COUNT_acc = 0;
                 }
 
-                if (BULK_COUNT_gsr <= Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_gsr <= Constants.LOW_DB_BULK_RATE -1){
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_GSR, multipleE4Data_gsr);
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_gsr);
                     BULK_COUNT_gsr = 0;
                 }
 
-                if (BULK_COUNT_ibi <= Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_ibi <= Constants.IBI_DB_BULK_RATE -1){
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_IBI, multipleE4Data_ibi);
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_ibi);
                     BULK_COUNT_ibi = 0;
                 }
 
-                if (BULK_COUNT_temp <= Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_temp <= Constants.LOW_DB_BULK_RATE -1){
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, multipleE4Data_temp);
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_temp);
                     BULK_COUNT_temp = 0;
                 }
 
-                if (BULK_COUNT_bvp <= Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_bvp <= Constants.HIGH_DB_BULK_RATE -1){
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_BVP, multipleE4Data_bvp);
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_bvp);
                     BULK_COUNT_bvp = 0;

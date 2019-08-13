@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION_ACCESS_COARSE_LOCATION = 1;
     private static final int REQUEST_CODE = 11;
     private static final int REQUEST_CANCLE_CODE = 22;
-    private static final int REQUEST_FILE_CHOOSE = 533;
     public static int phone_insert = 0;
     public static int e4_insert = 0;
 
@@ -535,28 +534,16 @@ public class MainActivity extends AppCompatActivity {
 //                    break;
 
                 case R.id.button_filetransfer:
-                    Intent intent_file = new Intent(
-                            getApplicationContext(), // 현재화면의 제어권자
-                            FileChooseActivity.class); // 다음넘어갈 화면
-                    startActivityForResult(intent_file, REQUEST_FILE_CHOOSE);
-                    //startActivity(intent_file);
-                    //finish();
-
-                    /*Log.d(TAG, "onClick: TESTESTEST");
-                    for ( String temp : getIntent().getStringArrayExtra("transeferList")){
-                        Log.d(TAG, "transeferList: " + temp);
-                    }*/
-
-//                    mTransferAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
-//                            doSubmit();
-//                        } });
-//                    mTransferAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            finish();
-//                        } });
-//                    mTransferAlert.show();
+                    mTransferAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
+                            doSubmit();
+                        } });
+                    mTransferAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        } });
+                    mTransferAlert.show();
                     break;
 
                 case R.id.button_check_db_insert:
@@ -592,10 +579,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, String.format("setConnection address = %s, isConnection = %s",address, isConnection));
     }*/
-
-   /*protected void onActivityResult( int reqestCode, int resultCode, Intent data){
-
-   }*/
 
 
    public int InsertDBcheck(){
@@ -808,18 +791,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "no one selection", Toast.LENGTH_SHORT).show();
             }
         }
-        else if (requestCode == REQUEST_FILE_CHOOSE){
-            Log.d(TAG, "testwhynot: " + data.getExtras().getString("test"));
-            String[] transeferList = data.getExtras().getStringArray("transferList" );
-            Log.d(TAG, "testtransefertest: " + transeferList[0]);
-            Log.d(TAG, "testtransefertest: " + transeferList.toString());
-
-            for ( String temp : transeferList){
-                Log.d(TAG, "testtranseferList: " + temp);
-            }
-            Toast.makeText(getApplicationContext(), "Transfer~", Toast.LENGTH_LONG).show();
-            doSubmit();
-        }
     }
 
 //    // Update a label with some text, making sure this is run in the UI thread
@@ -832,9 +803,9 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //    }
 
-    public void doSubmit() {
+    private void doSubmit() {
        // saveInfo();
-        SQLiteExport();
+       SQLiteExport();
       // SQLitetoCSV();
      addFilesToZip();
        mCompressFiles = new CompressFiles();
@@ -894,7 +865,6 @@ public class MainActivity extends AppCompatActivity {
 
             File directory = new File(external.getAbsolutePath() + "/E4_Sensing");
             if (!directory.exists()) { directory.mkdirs(); }
-
 
             if (external.canWrite()) {
                 int i=1;
@@ -1138,7 +1108,7 @@ public class MainActivity extends AppCompatActivity {
                             double tempZ = cursor_PhoneAcc.getDouble(cursor_PhoneAcc.getColumnIndex("z"));
                             Phone_acc = tempX + " , " + tempY + " , " + tempZ + " , ";
                         }else if(time_acc > ex_time){
-                            cursor_PhoneGyro.moveToPrevious();
+                            cursor_PhoneAcc.moveToPrevious();
                         }
 
                     }
