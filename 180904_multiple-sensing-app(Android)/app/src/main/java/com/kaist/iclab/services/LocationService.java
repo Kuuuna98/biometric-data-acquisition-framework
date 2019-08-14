@@ -279,7 +279,7 @@ public class LocationService extends Service {
 
 
                 // bulk insert to improve async_query_handler
-                if (BULK_COUNT_gyro < Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_gyro < Constants.LOW_DB_BULK_RATE -1){
                     multipleSensorData_gyro[BULK_COUNT_gyro] = cv;
                     mTime_gyro[BULK_COUNT_gyro] = S_time;
                     BULK_COUNT_gyro++;
@@ -364,7 +364,7 @@ public class LocationService extends Service {
                     BULK_COUNT_acc = 0;
                 }
 
-                if (BULK_COUNT_gyro <= Constants.DB_BULK_RATE -1){
+                if (BULK_COUNT_gyro <= Constants.LOW_DB_BULK_RATE -1){
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_Phone_GYRO, multipleSensorData_gyro);
                     handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_Phone, mTime_gyro);
                     BULK_COUNT_gyro = 0;
@@ -386,8 +386,8 @@ public class LocationService extends Service {
         // Array of Content Values Init.
         multipleSensorData_acc = new ContentValues[Constants.DB_BULK_RATE];
         mTime_acc = new ContentValues[Constants.DB_BULK_RATE];
-        multipleSensorData_gyro = new ContentValues[Constants.DB_BULK_RATE];
-        mTime_gyro = new ContentValues[Constants.DB_BULK_RATE];
+        multipleSensorData_gyro = new ContentValues[Constants.LOW_DB_BULK_RATE];
+        mTime_gyro = new ContentValues[Constants.LOW_DB_BULK_RATE];
     }
     private void Disable(){
         nManager.cancel(NOTIFYID_SMARTPHONE);
