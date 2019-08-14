@@ -1,6 +1,5 @@
 package com.kaist.iclab.services;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
@@ -78,7 +77,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     private ContentValues[] multipleE4Data_gsr;
     private ContentValues[] multipleE4Data_acc;
     private ContentValues[] multipleE4Data_ibi;
-    //  private ContentValues[] multipleE4_time;
+  //  private ContentValues[] multipleE4_time;
     private ContentValues[] mE4time_acc;
     private ContentValues[] mE4time_bvp;
     private ContentValues[] mE4time_gsr;
@@ -91,7 +90,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     private static int BULK_COUNT_gsr=0;
     private static int BULK_COUNT_acc=0;
 
-    //  private int BULK_COUNT_time=0;
+  //  private int BULK_COUNT_time=0;
 
 
     public E4Service() {
@@ -99,11 +98,11 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     }
 
     public static void resetTemp(){
-        BULK_COUNT_bvp=0;
+       BULK_COUNT_bvp=0;
         BULK_COUNT_temp=0;
         BULK_COUNT_ibi=0;
-        BULK_COUNT_gsr=0;
-        BULK_COUNT_acc=0;
+         BULK_COUNT_gsr=0;
+         BULK_COUNT_acc=0;
     }
 
     public void onCreate(){
@@ -130,7 +129,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         deviceManager.disconnect();
 //        MainActivity.e4_insert = true;
         Disable();
-        // lastBulkHandler();
+       // lastBulkHandler();
         Log.d(TAG,"onDestroy");
     }
 
@@ -143,7 +142,6 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         }
         return START_STICKY;
     }
-    @SuppressLint("InvalidWakeLockTag")
     private void Enable(){
         InitNotification();
         mNotificationUpdateHandler.postDelayed(UpdateNotification,   Constants.UPDATE_INTERVAL);
@@ -154,15 +152,15 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
         mWakeLock.acquire();
 
         // Array of Content Values Init.
-        multipleE4Data_acc = new ContentValues[Constants.HIGH_DB_BULK_RATE];
-        multipleE4Data_bvp = new ContentValues[Constants.HIGH_DB_BULK_RATE];
+        multipleE4Data_acc = new ContentValues[Constants.DB_BULK_RATE];
+        multipleE4Data_bvp = new ContentValues[Constants.DB_BULK_RATE];
         multipleE4Data_gsr = new ContentValues[Constants.LOW_DB_BULK_RATE];
         multipleE4Data_ibi = new ContentValues[Constants.IBI_DB_BULK_RATE];
         multipleE4Data_temp = new ContentValues[Constants.LOW_DB_BULK_RATE];
 
-        //   multipleE4_time = new ContentValues[Constants.DB_BULK_RATE];
-        mE4time_acc = new ContentValues[Constants.HIGH_DB_BULK_RATE];
-        mE4time_bvp = new ContentValues[Constants.HIGH_DB_BULK_RATE];
+     //   multipleE4_time = new ContentValues[Constants.DB_BULK_RATE];
+        mE4time_acc = new ContentValues[Constants.DB_BULK_RATE];
+        mE4time_bvp = new ContentValues[Constants.DB_BULK_RATE];
         mE4time_gsr = new ContentValues[Constants.LOW_DB_BULK_RATE];
         mE4time_ibi = new ContentValues[Constants.IBI_DB_BULK_RATE];
         mE4time_temp = new ContentValues[Constants.LOW_DB_BULK_RATE];
@@ -336,6 +334,9 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
                 deviceManager.connectDevice(bluetoothDevice);
                 E4deviceName = deviceName;
                 Log.d(TAG,"Device Name:" + deviceName);
+
+                MainActivity.mButtonCheckDBInsert.setEnabled(true);
+
             } catch (ConnectionNotAllowedException e) {
                 // This should happen only if you try to connect when allowed == false.
                 Log.d(TAG,"Sorry, you can't connect to this device");
@@ -352,182 +353,142 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
     }
 
     // Bulk Insert
-    synchronized public void asyncBulkHandler(final ContentValues cv, final String type, final ContentValues S_time){
+   synchronized public void asyncBulkHandler(final ContentValues cv, final String type, final ContentValues S_time){
         // bulk insert to improve async_query_handler
-        // avoid Can't create handler inside thread that has not called Looper.prepare()
-        switch (type) {
-            case "E4.TEMPERATURE":{
+           // avoid Can't create handler inside thread that has not called Looper.prepare()
+       switch (type) {
+           case "E4.TEMPERATURE":{
 
-                if (BULK_COUNT_temp < Constants.LOW_DB_BULK_RATE -1){
-                    multipleE4Data_temp[BULK_COUNT_temp] = cv;
-                    mE4time_temp[BULK_COUNT_temp] = S_time;
-                    BULK_COUNT_temp++;
-                }else {
-                    multipleE4Data_temp[BULK_COUNT_temp] = cv;
-                    mE4time_temp[BULK_COUNT_temp] = S_time;
-                    BULK_COUNT_temp = 0;
-                    // avoid Can't create handler inside thread that has not called Looper.prepare()
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, multipleE4Data_temp);
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_temp);
-                        }
-                    }, 0);
-                }
+               if (BULK_COUNT_temp < Constants.LOW_DB_BULK_RATE -1){
+                   multipleE4Data_temp[BULK_COUNT_temp] = cv;
+                   mE4time_temp[BULK_COUNT_temp] = S_time;
+                   BULK_COUNT_temp++;
+               }else {
+                   multipleE4Data_temp[BULK_COUNT_temp] = cv;
+                   mE4time_temp[BULK_COUNT_temp] = S_time;
+                   BULK_COUNT_temp = 0;
+                   // avoid Can't create handler inside thread that has not called Looper.prepare()
+                   Handler mHandler = new Handler(Looper.getMainLooper());
+                   mHandler.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, multipleE4Data_temp);
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_temp);
+                       }
+                   }, 0);
+               }
 
-                break;
-            }
+               break;
+           }
 
-            case "E4.BVP":{
+           case "E4.BVP":{
 
-                if (BULK_COUNT_bvp < Constants.HIGH_DB_BULK_RATE -1){
-                    multipleE4Data_bvp[BULK_COUNT_bvp] = cv;
-                    mE4time_bvp[BULK_COUNT_bvp] = S_time;
-                    BULK_COUNT_bvp++;
-                }else {
-                    multipleE4Data_bvp[BULK_COUNT_bvp] = cv;
-                    mE4time_bvp[BULK_COUNT_bvp] = S_time;
-                    BULK_COUNT_bvp = 0;
-                    // avoid Can't create handler inside thread that has not called Looper.prepare()
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+               if (BULK_COUNT_bvp < Constants.DB_BULK_RATE -1){
+                   multipleE4Data_bvp[BULK_COUNT_bvp] = cv;
+                   mE4time_bvp[BULK_COUNT_bvp] = S_time;
+                   BULK_COUNT_bvp++;
+               }else {
+                   multipleE4Data_bvp[BULK_COUNT_bvp] = cv;
+                   mE4time_bvp[BULK_COUNT_bvp] = S_time;
+                   BULK_COUNT_bvp = 0;
+                   // avoid Can't create handler inside thread that has not called Looper.prepare()
+                   Handler mHandler = new Handler(Looper.getMainLooper());
+                   mHandler.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
 
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_BVP, multipleE4Data_bvp);
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_bvp);
-                        }
-                    }, 0);
-                }
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_BVP, multipleE4Data_bvp);
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_bvp);
+                       }
+                   }, 0);
+               }
 
-                break;
-            }
-            case "E4.GSR":{
+               break;
+           }
+           case "E4.GSR":{
 
-                if (BULK_COUNT_gsr < Constants.LOW_DB_BULK_RATE -1){
-                    multipleE4Data_gsr[BULK_COUNT_gsr] = cv;
-                    mE4time_gsr[BULK_COUNT_gsr] = S_time;
-                    BULK_COUNT_gsr++;
-                }else {
-                    multipleE4Data_gsr[BULK_COUNT_gsr] = cv;
-                    mE4time_gsr[BULK_COUNT_gsr] = S_time;
-                    BULK_COUNT_gsr = 0;
-                    // avoid Can't create handler inside thread that has not called Looper.prepare()
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+               if (BULK_COUNT_gsr < Constants.LOW_DB_BULK_RATE -1){
+                   multipleE4Data_gsr[BULK_COUNT_gsr] = cv;
+                   mE4time_gsr[BULK_COUNT_gsr] = S_time;
+                   BULK_COUNT_gsr++;
+               }else {
+                   multipleE4Data_gsr[BULK_COUNT_gsr] = cv;
+                   mE4time_gsr[BULK_COUNT_gsr] = S_time;
+                   BULK_COUNT_gsr = 0;
+                   // avoid Can't create handler inside thread that has not called Looper.prepare()
+                   Handler mHandler = new Handler(Looper.getMainLooper());
+                   mHandler.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
 
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_GSR, multipleE4Data_gsr);
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_gsr);
-                        }
-                    }, 0);
-                }
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_GSR, multipleE4Data_gsr);
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_gsr);
+                       }
+                   }, 0);
+               }
 
-                break;
-            }
-            case "E4.IBI":{
+               break;
+           }
+           case "E4.IBI":{
 
-                if (BULK_COUNT_ibi < Constants.IBI_DB_BULK_RATE -1){
-                    multipleE4Data_ibi[BULK_COUNT_ibi] = cv;
-                    mE4time_ibi[BULK_COUNT_ibi] = S_time;
-                    BULK_COUNT_ibi++;
-                }else {
-                    multipleE4Data_ibi[BULK_COUNT_ibi] = cv;
-                    mE4time_ibi[BULK_COUNT_ibi] = S_time;
-                    BULK_COUNT_ibi = 0;
-                    // avoid Can't create handler inside thread that has not called Looper.prepare()
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+               if (BULK_COUNT_ibi < Constants.IBI_DB_BULK_RATE -1){
+                   multipleE4Data_ibi[BULK_COUNT_ibi] = cv;
+                   mE4time_ibi[BULK_COUNT_ibi] = S_time;
+                   BULK_COUNT_ibi++;
+               }else {
+                   multipleE4Data_ibi[BULK_COUNT_ibi] = cv;
+                   mE4time_ibi[BULK_COUNT_ibi] = S_time;
+                   BULK_COUNT_ibi = 0;
+                   // avoid Can't create handler inside thread that has not called Looper.prepare()
+                   Handler mHandler = new Handler(Looper.getMainLooper());
+                   mHandler.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
 
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_IBI, multipleE4Data_ibi);
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_ibi);
-                        }
-                    }, 0);
-                }
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_IBI, multipleE4Data_ibi);
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_ibi);
+                       }
+                   }, 0);
+               }
 
-                break;
-            }
-            case "E4.ACC":{
+               break;
+           }
+           case "E4.ACC":{
 
-                if (BULK_COUNT_acc < Constants.HIGH_DB_BULK_RATE -1){
-                    multipleE4Data_acc[BULK_COUNT_acc] = cv;
-                    mE4time_acc[BULK_COUNT_acc] = S_time;
-                    BULK_COUNT_acc++;
-                }else {
-                    multipleE4Data_acc[BULK_COUNT_acc] = cv;
-                    mE4time_acc[BULK_COUNT_acc] = S_time;
-                    BULK_COUNT_acc = 0;
-                    // avoid Can't create handler inside thread that has not called Looper.prepare()
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
+               if (BULK_COUNT_acc < Constants.DB_BULK_RATE -1){
+                   multipleE4Data_acc[BULK_COUNT_acc] = cv;
+                   mE4time_acc[BULK_COUNT_acc] = S_time;
+                   BULK_COUNT_acc++;
+               }else {
+                   multipleE4Data_acc[BULK_COUNT_acc] = cv;
+                   mE4time_acc[BULK_COUNT_acc] = S_time;
+                   BULK_COUNT_acc = 0;
+                   // avoid Can't create handler inside thread that has not called Looper.prepare()
+                   Handler mHandler = new Handler(Looper.getMainLooper());
+                   mHandler.postDelayed(new Runnable() {
+                       @Override
+                       public void run() {
+                           final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
 
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_ACC, multipleE4Data_acc);
-                            handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_acc);
-                        }
-                    }, 0);
-                }
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_ACC, multipleE4Data_acc);
+                           handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_acc);
+                       }
+                   }, 0);
+               }
 
-                break;
-            }
+               break;
+           }
+
+       }
+
+
 
         }
 
-
-
-    }
-
-    synchronized public void lastBulkHandler(){
-        Handler mHandler = new Handler(Looper.getMainLooper());
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final DatabaseHandler handler = new DatabaseHandler(getContentResolver());
-
-                if (BULK_COUNT_acc <= Constants.HIGH_DB_BULK_RATE -1){
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_ACC, multipleE4Data_acc);
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_acc);
-                    BULK_COUNT_acc = 0;
-                }
-
-                if (BULK_COUNT_gsr <= Constants.LOW_DB_BULK_RATE -1){
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_GSR, multipleE4Data_gsr);
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_gsr);
-                    BULK_COUNT_gsr = 0;
-                }
-
-                if (BULK_COUNT_ibi <= Constants.IBI_DB_BULK_RATE -1){
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_IBI, multipleE4Data_ibi);
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_ibi);
-                    BULK_COUNT_ibi = 0;
-                }
-
-                if (BULK_COUNT_temp <= Constants.LOW_DB_BULK_RATE -1){
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_TEMPERATURE, multipleE4Data_temp);
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_temp);
-                    BULK_COUNT_temp = 0;
-                }
-
-                if (BULK_COUNT_bvp <= Constants.HIGH_DB_BULK_RATE -1){
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_E4_BVP, multipleE4Data_bvp);
-                    handler.startBulkInsert(1, null, DataProvider.CONTENT_URI_SensingTime_E4, mE4time_bvp);
-                    BULK_COUNT_bvp = 0;
-                }
-
-            }
-        }, 0);
-    }
 
 
     // EmpaDataDelegate
@@ -539,7 +500,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             gsrDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.GSR";
-            //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
+         //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
             cv.put(DAO.LOG_FIELD_SENSINGDATA, gsr);
@@ -572,7 +533,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             bvpDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.BVP";
-            //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
+         //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
             cv.put(DAO.LOG_FIELD_SENSINGDATA, bvp);
@@ -607,7 +568,7 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
             ibiDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.IBI";
-            //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
+         //   cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
             cv.put(DAO.LOG_FIELD_SENSINGDATA, ibi);
@@ -635,12 +596,12 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveTemperature(float temp, double timestamp) {
-        //체온
+    //체온
         try {
             tempDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.TEMPERATURE";
-            //    cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
+        //    cv.put(DAO.LOG_FIELD_PhoneNumber,phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
             cv.put(DAO.LOG_FIELD_SENSINGDATA, temp);
@@ -669,12 +630,12 @@ public class E4Service extends Service implements EmpaDataDelegate, EmpaStatusDe
 
     @Override
     public void didReceiveAcceleration(int x, int y, int z, double timestamp) {
-        //움직임 감지
+    //움직임 감지
         try {
             accDelta++;
             ContentValues cv = new ContentValues();
             String type = "E4.ACC";
-            //      cv.put(DAO.LOG_FIELD_PhoneNumber, phoneNumber);
+      //      cv.put(DAO.LOG_FIELD_PhoneNumber, phoneNumber);
             cv.put(DAO.LOG_FIELD_TYPE, type);
             cv.put(DAO.LOG_FIELD_REG, new Date().getTime());
             cv.put(DAO.LOG_FIELD_X, x);

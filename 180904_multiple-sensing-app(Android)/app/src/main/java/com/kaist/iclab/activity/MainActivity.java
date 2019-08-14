@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
   //  private Button mButtonDBExport;
   public static Button mButtonFileTransfer;
 
-    private Button mButtonCheckDBInsert;
+    public static Button mButtonCheckDBInsert;
    // private Button mButtonRenameVideo;
 
     private TextView mTextUpdatedDate;
@@ -414,6 +414,7 @@ public class MainActivity extends AppCompatActivity {
                     mButtonE4Scan.setEnabled(false);
                     mButtonE4Stop.setEnabled(true);
                     mButtonFileTransfer.setEnabled(false);
+                    mButtonCheckDBInsert.setEnabled(false);
                     E4serviceIntent.putExtra("device_set_name", deviceSetName);
 
                     e4_insert = 1;
@@ -426,27 +427,27 @@ public class MainActivity extends AppCompatActivity {
                     mButtonE4Scan.setEnabled(true);
                     mButtonE4Stop.setEnabled(false);
                     stopService(E4serviceIntent);
-
+                    mButtonCheckDBInsert.setEnabled(true);
                     e4_insert = 0;
                     E4Service.resetTemp();
                     markingSensor(actualTime, "E4");
 
 
-                    int db_e4_insert = 1;
-                    int db_e4_phone_insert = 1;
+                    int db_e4_insert=1;
+                    int db_e4_phone_insert=1;
 
                     Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
-                    while( db_e4_insert == 1 ){
+                 //   while( db_e4_insert == 1 ){
                         try{
-                          //  if(cursor_main.getCount() != 0 ){
-                            cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
+
+                   //         cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
                             if(cursor_main.moveToFirst()){
                                 db_e4_insert = cursor_main.getInt(cursor_main.getColumnIndex("mark_e4"));
                                 db_e4_phone_insert = cursor_main.getInt(cursor_main.getColumnIndex("mark_phone"));
                             }
                         } catch (Exception e) {
                         }
-                    }
+                   // }
                     cursor_main.close();
 
                     if( db_e4_insert==0 && db_e4_phone_insert== 0 ) {
@@ -485,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
                      int db_phone_insert = 1;
 
                      cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
-               while( db_phone_insert == 1 ){
+       //        while( db_phone_insert == 1 ){
                 try{
                     cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"reg desc limit 1");
                 //    if(cursor_main.getCount() != 0 ){
@@ -497,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
                        }
             } catch (Exception e) {
             }
-               }
+         //      }
                     cursor_main.close();
                     if( db_phone_e4_insert ==0 && db_phone_insert ==0 ) {
                         mButtonFileTransfer.setEnabled(true);
@@ -905,7 +906,7 @@ public class MainActivity extends AppCompatActivity {
             fw.write(Result);
 
             Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_SensingTime_E4, null,null,null,"time ASC");
-            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"time ASC");
 
             Cursor cursor_E4Acc  = getContentResolver().query(DataProvider.CONTENT_URI_E4_ACC, null,null,null,null);
             Cursor cursor_E4BVP  = getContentResolver().query(DataProvider.CONTENT_URI_E4_BVP, null,null,null,null);
@@ -928,6 +929,12 @@ public class MainActivity extends AppCompatActivity {
 
                     if(cursor_main.moveToNext()){
                         double time_main = cursor_main.getDouble(cursor_main.getColumnIndex("time"));
+
+                        while(time_main < ex_time) {
+                            cursor_main.moveToNext();
+                            time_main = cursor_main.getDouble(cursor_main.getColumnIndex("time"));
+                        }
+
                         if(time_main == ex_time){
 
                             int tempe4 = cursor_main.getInt(cursor_main.getColumnIndex("mark_e4"));
@@ -935,7 +942,7 @@ public class MainActivity extends AppCompatActivity {
                             if(tempe4 == 0) E4Staus = false;
                             else E4Staus = true;
 
-                        }else{
+                        }else if(time_main > ex_time){
                             cursor_main.moveToPrevious();
                         }
                     }
@@ -1063,7 +1070,7 @@ public class MainActivity extends AppCompatActivity {
             fw.write(Result);
 
             Cursor iCursor  = getContentResolver().query(DataProvider.CONTENT_URI_SensingTime_Phone, null,null,null,"time ASC");
-            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,null);
+            Cursor cursor_main  = getContentResolver().query(DataProvider.CONTENT_URI_MainActivity, null,null,null,"time ASC");
             Cursor cursor_PhoneAcc  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_ACC, null,null,null,null);
             Cursor cursor_PhoneGyro  = getContentResolver().query(DataProvider.CONTENT_URI_Phone_GYRO, null,null,null,null);
             Cursor cursor_PhoneLocation  = getContentResolver().query(DataProvider.CONTENT_URI_LocationService, null,null,null,null);
@@ -1081,6 +1088,12 @@ public class MainActivity extends AppCompatActivity {
 
                     if(cursor_main.moveToNext()){
                         double time_main = cursor_main.getDouble(cursor_main.getColumnIndex("time"));
+
+                        while(time_main < ex_time) {
+                            cursor_main.moveToNext();
+                            time_main = cursor_main.getDouble(cursor_main.getColumnIndex("time"));
+                        }
+
                         if(time_main == ex_time){
 
                             int tempphone = cursor_main.getInt(cursor_main.getColumnIndex("mark_phone"));
@@ -1089,7 +1102,7 @@ public class MainActivity extends AppCompatActivity {
                             if(tempphone == 0) SmartPhoneStatus = false;
                             else SmartPhoneStatus = true;
 
-                        }else{
+                        }else if(time_main > ex_time){
                             cursor_main.moveToPrevious();
                         }
                     }
