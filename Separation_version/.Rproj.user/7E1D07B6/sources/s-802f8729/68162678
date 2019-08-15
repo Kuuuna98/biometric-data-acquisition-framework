@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565864261078.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "68162678",
+    "lastKnownWriteTime" : 1565863762,
+    "last_content_update" : 1565864261078,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "context" : "package:base:::max"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_code_browser"
+}
