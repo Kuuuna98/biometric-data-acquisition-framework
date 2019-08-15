@@ -1,0 +1,1359 @@
+library(shiny)
+library(ggplot2)
+library(ggvis)
+library(reshape)
+library(gridExtra)
+library(quantreg)
+library(plyr)
+
+#for Large Data
+options("scipen"=100)
+options(digits = 13)
+options(shiny.maxRequestSize=30*1024^2)
+
+entireData<- data.frame()
+
+# usersName<- list.files(path ="/biometric-data-acquisition-framework/serverBackUp/nodeJs/app/uploads/unzip",pattern = "^\\d{3}-\\d{3,4}-\\d{4}$", full.names = F)
+
+usersName<- list.files(path ="./TwoFiles",pattern = "^\\d{3}-\\d{3,4}-\\d{4}$", full.names = F)
+for(var in usersName){
+    # usersPath <- list.files(path =paste0("/biometric-data-acquisition-framework/serverBackUp/nodeJs/app/uploads/unzip/",var),pattern = "[0-9]", full.names = T)
+    # userFile <- list.files(path =paste0("/biometric-data-acquisition-framework/serverBackUp/nodeJs/app/uploads/unzip/",var),pattern = "[0-9]", full.names = F)
+    
+    usersPath <- list.files(path =paste0("./TwoFiles/",var),pattern = "[0-9]", full.names = T)
+    userFile <- list.files(path =paste0("./TwoFiles/",var),pattern = "[0-9]", full.names = F)
+    du <-c()
+    du[1:length(userFile)]=var
+    length(du)
+    tempTable <- data.frame(du,userFile,usersPath)
+    colnames(tempTable)<-c("udid","fileName","Path")
+    
+    entireData<-rbind(entireData,tempTable)
+}
+
+users <- unique(usersName)
+
+
+inputXAxis <- c("Time","Accelerometer-X","Accelerometer-Y","Accelerometer-Z","Gyroscope-X","Gyroscope-Y","Gyroscope-Z","E4Accelerometer-X","E4Accelerometer-Y","E4Accelerometer-Z","Latitude","Longitude","Temperature","IBI","BVP","GSR")
+inputYAxis <- c("NULL","Time","Accelerometer-X","Accelerometer-Y","Accelerometer-Z","Gyroscope-X","Gyroscope-Y","Gyroscope-Z","E4Accelerometer-X","E4Accelerometer-Y","E4Accelerometer-Z","Latitude","Longitude","Temperature","IBI","BVP","GSR")
+
+
+getAcceleromter <- function(inputData,inputE4Data,n){
+    
+    file <- inputData[which(inputData[,1]==n),]
+    reg <- file[,3]
+    
+    file_acc <- data.frame(reg, file$acc_X,file$acc_Y,file$acc_Z)
+    
+    if(length(which(!is.na(file_acc[,c(2:4)])))!=0){
+        timeIntervaltemp = as.numeric(file_acc$reg[length(file_acc$reg)]-file_acc$reg[1])/7
+        timeInterval<- seq(file_acc$reg[1],file_acc$reg[length(file_acc$reg)],timeIntervaltemp)
+        
+        accMax = max(c(max(file_acc$file.acc_X[which(is.na(file_acc$file.acc_X)==F)]),max(file_acc$file.acc_Y[which(is.na(file_acc$file.acc_Y)==F)]),max(file_acc$file.acc_Z[which(is.na(file_acc$file.acc_Z)==F)])))
+        accMin = min(c(min(file_acc$file.acc_X[which(is.na(file_acc$file.acc_X)==F)]),min(file_acc$file.acc_Y[which(is.na(file_acc$file.acc_Y)==F)]),min(file_acc$file.acc_Z[which(is.na(file_acc$file.acc_Z)==F)])))
+        accIn <- (accMax-accMin)/10
+        accseq<-seq(accMin,accMax,accIn)
+        
+        #Graph of accelerometer sensing data
+        accGraph <-ggplot(data = melt(file_acc, id.var="reg"), mapping=aes(reg, value))+geom_line(aes(colour=variable, group=variable),cex=0.4)
+        accGraph <- accGraph + theme_bw()
+        accGraph <- accGraph+scale_x_continuous(breaks = timeInterval)
+        accGraph <- accGraph+scale_y_continuous(breaks = accseq,labels =sprintf("%0.5f",round(accseq,digits = 5)))
+        
+        accGraph <-accGraph+labs(x="Time (ms)", y="Acceleration Value (m/s2)")
+        accGraph <-accGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        accGraph <-accGraph+ggtitle("Phone Accelerometer Sensing Data")
+        accGraph <- accGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkred"))
+        accGraph <- accGraph + guides(color=guide_legend(title = NULL))
+        accGraph <- accGraph + scale_color_discrete(labels=c("X-Axis","Y-Axis","Z-Axis"))
+        
+    }
+    else{
+        accGraph <-ggplot()
+        accGraph <- accGraph + theme_bw()
+        
+        accGraph <-accGraph+labs(x="Time (ms)", y="Acceleration Value (m/s2)")
+        accGraph <-accGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        accGraph <-accGraph+ggtitle("Phone Accelerometer Sensing Data")
+        accGraph <- accGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkred"))
+        accGraph <- accGraph + guides(color=guide_legend(title = NULL))
+        accGraph <- accGraph + scale_color_discrete(labels=c("X-Axis","Y-Axis","Z-Axis"))
+    }
+    
+    file <- inputE4Data[which(inputE4Data[,1]==n),]
+    colnames(file)<-c("productNo","Num","sensingTime","E4_temp","E4_bvp","E4_ibi","E4_accX","E4_accY","E4_accZ","E4_gsr")
+    
+    reg <- file[,3]
+    
+    file_accE4 <- data.frame(reg, file$E4_accX,file$E4_accY,file$E4_accZ)
+    
+    
+    if(length(which(!is.na(file_accE4[,c(2:4)])))!=0){
+        timeIntervaltemp = as.numeric(file_accE4$reg[length(file_accE4$reg)]-file_accE4$reg[1])/7
+        timeInterval<- seq(file_accE4$reg[1],file_accE4$reg[length(file_accE4$reg)],timeIntervaltemp)
+        
+        accE4Max = max(c(max(file_accE4$file.E4_accX[!is.na(file_accE4$file.E4_accX)]),max(file_accE4$file.E4_accY[!is.na(file_accE4$file.E4_accY)]),max(file_accE4$file.E4_accZ[!is.na(file_accE4$file.E4_accZ)])))
+        accE4Min = min(c(min(file_accE4$file.E4_accX[which(is.na(file_accE4$file.E4_accX)==F)]),min(file_accE4$file.E4_accY[which(is.na(file_accE4$file.E4_accY)==F)]),min(file_accE4$file.E4_accZ[which(is.na(file_accE4$file.E4_accZ)==F)])))
+        accE4In <- (accE4Max-accE4Min)/10
+        accE4seq<-seq(accE4Min,accE4Max,accE4In)
+        
+        accE4Graph <-ggplot(data = melt(file_accE4, id.var="reg"), mapping=aes(reg, value))+geom_line(aes(colour=variable, group=variable),cex=0.4)
+        accE4Graph <- accE4Graph + theme_bw()
+        accE4Graph <- accE4Graph+scale_x_continuous(breaks = timeInterval)
+        accE4Graph <- accE4Graph+scale_y_continuous(breaks =accE4seq ,labels =sprintf("%0.5f",round(accE4seq,digits = 5)))
+        
+        accE4Graph <-accE4Graph+labs(x="Time (ms)", y="E4 Acceleration Value (m/s2)")
+        accE4Graph <-accE4Graph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        accE4Graph <-accE4Graph+ggtitle("E4 Accelerometer Sensing Data")
+        accE4Graph <- accE4Graph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        accE4Graph <- accE4Graph + guides(color=guide_legend(title = NULL))
+        accE4Graph <- accE4Graph + scale_color_discrete(labels=c("X-Axis","Y-Axis","Z-Axis"))
+    }
+    else{
+        
+        accE4Graph <-ggplot()
+        accE4Graph <- accE4Graph + theme_bw()
+        accE4Graph <-accE4Graph+labs(x="Time (ms)", y="E4 Acceleration Value (m/s2)")
+        accE4Graph <-accE4Graph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        accE4Graph <-accE4Graph+ggtitle("E4 Accelerometer Sensing Data")
+        accE4Graph <- accE4Graph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        accE4Graph <- accE4Graph + scale_color_discrete(labels=c("X-Axis","Y-Axis","Z-Axis"))
+    }
+    
+    
+    
+    grid.arrange(accGraph,accE4Graph,nrow=2)
+}
+getGyro <- function(inputData,n){
+    
+    file <- inputData[which(inputData[,1]==n),]
+    reg <- file[,3]
+    file_gyro <- data.frame(reg,file$gyro_X,file$gyro_Y,file$gyro_Z)
+    
+    if(length(which(!is.na(file_gyro[,c(2:4)])))!=0){
+        
+        timeIntervaltemp = as.numeric(file_gyro$reg[length(file_gyro$reg)]-file_gyro$reg[1])/7
+        timeInterval<- seq(file_gyro$reg[1],file_gyro$reg[length(file_gyro$reg)],timeIntervaltemp)
+        
+        gyroMax = max(c(max(file_gyro$file.gyro_X[which(is.na(file_gyro$file.gyro_X)==F)]),max(file_gyro$file.gyro_Y[which(is.na(file_gyro$file.gyro_Y)==F)]),max(file_gyro$file.gyro_Z[which(is.na(file_gyro$file.gyro_Z)==F)])))
+        gyroMin = min(c(min(file_gyro$file.gyro_X[which(is.na(file_gyro$file.gyro_X)==F)]),min(file_gyro$file.gyro_Y[which(is.na(file_gyro$file.gyro_Y)==F)]),min(file_gyro$file.gyro_Z[which(is.na(file_gyro$file.gyro_Z)==F)])))
+        
+        gyroIn <- (gyroMax-gyroMin)/10
+        gyroseq<-seq(gyroMin,gyroMax,gyroIn)
+        
+        gyroGraph <-ggplot(data = melt(file_gyro, id.var="reg"), mapping=aes(reg, value))+geom_line(aes(colour=variable, group=variable),cex=0.4)
+        gyroGraph <- gyroGraph + theme_bw()
+        gyroGraph <- gyroGraph+scale_x_continuous(breaks = timeInterval)
+        gyroGraph <- gyroGraph+scale_y_continuous(breaks = gyroseq,labels =sprintf("%0.5f",round(gyroseq,digits = 5)))
+        gyroGraph <-gyroGraph+labs(x="Time (ms)", y="Gyroscope Value (degree/sec)")
+        gyroGraph <-gyroGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        gyroGraph <-gyroGraph+ggtitle("GyroScope Sensing Data")
+        gyroGraph <- gyroGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        gyroGraph <- gyroGraph + guides(color=guide_legend(title = NULL))
+        gyroGraph <- gyroGraph + scale_color_discrete(labels=c("X-Axis","Y-Axis","Z-Axis"))
+    }
+    else{
+        
+        gyroGraph <-ggplot()
+        gyroGraph <- gyroGraph + theme_bw()
+        
+        gyroGraph <-gyroGraph+labs(x="Time (ms)", y="Gyroscope Value (degree/sec)")
+        gyroGraph <-gyroGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        gyroGraph <-gyroGraph+ggtitle("GyroScope Sensing Data")
+        gyroGraph <- gyroGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        gyroGraph <- gyroGraph + guides(color=guide_legend(title = NULL))
+        gyroGraph <- gyroGraph + scale_color_discrete(labels=c("X-Axis","Y-Axis","Z-Axis"))
+    }
+    
+    
+    gyroGraph
+}
+getTemp <- function(inputData,n){
+    
+    file <- inputData[which(inputData[,1]==n),]
+    reg <- file[,3]
+    file_temp <- data.frame(reg,file$lungdata.E4_temp)
+    
+    timeIntervaltemp = as.numeric(file_temp$reg[length(file_temp$reg)]-file_temp$reg[1])/7
+    timeInterval<- ifelse(length(file_temp$reg)==0, 0, seq(file_temp$reg[1],file_temp$reg[length(file_temp$reg)],timeIntervaltemp))
+    
+    if(length(which(!is.na(file_temp[,2])))!=0){
+        
+        timeIntervaltemp = as.numeric(file_temp$reg[length(file_temp$reg)]-file_temp$reg[1])/7
+        timeInterval<- seq(file_temp$reg[1],file_temp$reg[length(file_temp$reg)],timeIntervaltemp)
+        tempMax = max(file_temp$file.lungdata.E4_temp[which(is.na(file_temp$file.lungdata.E4_temp)==F)])
+        tempMin = min(file_temp$file.lungdata.E4_temp[which(is.na(file_temp$file.lungdata.E4_temp)==F)])
+        tempIn <- (tempMax-tempMin)/10
+        tempseq<-seq(tempMin,tempMax,tempIn)
+        
+        tempGraph <-ggplot(data = melt(file_temp, id.var="reg"), mapping=aes(reg, value))+geom_line(colour="red",cex=0.4)
+        tempGraph <- tempGraph + theme_bw()
+        tempGraph <- tempGraph+scale_x_continuous(breaks = timeInterval)
+        tempGraph <- tempGraph+scale_y_continuous(breaks = tempseq,labels =sprintf("%0.5f",round(tempseq,digits = 5)))
+        tempGraph <-tempGraph+labs(x="Time (ms)", y="E4 Temperature (°C)")
+        tempGraph <- tempGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        tempGraph <-tempGraph+ggtitle("E4 Temperature Sensing Data")
+        tempGraph <-tempGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+    }
+    else{
+        tempGraph <-ggplot()
+        tempGraph <- tempGraph + theme_bw()
+        
+        tempGraph <-tempGraph+labs(x="Time (ms)", y="E4 Temperature (°C)")
+        tempGraph <- tempGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        tempGraph <-tempGraph+ggtitle("E4 Temperature Sensing Data")
+        tempGraph <-tempGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+    }
+    
+    tempGraph
+    
+}
+getIBI <- function(inputData,n){
+    
+    file <- inputData[which(inputData[,1]==n),]
+    
+    reg <- file[,3]
+    
+    file_ibi <- data.frame(reg,file$lungdata.E4_ibi)
+    
+    
+    if(length(which(!is.na(file_ibi[,2])))!=0){
+        
+        timeIntervaltemp = as.numeric(file_ibi$reg[length(file_ibi$reg)]-file_ibi$reg[1])/7
+        timeInterval<- seq(file_ibi$reg[1],file_ibi$reg[length(file_ibi$reg)],timeIntervaltemp)
+        ibiMax = max(file_ibi$file.lungdata.E4_ibi[which(is.na(file_ibi$file.lungdata.E4_ibi)==F)])
+        ibiMin = min(file_ibi$file.lungdata.E4_ibi[which(is.na(file_ibi$file.lungdata.E4_ibi)==F)])
+        
+        ibiIn <- (ibiMax-ibiMin)/10
+        ibiseq<-seq(ibiMin,ibiMax,ibiIn)
+        
+        ibiGraph <-ggplot(data = melt(file_ibi, id.var="reg"), mapping=aes(reg, value))+geom_line(colour="#04B431",cex=0.4)
+        ibiGraph <- ibiGraph + theme_bw()
+        ibiGraph <- ibiGraph+scale_x_continuous(breaks = timeInterval)#, labels = as.POSIXct(timeInterval, origin = "1970-01-01"))
+        ibiGraph <- ibiGraph+scale_y_continuous(breaks = ibiseq,labels =sprintf("%0.5f",round(ibiseq,digits = 5)))
+        ibiGraph <-ibiGraph+labs(x="Time (ms)", y="E4 IBI (s)")
+        ibiGraph <- ibiGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        ibiGraph <-ibiGraph+ggtitle("Inter Beat Interval \n Sensing Data")
+        ibiGraph <-ibiGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        ibiGraph
+    }
+    else{
+        ibiGraph <-ggplot()
+        ibiGraph <- ibiGraph + theme_bw()
+        ibiGraph <-ibiGraph+labs(x="Time (ms)", y="E4 IBI (s)")
+        ibiGraph <- ibiGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        ibiGraph <-ibiGraph+ggtitle("Inter Beat Interval \n Sensing Data")
+        ibiGraph <-ibiGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        ibiGraph
+    }
+    
+    
+    
+    
+    
+}
+getBVP <- function(inputData,n){
+    file <- inputData[which(inputData[,1]==n),]
+    
+    reg <- file[,3]
+    file_bvp <- data.frame(reg,file$lungdata.E4_bvp)
+    
+    
+    if(length(which(!is.na(file_bvp[,2])))!=0){
+        timeIntervaltemp = as.numeric(file_bvp$reg[length(file_bvp$reg)]-file_bvp$reg[1])/7
+        timeInterval<- seq(file_bvp$reg[1],file_bvp$reg[length(file_bvp$reg)],timeIntervaltemp)
+        
+        
+        bvpMax = max(file_bvp$file.lungdata.E4_bvp[which(is.na(file_bvp$file.lungdata.E4_bvp)==F)])
+        bvpMin = min(file_bvp$file.lungdata.E4_bvp[which(is.na(file_bvp$file.lungdata.E4_bvp)==F)])
+        
+        bvpIn <-(bvpMax-bvpMin)/10
+        bvpseq<- seq(bvpMin,bvpMax,bvpIn)
+        
+        bvpGraph <-ggplot(data = melt(file_bvp, id.var="reg"), mapping=aes(reg, value))+geom_line(colour="black",cex=0.4)
+        bvpGraph <- bvpGraph + theme_bw()
+        bvpGraph <- bvpGraph+scale_x_continuous(breaks = timeInterval)
+        bvpGraph <- bvpGraph+scale_y_continuous(breaks =bvpseq,labels = sprintf("%0.5f",round(bvpseq,digits = 5)))
+        bvpGraph <-bvpGraph+labs(x="Time (ms)", y="E4 BVP")
+        bvpGraph <- bvpGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        bvpGraph <-bvpGraph+ggtitle("Blood Volume Pulse Sensing Data")
+        bvpGraph <-bvpGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        bvpGraph
+    }
+    else{
+        bvpGraph <-ggplot()
+        bvpGraph <- bvpGraph + theme_bw()
+        
+        bvpGraph <-bvpGraph+labs(x="Time (ms)", y="E4 BVP")
+        bvpGraph <-bvpGraph+ggtitle("Blood Volume Pulse Sensing Data")
+        bvpGraph <-bvpGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        bvpGraph
+    }
+    
+    
+    
+    
+    
+}
+getGSR <- function(inputData,n){
+    file <- inputData[which(inputData[,1]==n),]
+    
+    reg <- file[,3]
+    
+    file_gsr <- data.frame(reg,file$lungdata.E4_gsr)
+    
+    if(length(which(!is.na(file_gsr[,2])))!=0){
+        
+        timeIntervaltemp = as.numeric(file_gsr$reg[length(file_gsr$reg)]-file_gsr$reg[1])/7
+        timeInterval<- seq(file_gsr$reg[1],file_gsr$reg[length(file_gsr$reg)],timeIntervaltemp)
+        
+        gsrMax = max(file_gsr$file.lungdata.E4_gsr[which(is.na(file_gsr$file.lungdata.E4_gsr)==F)])
+        gsrMin = min(file_gsr$file.lungdata.E4_gsr[which(is.na(file_gsr$file.lungdata.E4_gsr)==F)])
+        
+        gsrIn <- (gsrMax-gsrMin)/10
+        gsrseq<-seq(gsrMin,gsrMax,gsrIn)
+        
+        gsrGraph <-ggplot(data = melt(file_gsr, id.var="reg"), mapping=aes(reg, value))+geom_line(colour="#0B6121",cex=0.4)
+        gsrGraph <- gsrGraph + theme_bw()
+        gsrGraph <- gsrGraph+scale_x_continuous(breaks = timeInterval)
+        gsrGraph <- gsrGraph+scale_y_continuous(breaks =gsrseq,labels = sprintf("%0.5f",round(gsrseq,digits = 5)))
+        gsrGraph <-gsrGraph+labs(x="Time (ms)",y="E4 GSR (μS)")
+        gsrGraph <- gsrGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        gsrGraph <-gsrGraph+ggtitle("Galvanic Skin Reflex Sensing Data")
+        gsrGraph <-gsrGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+    }
+    else{
+        
+        gsrGraph <-ggplot()
+        gsrGraph <- gsrGraph + theme_bw()
+        
+        gsrGraph <-gsrGraph+labs(x="Time (ms)",y="E4 GSR (μS)")
+        gsrGraph <- gsrGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        gsrGraph <-gsrGraph+ggtitle("Galvanic Skin Reflex Sensing Data")
+        gsrGraph <-gsrGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+    }
+    
+    
+    
+    gsrGraph
+}
+getLocation <- function(inputData){
+    
+    file_loc = data.frame(inputData$productNo,inputData$latitude, inputData$longitude)
+    if(length(which(!is.na(file_loc[,2])))!=0){
+        
+        locGraph <-ggplot(data = melt(file_loc, id.vars=c("inputData.latitude","inputData.longitude")), mapping=aes(x=inputData.longitude,y=inputData.latitude ,value))+geom_point(aes(colour=factor(value), group=factor(value)))#+geom_line(aes(colour=factor(value), group=factor(value)))
+        locGraph <- locGraph + theme_bw()
+        
+        locGraph <-locGraph+labs(x="Longitude (°E)",y="Latitude (°N)")
+        locGraph <-locGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        locGraph <-locGraph+ggtitle("Location Data of Entire User")
+        locGraph <- locGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="#8904B1"))
+        locGraph <- locGraph + guides(color=guide_legend(title = NULL))
+    }else{
+        locGraph <-ggplot()
+        locGraph <- locGraph + theme_bw()
+        
+        locGraph <-locGraph+labs(x="Longitude (°E)",y="Latitude (°N)")
+        locGraph <-locGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        locGraph <-locGraph+ggtitle("Location Data of Entire User")
+        locGraph <- locGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="#8904B1"))
+        
+    }
+    locGraph
+}
+defaultMultis <-function(inputData, inputXAxis, inputYAxis, graphType){ #Y Axis is NULL
+    
+    file<- inputData
+    if(length(which(!is.na(file[,2])))!=0){
+        if(inputXAxis != "phone"){
+            
+            colnames(file)<- c("phone","inputXAxis")
+            
+            Intervaltemp = as.numeric(max(file[which(!is.na(file[,2])),2])-min(file[which(!is.na(file[,2])),2]))/8
+            Interval<- seq(min(file[which(!is.na(file[,2])),2]),max(file[which(!is.na(file[,2])),2]),Intervaltemp)
+            width<-Intervaltemp
+            
+            returnGraph <-ggplot(data = file, mapping=aes(file[,2]))
+            returnGraph <- returnGraph + theme_bw()
+            returnGraph <- returnGraph+scale_x_continuous(breaks = Interval)
+            returnGraph <- returnGraph+labs(x=inputXAxis)
+            returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+            returnGraph <-returnGraph+ggtitle("Customized Graph")
+            returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+            switch (graphType,
+                    "area"= returnGraph<-returnGraph+geom_area(aes(fill=factor(file$phone),colour=factor(file$phone)),stat = "bin",binwidth=width),
+                    "density"=returnGraph<-returnGraph+geom_density(aes(colour=factor(file$phone)),kernel="gaussian"),
+                    "dotplot"=returnGraph<-returnGraph+geom_dotplot(aes(fill=factor(file$phone),colour=factor(file$phone)),binwidth = width),
+                    "freqpoly"= returnGraph<-returnGraph+geom_freqpoly(aes(colour=factor(file$phone)),binwidth=width),
+                    "histogram"=returnGraph<-returnGraph+geom_histogram(aes(fill=factor(file$phone)),binwidth =width)
+            )
+            
+            returnGraph
+            
+        }
+    }
+    else{
+        returnGraph <-ggplot()+geom_blank()
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+labs(x=NULL, y=NULL)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        returnGraph
+    }
+    
+}
+
+
+defaultMulti2vars <-function(inputData, inputXAxis, inputYAxis, graphType){ #Y Axis is not NULL
+    
+    file<-inputData
+    
+    if(length(which(!is.na(file[,3])))!=0){
+        colnames(file)<- c("phone","inputXAxis","inputYAxis")
+        
+        Intervaltemp = as.numeric(max(file[which(!is.na(file[,2])),2])-min(file[which(!is.na(file[,2])),2]))/8
+        Interval<- seq(min(file[which(!is.na(file[,2])),2]),max(file[which(!is.na(file[,2])),2]),Intervaltemp)
+        
+        maxValue = max(file[which(!is.na(file[,3])),3])
+        minValue = min(file[which(!is.na(file[,3])),3])
+        intervalValue <- (maxValue-minValue)/10
+        intervalseq<-seq(minValue,maxValue,intervalValue)
+        
+        returnGraph <-ggplot(data = file, mapping=aes(file[,2], file[,3]))#
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+scale_x_continuous(breaks = Interval)
+        returnGraph <- returnGraph+scale_y_continuous(breaks = intervalseq,labels =sprintf("%0.5f",round(intervalseq,digits = 5)))
+        returnGraph <- returnGraph+labs(x=inputXAxis, y=inputYAxis)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        
+        switch (graphType,
+                "line" = returnGraph<- returnGraph+geom_line(aes(colour=factor(file$phone)),cex=0.4),
+                "point" = returnGraph<- returnGraph+geom_point(aes(colour=factor(file$phone)),size=0.4),
+                "step"= returnGraph<- returnGraph+geom_step(aes(colour=factor(file$phone)),direction = "hv"),
+                "rug"=returnGraph<- returnGraph+geom_rug(aes(colour=factor(file$phone)),sides = "bl")+geom_line(),
+                "smooth"=returnGraph<- returnGraph+geom_smooth(aes(colour=factor(file$phone))),
+                "text"=returnGraph<- returnGraph+geom_text(aes(label=file[,1],colour=factor(file$phone)), nudge_x = 1, nudge_y = 1, check_overlap = T),
+                "label"=returnGraph<- returnGraph+geom_label(aes(label=file[,1],colour=factor(file$phone)), nudge_x = 1, nudge_y = 1, check_overlap = T),
+                "jitter"=returnGraph<- returnGraph+geom_jitter(aes(colour=factor(file$phone)),height = 2,width = 2)
+        )
+        
+        returnGraph
+    }
+    
+    else{
+        returnGraph <-ggplot()+geom_blank()
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+labs(x=NULL, y=NULL)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        returnGraph
+    }
+    
+}
+default2vars <-function(inputData, inputXAxis, inputYAxis, graphType){
+    
+    file<-inputData
+    if(length(which(!is.na(file[,2])))!=0){
+        colnames(file)<- c("inputXAxis","inputYAxis")
+        
+        Intervaltemp = as.numeric(max(file[which(!is.na(file[,1])),1])-min(file[which(!is.na(file[,1])),1]))/8
+        Interval<- seq(min(file[which(!is.na(file[,1])),1]),max(file[which(!is.na(file[,1])),1]),Intervaltemp)
+        maxValue = max(file[which(!is.na(file[,2])),2])
+        minValue = min(file[which(!is.na(file[2])),2])
+        intervalValue <- (maxValue-minValue)/10
+        intervalseq<-seq(minValue,maxValue,intervalValue)
+        
+        returnGraph <-ggplot(data = file, mapping=aes(file[,1], file[,2]))#
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+scale_x_continuous(breaks = Interval)
+        returnGraph <- returnGraph+scale_y_continuous(breaks = intervalseq,labels =sprintf("%0.5f",round(intervalseq,digits = 5)))
+        returnGraph <- returnGraph+labs(x=inputXAxis, y=inputYAxis)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        switch (graphType,
+                "line" = returnGraph<- returnGraph+geom_line(colour="#04B431",cex=0.4),
+                "point" = returnGraph<- returnGraph+geom_point(colour="#04B431",size=0.4),
+                "step"= returnGraph<- returnGraph+geom_step(colour="#04B431",direction = "hv"),
+                "rug"=returnGraph<- returnGraph+geom_rug(colour="#04B431",sides = "bl")+geom_line(),
+                "smooth"=returnGraph<- returnGraph+geom_smooth(colour="#04B431"),
+                "text"=returnGraph<- returnGraph+geom_text(colour="#04B431",aes(label=file[,1]), nudge_x = 1, nudge_y = 1, check_overlap = T),
+                "label"=returnGraph<- returnGraph+geom_label(colour="#04B431",aes(label=file[,1]), nudge_x = 1, nudge_y = 1, check_overlap = T),
+                "jitter"=returnGraph<- returnGraph+geom_jitter(colour="#04B431",height = 2,width = 2)
+        )
+        returnGraph
+    }
+    
+    else{
+        returnGraph <-ggplot()+geom_blank()
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+labs(x=NULL, y=NULL)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        returnGraph
+    }
+    
+}
+
+defaults <-function(inputData, inputXAxis, inputYAxis, graphType){
+    
+    file<-inputData
+    
+    if(length(which(!is.na(file)))!=0){
+        ones<-c()
+        ones[1:length(file)]<-1
+        file<- data.frame(ones,file)
+        
+        colnames(file)<- c("inputXAxis","inputYAxis")
+        
+        Intervaltemp = as.numeric(max(file[which(!is.na(file[,2])),2])-min(file[which(!is.na(file[,2])),2]))/8
+        width <- Intervaltemp
+        Interval<- seq(min(file[which(!is.na(file[,2])),2]),max(file[which(!is.na(file[,2])),2]),Intervaltemp)
+        
+        returnGraph <-ggplot(data = file, mapping=aes(x=file$inputYAxis))
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+scale_x_continuous(breaks = Interval)
+        
+        returnGraph <- returnGraph+labs(x=inputXAxis)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        switch (graphType,
+                "area"= returnGraph<-returnGraph+geom_area(colour="#04B431",fill="#04B431",stat = "bin",binwidth=width),
+                "density"=returnGraph<-returnGraph+geom_density(colour="#04B431",kernel="gaussian"),
+                "dotplot"=returnGraph<-returnGraph+geom_dotplot(colour="#04B431",fill="#04B431",binwidth =width),
+                "freqpoly"= returnGraph<-returnGraph+geom_freqpoly(colour="#04B431",fill="#04B431",binwidth=width),
+                "histogram"=returnGraph<-returnGraph+geom_histogram(colour="#04B431",fill="#04B431",binwidth =width)
+        )
+        returnGraph
+    }else{
+        returnGraph <-ggplot()+geom_blank()
+        returnGraph <- returnGraph + theme_bw()
+        returnGraph <- returnGraph+labs(x=NULL, y=NULL)
+        returnGraph <-returnGraph+theme(axis.title = element_text(face = "plain",hjust = 0.5, size=11))
+        returnGraph <-returnGraph+ggtitle("Customized Graph")
+        returnGraph <- returnGraph+theme(plot.title = element_text(family="serif", face = "bold",hjust = 0.5, size=18, color="darkblue"))
+        returnGraph
+    }
+    
+}
+ui <-fluidPage(
+    fluidRow(
+        column(6,column(11, div(style="heigth:50px;",h2('Graph')),offset = 1),offset=1),
+        column(2,
+               fluidRow(
+                   radioButtons(inputId = "mode",label = NULL, choices = c("default","customize","Data Set"),inline = T),
+                   conditionalPanel("input.mode=='Data Set'",radioButtons(inputId = "dataMode",label = NULL, choices = c("Phone","E4"),inline = T))
+               )
+               ,offset = 3)
+    ),
+    fluidRow(
+        column(3,
+               fluidRow(
+                   column(8,wellPanel(id="tPanel",style="overflow-y:scroll;max-height:150px;",
+                                      checkboxGroupInput("selectFile_check","Select File",choices = usersName,selected = usersName)),offset = 1),
+                   column(3)),
+               fluidRow(column(11, 
+                               conditionalPanel("input.mode=='default'",
+                                                div(style="heigth:200px;",
+                                                    fluidRow(
+                                                        selectInput(inputId = "selectGraph",label = "Graph Type", choices = c("Accelerometer","Gyroscope","Location","Temperature","Inter Beat Interval","Blood Volume Pulse","GSR"), selected = "Location"),
+                                                        conditionalPanel("input.selectGraph!='Location'",selectInput(inputId = "selectUser",label = "User Num",choices = users, selected = users[1])),
+                                                        dateRangeInput(inputId = "selectDate",label = "Date",start = Sys.Date(), end = Sys.Date(),format = "yyyy-mm-dd")
+                                                    ),
+                                                    fluidRow(
+                                                        h5('Start Time'),
+                                                        div(style="height:20px; font-size:9px;",
+                                                            column(3, numericInput(inputId = "selectHour_s",label = "Hour",min = 0, max = 23,value = 0,step = 1)),
+                                                            column(3, numericInput(inputId = "selectMin_s",label = "Min",min = 0, max = 59,value = 0,step=1)),
+                                                            column(3, numericInput(inputId = "selectSec_s",label = "Sec",min = 0, max = 59, value = 0,step=1)),
+                                                            column(1))
+                                                    ),
+                                                    fluidRow(
+                                                        h5('End Time'),
+                                                        div(style="height:20px; font-size:9px;",
+                                                            
+                                                            column(3, numericInput(inputId = "selectHour_e",label = "Hour",min = 0, max = 23,value = 23,step = 1)),
+                                                            column(3, numericInput(inputId = "selectMin_e",label = "Min",min = 0, max = 59, value = 59,step=1)),
+                                                            column(3, numericInput(inputId = "selectSec_e",label = "Sec",min = 0, max = 59, value = 59,step=1)),
+                                                            column(1)
+                                                        )
+                                                    ),
+                                                    fluidRow(
+                                                        conditionalPanel("input.selectGraph == 'Location'",
+                                                                         sliderInput(inputId = "selectLa",label = "Latitude",min = 0, max = 90,value = c(0,90),step = 1),
+                                                                         sliderInput(inputId = "selectLo",label = "Longitude",min = 0, max = 180,value = c(0,180),step = 1))
+                                                    )
+                                                    
+                                                )),
+                               conditionalPanel("input.mode=='Data Set'",
+                                                div(style="heigth:200px;",
+                                                    conditionalPanel("input.dataMode=='Phone'",
+                                                                     fluidRow(
+                                                                         checkboxGroupInput(inputId ="selectData2", label = NULL, choices = c("Accelerometer","Gyroscope","Location"), selected =  c("Accelerometer","Gyroscope","Location")),
+                                                                         
+                                                                         selectInput(inputId = "selectUser2",label = "User Num",choices = users, selected = users[1]),
+                                                                         dateRangeInput(inputId = "selectDate2",label = "Date",start = Sys.Date(), end = Sys.Date(),format = "yyyy-mm-dd")
+                                                                     ),
+                                                                     fluidRow(
+                                                                         h5('Start Time'),
+                                                                         div(style="height:20px; font-size:9px;",
+                                                                             column(3, numericInput(inputId = "selectHour_s2",label = "Hour",min = 0, max = 23,value = 0,step = 1)),
+                                                                             column(3, numericInput(inputId = "selectMin_s2",label = "Min",min = 0, max = 59,value = 0,step=1)),
+                                                                             column(3, numericInput(inputId = "selectSec_s2",label = "Sec",min = 0, max = 59, value = 0,step=1)),
+                                                                             column(1))
+                                                                     ),
+                                                                     fluidRow(
+                                                                         h5('End Time'),
+                                                                         div(style="height:20px;font-size:9px;",
+                                                                             column(3, numericInput(inputId = "selectHour_e2",label = "Hour",min = 0, max = 23,value = 23,step = 1)),
+                                                                             column(3, numericInput(inputId = "selectMin_e2",label = "Min",min = 0, max = 59, value = 59,step=1)),
+                                                                             column(3, numericInput(inputId = "selectSec_e2",label = "Sec",min = 0, max = 59, value = 59,step=1)),
+                                                                             column(1)
+                                                                         )
+                                                                     ),
+                                                                     fluidRow(
+                                                                         sliderInput(inputId = "selectLa2",label = "Latitude",min = 0, max = 90,value = c(0,90),step = 1),
+                                                                         sliderInput(inputId = "selectLo2",label = "Longitude",min = 0, max = 180,value = c(0,180),step = 1)
+                                                                     )),
+                                                    conditionalPanel("input.dataMode=='E4'",
+                                                                     fluidRow(
+                                                                         checkboxGroupInput(inputId ="selectData2_1", label = NULL, choices = c("Accelerometer","Temperature","Inter Beat Interval","Blood Volume Pulse","GSR"),selected =  c("Accelerometer","Temperature","Inter Beat Interval","Blood Volume Pulse","GSR")),
+                                                                         
+                                                                         selectInput(inputId = "selectUser2_1",label = "User Num",choices = users, selected = users[1]),
+                                                                         dateRangeInput(inputId = "selectDate2_1",label = "Date",start = Sys.Date(), end = Sys.Date(),format = "yyyy-mm-dd")
+                                                                     ),
+                                                                     fluidRow(
+                                                                         h5('Start Time'),
+                                                                         div(style="height:20px;font-size:9px;",
+                                                                             column(3, numericInput(inputId = "selectHour_s2_1",label = "Hour",min = 0, max = 23,value = 0,step = 1)),
+                                                                             column(3, numericInput(inputId = "selectMin_s2_1",label = "Min",min = 0, max = 59,value = 0,step=1)),
+                                                                             column(3, numericInput(inputId = "selectSec_s2_1",label = "Sec",min = 0, max = 59, value = 0,step=1)),
+                                                                             column(1))
+                                                                     ),
+                                                                     fluidRow(
+                                                                         h5('End Time'),
+                                                                         div(style="height:20px;font-size:9px;",
+                                                                             column(3, numericInput(inputId = "selectHour_e2_1",label = "Hour",min = 0, max = 23,value = 23,step = 1)),
+                                                                             column(3, numericInput(inputId = "selectMin_e2_1",label = "Min",min = 0, max = 59, value = 59,step=1)),
+                                                                             column(3, numericInput(inputId = "selectSec_e2_1",label = "Sec",min = 0, max = 59, value = 59,step=1)),
+                                                                             column(1)
+                                                                         )
+                                                                     ),
+                                                                     fluidRow(
+                                                                         sliderInput(inputId = "selectLa2_1",label = "Latitude",min = 0, max = 90,value = c(0,90),step = 1),
+                                                                         sliderInput(inputId = "selectLo2_1",label = "Longitude",min = 0, max = 180,value = c(0,180),step = 1)
+                                                                     ))
+                                                    
+                                                    
+                                                )),
+                               conditionalPanel("input.mode=='customize'",
+                                                radioButtons(inputId = "userMode", label = NULL, choices = c("Multi","Individual"),selected = "Multi"),
+                                                conditionalPanel("input.userMode=='Individual'",
+                                                                 selectInput(inputId = "selectUser3_Individual",label = "Users",choices = users, selected = users[1]),
+                                                                 dateRangeInput(inputId = "selectDate3_1",label = "Date",start = Sys.Date(), end = Sys.Date(),format = "yyyy-mm-dd"),
+                                                                 conditionalPanel("input.Y_Axis!='NULL'",selectInput(inputId = "selectGraphType_1",label = "Graph Type", choices = c("line","step","point","smooth","text","label","jitter","rug"))),
+                                                                 conditionalPanel("input.Y_Axis=='NULL'",selectInput(inputId = "selectGraphType2_1",label = "Graph Type", choices = c("area","density","dotplot","freqpoly","histogram"))),
+                                                                 
+                                                                 fluidRow(
+                                                                     h5('Start Time'),
+                                                                     div(style="height:20px;font-size:9px;",
+                                                                         column(3, numericInput(inputId = "selectHour_s3_1",label = "Hour",min = 0, max = 23,value = 0,step = 1)),
+                                                                         column(3, numericInput(inputId = "selectMin_s3_1",label = "Min",min = 0, max = 59,value = 0,step=1)),
+                                                                         column(3, numericInput(inputId = "selectSec_s3_1",label = "Sec",min = 0, max = 59, value = 0,step=1)),
+                                                                         column(1))
+                                                                 ),
+                                                                 fluidRow(
+                                                                     h5('End Time'),
+                                                                     div(style="height:20px;font-size:9px;",
+                                                                         column(3, numericInput(inputId = "selectHour_e3_1",label = "Hour",min = 0, max = 23,value = 23,step = 1)),
+                                                                         column(3, numericInput(inputId = "selectMin_e3_1",label = "Min",min = 0, max = 59, value = 59,step=1)),
+                                                                         column(3, numericInput(inputId = "selectSec_e3_1",label = "Sec",min = 0, max = 59, value = 59,step=1)),
+                                                                         column(1)
+                                                                     )
+                                                                 ),
+                                                                 fluidRow(
+                                                                     conditionalPanel("input.selectGraph3 == 'Location'",
+                                                                                      sliderInput(inputId = "selectLa3_1",label = "Latitude",min = 0, max = 90,value = c(0,90),step = 1),
+                                                                                      sliderInput(inputId = "selectLo3_1",label = "Longitude",min = 0, max = 180,value = c(0,180),step = 1)
+                                                                     )
+                                                                 )
+                                                ),
+                                                conditionalPanel("input.userMode=='Multi'",
+                                                                 checkboxGroupInput(inputId = "selectUser3_multi",label = "Users",choices = users, selected = users),
+                                                                 dateRangeInput(inputId = "selectDate3",label = "Date",start = Sys.Date(), end = Sys.Date(),format = "yyyy-mm-dd"),
+                                                                 conditionalPanel("input.Y_Axis!='NULL'",selectInput(inputId = "selectGraphType",label = "Graph Type", choices = c("line","step","point","smooth","text","label","jitter","rug"))),
+                                                                 conditionalPanel("input.Y_Axis=='NULL'",selectInput(inputId = "selectGraphType2",label = "Graph Type", choices = c("area","density","dotplot","freqpoly","histogram"))),
+                                                                 
+                                                                 fluidRow(
+                                                                     h5('Start Time'),
+                                                                     div(style="height:20px;font-size:9px;",
+                                                                         column(3, numericInput(inputId = "selectHour_s3",label = "Hour",min = 0, max = 23,value = 0,step = 1)),
+                                                                         column(3, numericInput(inputId = "selectMin_s3",label = "Min",min = 0, max = 59,value = 0,step=1)),
+                                                                         column(3, numericInput(inputId = "selectSec_s3",label = "Sec",min = 0, max = 59, value = 0,step=1)),
+                                                                         column(1))
+                                                                 ),
+                                                                 fluidRow(
+                                                                     h5('End Time'),
+                                                                     div(style="height:20px;font-size:9px;",
+                                                                         column(3, numericInput(inputId = "selectHour_e3",label = "Hour",min = 0, max = 23,value = 23,step = 1)),
+                                                                         column(3, numericInput(inputId = "selectMin_e3",label = "Min",min = 0, max = 59, value = 59,step=1)),
+                                                                         column(3, numericInput(inputId = "selectSec_e3",label = "Sec",min = 0, max = 59, value = 59,step=1)),
+                                                                         column(1)
+                                                                     )
+                                                                 ),
+                                                                 fluidRow(
+                                                                     conditionalPanel("input.selectGraph3 == 'Location'",
+                                                                                      sliderInput(inputId = "selectLa3",label = "Latitude",min = 0, max = 90,value = c(0,90),step = 1),
+                                                                                      sliderInput(inputId = "selectLo3",label = "Longitude",min = 0, max = 180,value = c(0,180),step = 1)
+                                                                     )
+                                                                 )
+                                                )
+                                                
+                               )
+                               ,offset = 1)),
+               
+               offset = 0),
+        column(8,
+               conditionalPanel("input.mode=='default'", div(style="heigth:800px;",plotOutput("graph"))),
+               conditionalPanel("input.mode=='Data Set'",
+                                conditionalPanel("input.dataMode=='Phone'",dataTableOutput(outputId = "dataTable")),
+                                conditionalPanel("input.dataMode=='E4'",dataTableOutput(outputId = "e4dataTable"))
+               ),
+               conditionalPanel("input.mode=='customize'",
+                                fluidRow(
+                                    column(5,
+                                           selectInput(inputId = "X_Axis",label = "X-Axis",choices = inputXAxis,selected = "Time")),
+                                    column(5,
+                                           selectInput(inputId = "Y_Axis",label = "Y-Axis",choices = inputYAxis,selected = "NULL"))
+                                ),
+                                fluidRow(
+                                    conditionalPanel("input.userMode=='Multi'",plotOutput("customize_graph")),
+                                    conditionalPanel("input.userMode=='Individual'",plotOutput("customize_graph_Indi"))
+                                )
+               )
+        )
+    )
+    
+    
+)
+
+server <- function(input, output){
+    
+    lungdata <- reactive({
+        inFile<-input$selectFile_check
+        if(is.null(inFile))
+            return(NULL)
+        
+        lungdata<-NULL
+        for(var in input$selectFile_check) {
+            path<-paste0(as.character(entireData[which(entireData$udid==var),3]),"/Phone.csv")
+            
+            for (subpath in path) {
+                lungdata <- rbind(lungdata,read.csv(subpath))
+            }
+            
+        }
+        lungdata<-lungdata[,c(2,1,3:11)]
+        colnames(lungdata)<-c("productNo","Num","sensingTime","acc_X","acc_Y","acc_Z","gyro_X","gyro_Y","gyro_Z","longitude","latitude")
+        
+        lungdata <- lungdata[c(order(lungdata$sensingTime)),]
+        
+    })
+    e4Data <- reactive({
+        inFile<-input$selectFile_check
+        if(is.null(inFile))
+            return(NULL)
+        
+        e4Data<-NULL
+        for(var in input$selectFile_check) {
+            path<-paste0(as.character(entireData[which(entireData$udid==var),3]),"/E4.csv")
+            for (subpath in path) {
+                e4Data <- rbind(e4Data,read.csv(subpath))
+            }
+            
+        }
+        e4Data<-e4Data[,c(2,1,3:10)]
+        
+        colnames(e4Data) <- c("lungdata.productNo", "lungdata.Num","lungdata.sensingTime","lungdata.E4_temp", "lungdata.E4_bvp", "lungdata.E4_ibi", "lungdata.E4_accX","lungdata.E4_accY","lungdata.E4_accZ","lungdata.E4_gsr")
+        e4Data <- e4Data[c(order(e4Data$lungdata.sensingTime)),]
+        
+    })
+    
+    output$graph <- renderPlot({
+        inputData <- NULL
+        inputLo <-NULL
+        inputE4Data <- NULL
+        
+        startTime <- paste0(input$selectHour_s,":",input$selectMin_s,":",input$selectSec_s)
+        endTime <- paste0(input$selectHour_e,":",input$selectMin_e,":",input$selectSec_e)
+        
+        
+        i= c(strptime(paste(input$selectDate[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate[2],endTime),"%Y-%m-%d %H:%M:%S"))
+        e4Data<-e4Data()
+        timeDate <- lungdata()
+        timeE4Date<- e4Data()
+        
+        timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01")
+        timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data$lungdata.sensingTime/1000,origin="1970-01-01")
+        
+        if(length(which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]))!=0){
+            
+            inputData <- lungdata()[which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]),]
+            inputLo <- inputData[which(input$selectLo[1] <= inputData$longitude & inputData$longitude <=input$selectLo[2] & input$selectLa[1]<= inputData$latitude & inputData$latitude <= input$selectLa[2]),]
+        }else {
+            inputData<-NULL
+            inputLo<-NULL
+        }
+        if(length(which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]))!=0){
+            inputE4Data <- e4Data[which(i[1]<= timeE4Date$lungdata.sensingTime & timeE4Date$lungdata.sensingTime <= i[2]),]
+        }else inputE4Data<-NULL
+        
+        if(is.null(inputE4Data)){
+            inputE4Data <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputE4Data)<-c("lungdata.productNo", "lungdata.Num","lungdata.sensingTime","lungdata.E4_temp", "lungdata.E4_bvp", "lungdata.E4_ibi", "lungdata.E4_accX","lungdata.E4_accY","lungdata.E4_accZ","lungdata.E4_gsr")
+        }
+        if(is.null(inputData)){
+            inputData <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputData)<-c("productNo","Num","sensingTime","acc_X","acc_Y","acc_Z","gyro_X","gyro_Y","gyro_Z","longitude","latitude")
+        }
+        if(is.null(inputLo)){
+            inputLo <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputLo)<-c("productNo","Num","sensingTime","acc_X","acc_Y","acc_Z","gyro_X","gyro_Y","gyro_Z","longitude","latitude")
+        }
+        if(nrow(inputData)!=0 || nrow(inputE4Data)!=0){
+            switch(input$selectGraph,
+                   "Location"=getLocation(inputLo),
+                   "Accelerometer"=getAcceleromter(inputData,inputE4Data,input$selectUser),
+                   "Gyroscope"=getGyro(inputData,input$selectUser),
+                   "Temperature"= getTemp(inputE4Data,input$selectUser),
+                   "Inter Beat Interval"=getIBI(inputE4Data,input$selectUser),
+                   "Blood Volume Pulse"=getBVP(inputE4Data,input$selectUser),
+                   "GSR"= getGSR(inputE4Data,input$selectUser)
+            )
+            
+        }
+        else{
+            ggplot()+theme_bw()
+        }
+        
+    }, height = 740)
+    output$dataTable <- renderDataTable(expr = {
+        inputData <- lungdata()[which(lungdata()[,1]==input$selectUser2),]
+        
+        startTime <- paste0(input$selectHour_s2,":",input$selectMin_s2,":",input$selectSec_s2)
+        endTime <- paste0(input$selectHour_e2,":",input$selectMin_e2,":",input$selectSec_e2)
+        
+        
+        i= c(strptime(paste(input$selectDate2[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate2[2],endTime),"%Y-%m-%d %H:%M:%S"))
+        
+        timeDate <-inputData
+        timeDate$sensingTime <- as.POSIXct(timeDate$sensingTime/1000,origin="1970-01-01")
+        
+        if(length(which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]))!=0){
+            
+            inputData <- inputData[which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]),]
+            inputData <- inputData[which(input$selectLo2[1] <= inputData$longitude & inputData$longitude <=input$selectLo2[2] & input$selectLa2[1]<= inputData$latitude & inputData$latitude <= input$selectLa2[2]),]
+        }else{
+            return(NULL)
+        }
+        
+        datas <- c(3)
+        if(length(input$selectData2[which(input$selectData2=="Accelerometer")])!=0) datas = c(datas, 4:6)
+        if(length(input$selectData2[which(input$selectData2=="Gyroscope")])!=0) datas = c(datas, 7:9)
+        if(length(input$selectData2[which(input$selectData2=="Location")])!=0) datas = c(datas, 10:11)
+        realTime<-as.POSIXct(inputData[,3]/1000,origin="1970-01-01")
+        dataTable<-cbind(realTime,inputData[,datas])
+        dataTable
+    })
+    
+    output$e4dataTable <- renderDataTable(expr = {
+        inputE4Data <- e4Data()[which(e4Data()[,1]==input$selectUser2_1),]
+        
+        startTime <- paste0(input$selectHour_s2_1,":",input$selectMin_s2_1,":",input$selectSec_s2_1)
+        endTime <- paste0(input$selectHour_e2_1,":",input$selectMin_e2_1,":",input$selectSec_e2_1)
+        
+        
+        i= c(strptime(paste(input$selectDate2_1[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate2_1[2],endTime),"%Y-%m-%d %H:%M:%S"))
+        timeE4Date<-inputE4Data
+        
+        timeE4Date$lungdata.sensingTime <- as.POSIXct(timeE4Date$lungdata.sensingTime/1000,origin="1970-01-01")
+        
+        if(length(which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]))!=0){
+            inputE4Data <- inputE4Data[which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]),]
+        }
+        else{
+            return(NULL)
+        }
+        E4datas <- c(3)
+        if(length(input$selectData2_1[which(input$selectData2_1=="Accelerometer")])!=0)  E4datas<-c(E4datas,7:9)
+        if(length(input$selectData2_1[which(input$selectData2_1=="Temperature")])!=0) E4datas = c(E4datas, 4)
+        if(length(input$selectData2_1[which(input$selectData2_1=="Blood Volume Pulse")])!=0) E4datas = c(E4datas,5)
+        if(length(input$selectData2_1[which(input$selectData2_1=="Inter Beat Interval")])!=0) E4datas = c(E4datas, 6)
+        if(length(input$selectData2_1[which(input$selectData2_1=="GSR")])!=0) E4datas = c(E4datas, 10)
+        colnames(inputE4Data)<-c("ProductNo","id","E4sensingTime","E4_temp", "E4_bvp", "E4_ibi", "E4_accX","E4_accY","E4_accZ","E4_gsr")
+        realTime<-as.POSIXct(inputE4Data[,3]/1000,origin="1970-01-01")
+        e4dataTable<-cbind(realTime,inputE4Data[,E4datas])
+        return(e4dataTable)
+    })
+    
+    
+    output$customize_graph <- renderPlot({
+        inputData <- NULL
+        inputE4Data<-NULL
+        
+        startTime <- paste0(input$selectHour_s3,":",input$selectMin_s3,":",input$selectSec_s3)
+        endTime <- paste0(input$selectHour_e3,":",input$selectMin_e3,":",input$selectSec_e3)
+        
+        i= c(strptime(paste(input$selectDate3[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate3[2],endTime),"%Y-%m-%d %H:%M:%S"))
+        
+        timeDate <- lungdata()
+        timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01")
+        timeE4Date <- e4Data()
+        timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data()$lungdata.sensingTime/1000,origin="1970-01-01")
+        
+        if(length(which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]))!=0) inputData <- lungdata()[which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]),]
+        else inputData<-NULL
+        if(length(which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]))!=0) inputE4Data <- e4Data()[which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]),]
+        else inputE4Data<-NULL
+        
+        if(is.null(inputE4Data)){
+            inputE4Data <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputE4Data)<-c("lungdata.productNo", "lungdata.Num","lungdata.sensingTime","lungdata.E4_temp", "lungdata.E4_bvp", "lungdata.E4_ibi", "lungdata.E4_accX","lungdata.E4_accY","lungdata.E4_accZ","lungdata.E4_gsr")
+        }
+        if(is.null(inputData)){
+            inputData <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputData)<-c("productNo","Num","sensingTime","acc_X","acc_Y","acc_Z","gyro_X","gyro_Y","gyro_Z","longitude","latitude")
+        }
+        
+        
+        selectList<-c(1)
+        e4selectList<-c(1)
+        
+        inputXAxis <-input$X_Axis
+        inputYAxis<-input$Y_Axis
+        switch (input$X_Axis,
+                "Time"={
+                    selectList<- c(selectList,3)
+                    e4selectList<-c(e4selectList,3)
+                    inputXAxis<-paste0(inputXAxis," (ms)")
+                },
+                "Accelerometer-X"={
+                    selectList<- c(selectList,4)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Accelerometer-Y"={
+                    selectList<- c(selectList,5)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Accelerometer-Z"={
+                    selectList<- c(selectList,6)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Gyroscope-X"={
+                    selectList<- c(selectList,7)
+                    inputXAxis<-paste0(inputXAxis," (degree/sec)")
+                },
+                "Gyroscope-Y"={
+                    selectList<- c(selectList,8)
+                    inputXAxis<-paste0(inputXAxis," (degree/sec)")
+                },
+                "Gyroscope-Z"={
+                    selectList<- c(selectList,9)
+                    inputXAxis<-paste0(inputXAxis," (degree/sec)")
+                },
+                "E4Accelerometer-X"={
+                    e4selectList<- c(e4selectList,7)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "E4Accelerometer-Y"={
+                    e4selectList<- c(e4selectList,8)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "E4Accelerometer-Z"={
+                    e4selectList<- c(e4selectList,9)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Latitude"={
+                    selectList<- c(selectList,11)
+                    inputXAxis<-paste0(inputXAxis," (°N)")
+                },
+                "Longitude"={
+                    selectList<- c(selectList,10)
+                    inputXAxis<-paste0(inputXAxis," (°E)")
+                },
+                "Temperature"={
+                    e4selectList<- c(e4selectList,4)
+                    inputXAxis<-paste0(inputXAxis," (°C)")
+                },
+                "IBI"={
+                    e4selectList<- c(e4selectList,6)
+                    inputXAxis<-paste0(inputXAxis," (s)")
+                },
+                "BVP"=e4selectList<- c(e4selectList,5),
+                "GSR"={
+                    e4selectList<- c(e4selectList,10)
+                    inputXAxis<-paste0(inputXAxis," (μS)")
+                }
+        )
+        switch (input$Y_Axis,
+                "Time"={
+                    selectList<- c(selectList,3)
+                    e4selectList<-c(e4selectList,3)
+                    inputYAxis<-paste0(inputYAxis," (ms)")
+                },
+                "Accelerometer-X"={
+                    selectList<- c(selectList,4)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Accelerometer-Y"={
+                    selectList<- c(selectList,5)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Accelerometer-Z"={
+                    selectList<- c(selectList,6)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Gyroscope-X"={
+                    selectList<- c(selectList,7)
+                    inputYAxis<-paste0(inputYAxis," (degree/sec)")
+                },
+                "Gyroscope-Y"={
+                    selectList<- c(selectList,8)
+                    inputYAxis<-paste0(inputYAxis," (degree/sec)")
+                },
+                "Gyroscope-Z"={
+                    selectList<- c(selectList,9)
+                    inputYAxis<-paste0(inputYAxis," (degree/sec)")
+                },
+                "E4Accelerometer-X"={
+                    e4selectList<- c(e4selectList,7)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "E4Accelerometer-Y"={
+                    e4selectList<- c(e4selectList,8)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "E4Accelerometer-Z"={
+                    e4selectList<- c(e4selectList,9)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Latitude"={
+                    selectList<- c(selectList,11)
+                    inputYAxis<-paste0(inputYAxis," (°N)")
+                },
+                "Longitude"={
+                    selectList<- c(selectList,10)
+                    inputYAxis<-paste0(inputYAxis," (°E)")
+                },
+                "Temperature"={
+                    e4selectList<- c(e4selectList,4)
+                    inputYAxis<-paste0(inputYAxis," (°C)")
+                },
+                "IBI"={
+                    e4selectList<- c(e4selectList,6)
+                    inputYAxis<-paste0(inputYAxis," (s)")
+                },
+                "BVP"=e4selectList<- c(e4selectList,5),
+                "GSR"={
+                    e4selectList<- c(e4selectList,10)
+                    inputYAxis<-paste0(inputYAxis," (μS)")
+                }
+        )
+        if(length(inputData[,1])!=0){
+            
+            inputData <- inputData[which(inputData[,1] %in% input$selectUser3_multi),]
+            inputE4Data <- inputE4Data[which(inputE4Data[,1] %in% input$selectUser3_multi),]
+            
+            if(is.null(inputE4Data)){
+                inputE4Data <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+                colnames(inputE4Data)<-c("lungdata.productNo", "lungdata.Num","lungdata.sensingTime","lungdata.E4_temp", "lungdata.E4_bvp", "lungdata.E4_ibi", "lungdata.E4_accX","lungdata.E4_accY","lungdata.E4_accZ","lungdata.E4_gsr")
+            }
+            if(is.null(inputData)){
+                inputData <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+                colnames(inputData)<-c("productNo","Num","sensingTime","acc_X","acc_Y","acc_Z","gyro_X","gyro_Y","gyro_Z","longitude","latitude")
+            }
+            
+            if(input$Y_Axis=="NULL"){
+                if(input$X_Axis=="Time"){
+                    inputtemp<-inputE4Data[,c(1,3)]
+                    colnames(inputtemp)<-c("productNo","sensingTime")
+                    inputs<-rbind(inputData[,c(1,3)],inputtemp)
+                    inputs <- inputs[c(order(inputs$sensingTime)),]
+                    inputs <- unique(inputs)
+                    defaultMultis(inputs,inputXAxis,inputYAxis,input$selectGraphType2)
+                }else{
+                    
+                    if(length(selectList)>length(e4selectList)){#phone
+                        inputs <-inputData[,selectList]
+                        inputs <- inputs[c(order(inputs[,2])),]
+                        defaultMultis(inputs,inputXAxis,inputYAxis,input$selectGraphType2)
+                    }else{#e4
+                        inputs<-inputE4Data[,e4selectList]
+                        inputs<-inputs[c(order(inputs[,2])),]
+                        defaultMultis(inputs,inputXAxis,inputYAxis,input$selectGraphType2)
+                    }
+                    
+                }
+                
+                
+            }else{
+                if(length(selectList)==length(e4selectList)){
+                    if(input$X_Axis == "Time" && input$Y_Axis=="Time"){
+                        tempE4Data <- inputE4Data[,c(1,3)]
+                        colnames(tempE4Data)<-c("productNo","sensingTime")
+                        # print(inputData[,c(1,3)])
+                        inputs<-rbind(inputData[,c(1,3)],tempE4Data)
+                        colnames(inputs)<-c("productNo","sensingTime")
+                        
+                        inputs <- inputs[c(order(inputs$sensingTime)),]
+                        inputs <- unique(inputs)
+                        inputs<- cbind(inputs,inputs[,2])
+                        colnames(inputs)<-c("productNo","Time","Time")
+                        defaultMulti2vars(inputs,inputXAxis,inputYAxis,input$selectGraphType)
+                    }else return(NULL)
+                }else if(length(selectList)>length(e4selectList)){#phone
+                    inputs <-inputData[,selectList]
+                    inputs <- inputs[c(order(inputs[,2])),]
+                    defaultMulti2vars(inputs,inputXAxis,inputYAxis,input$selectGraphType)
+                }else{#e4
+                    inputs<-inputE4Data[,e4selectList]
+                    inputs<-inputs[c(order(inputs[,2])),]
+                    defaultMulti2vars(inputs,inputXAxis,inputYAxis,input$selectGraphType)
+                }
+            }
+        }else{
+            ggplot()+theme_bw()
+        }
+        
+    }, height = 700)
+    
+    output$customize_graph_Indi <- renderPlot({
+        inputData <- NULL
+        inputE4Data<-NULL
+        
+        
+        startTime <- paste0(input$selectHour_s3_1,":",input$selectMin_s3_1,":",input$selectSec_s3_1)
+        endTime <- paste0(input$selectHour_e3_1,":",input$selectMin_e3_1,":",input$selectSec_e3_1)
+        
+        i= c(strptime(paste(input$selectDate3_1[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate3_1[2],endTime),"%Y-%m-%d %H:%M:%S"))
+        
+        timeDate <- lungdata()
+        timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01")
+        timeE4Date <- e4Data()
+        timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data()$lungdata.sensingTime/1000,origin="1970-01-01")
+        
+        if(length(which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]))!=0) inputData <- lungdata()[which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]),]
+        else inputData<NULL
+        if(length(which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]))!=0) inputE4Data <- e4Data()[which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]),]
+        else inputE4Data<-NULL
+        
+        
+        
+        if(is.null(inputE4Data)){
+            inputE4Data <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputE4Data)<-c("lungdata.productNo", "lungdata.Num","lungdata.sensingTime","lungdata.E4_temp", "lungdata.E4_bvp", "lungdata.E4_ibi", "lungdata.E4_accX","lungdata.E4_accY","lungdata.E4_accZ","lungdata.E4_gsr")
+        }
+        if(is.null(inputData)){
+            inputData <- data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+            colnames(inputData)<-c("productNo","Num","sensingTime","acc_X","acc_Y","acc_Z","gyro_X","gyro_Y","gyro_Z","longitude","latitude")
+        }
+        
+        
+        selectList<-c()
+        e4selectList<-c()
+        inputXAxis <-input$X_Axis
+        inputYAxis<-input$Y_Axis
+        switch (input$X_Axis,
+                "Time"={
+                    selectList<- c(selectList,3)
+                    e4selectList<-c(e4selectList,3)
+                    inputXAxis<-paste0(inputXAxis," (ms)")
+                },
+                "Accelerometer-X"={
+                    selectList<- c(selectList,4)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Accelerometer-Y"={
+                    selectList<- c(selectList,5)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Accelerometer-Z"={
+                    selectList<- c(selectList,6)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Gyroscope-X"={
+                    selectList<- c(selectList,7)
+                    inputXAxis<-paste0(inputXAxis," (degree/sec)")
+                },
+                "Gyroscope-Y"={
+                    selectList<- c(selectList,8)
+                    inputXAxis<-paste0(inputXAxis," (degree/sec)")
+                },
+                "Gyroscope-Z"={
+                    selectList<- c(selectList,9)
+                    inputXAxis<-paste0(inputXAxis," (degree/sec)")
+                },
+                "E4Accelerometer-X"={
+                    e4selectList<- c(e4selectList,7)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "E4Accelerometer-Y"={
+                    e4selectList<- c(e4selectList,8)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "E4Accelerometer-Z"={
+                    e4selectList<- c(e4selectList,9)
+                    inputXAxis<-paste0(inputXAxis," (m/s2)")
+                },
+                "Latitude"={
+                    selectList<- c(selectList,11)
+                    inputXAxis<-paste0(inputXAxis," (°N)")
+                },
+                "Longitude"={
+                    selectList<- c(selectList,10)
+                    inputXAxis<-paste0(inputXAxis," (°E)")
+                },
+                "Temperature"={
+                    e4selectList<- c(e4selectList,4)
+                    inputXAxis<-paste0(inputXAxis," (°C)")
+                },
+                "IBI"={
+                    e4selectList<- c(e4selectList,6)
+                    inputXAxis<-paste0(inputXAxis," (s)")
+                },
+                "BVP"=e4selectList<- c(e4selectList,5),
+                "GSR"={
+                    e4selectList<- c(e4selectList,10)
+                    inputXAxis<-paste0(inputXAxis," (μS)")
+                }
+        )
+        switch (input$Y_Axis,
+                "Time"={
+                    selectList<- c(selectList,3)
+                    e4selectList<-c(e4selectList,3)
+                    inputYAxis<-paste0(inputYAxis," (ms)")
+                },
+                "Accelerometer-X"={
+                    selectList<- c(selectList,4)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Accelerometer-Y"={
+                    selectList<- c(selectList,5)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Accelerometer-Z"={
+                    selectList<- c(selectList,6)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Gyroscope-X"={
+                    selectList<- c(selectList,7)
+                    inputYAxis<-paste0(inputYAxis," (degree/sec)")
+                },
+                "Gyroscope-Y"={
+                    selectList<- c(selectList,8)
+                    inputYAxis<-paste0(inputYAxis," (degree/sec)")
+                },
+                "Gyroscope-Z"={
+                    selectList<- c(selectList,9)
+                    inputYAxis<-paste0(inputYAxis," (degree/sec)")
+                },
+                "E4Accelerometer-X"={
+                    e4selectList<- c(e4selectList,7)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "E4Accelerometer-Y"={
+                    e4selectList<- c(e4selectList,8)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "E4Accelerometer-Z"={
+                    e4selectList<- c(e4selectList,9)
+                    inputYAxis<-paste0(inputYAxis," (m/s2)")
+                },
+                "Latitude"={
+                    selectList<- c(selectList,11)
+                    inputYAxis<-paste0(inputYAxis," (°N)")
+                },
+                "Longitude"={
+                    selectList<- c(selectList,10)
+                    inputYAxis<-paste0(inputYAxis," (°E)")
+                },
+                "Temperature"={
+                    e4selectList<- c(e4selectList,4)
+                    inputYAxis<-paste0(inputYAxis," (°C)")
+                },
+                "IBI"={
+                    e4selectList<- c(e4selectList,6)
+                    inputYAxis<-paste0(inputYAxis," (s)")
+                },
+                "BVP"=e4selectList<- c(e4selectList,5),
+                "GSR"={
+                    e4selectList<- c(e4selectList,10)
+                    inputYAxis<-paste0(inputYAxis," (μS)")
+                }
+        )
+        if(length(inputData[,1])!=0){
+            
+            inputData <- inputData[which(inputData[,1]==input$selectUser3_Individual),]
+            inputE4Data <- inputE4Data[which(inputE4Data[,1]==input$selectUser3_Individual),]
+            
+            if(input$Y_Axis=="NULL") {
+                if(input$X_Axis=="Time"){
+                    inputs= c(inputData[,3],inputE4Data[which(!is.na(inputE4Data[,3])),3])
+                    inputs <- unique(inputs[order(inputs)])
+                    defaults(inputs,inputXAxis,inputYAxis,input$selectGraphType2_1)
+                }else{
+                    if(length(selectList)>length(e4selectList)){#phone
+                        inputs <-inputData[,selectList]
+                        inputs <- inputs[c(order(inputs))]
+                        defaults(inputs,inputXAxis,inputYAxis,input$selectGraphType2_1)
+                    }else{#e4
+                        inputs<-inputE4Data[,e4selectList]
+                        inputs<-inputs[c(order(inputs))]
+                        defaults(inputs,inputXAxis,inputYAxis,input$selectGraphType2_1)
+                    }
+                }
+                
+            }else {
+                if(length(selectList)==length(e4selectList)){
+                    if(input$X_Axis == "Time" && input$Y_Axis=="Time"){
+                        
+                        inputs= c(inputData[,3],inputE4Data[,3])
+                        inputs <- unique(inputs[c(order(inputs))])
+                        inputs<- cbind(inputs,inputs)
+                        default2vars(inputs,inputXAxis,inputYAxis,input$selectGraphType_1)
+                    }else return(NULL)
+                }else if(length(selectList)>length(e4selectList)){#phone
+                    inputs <-inputData[,selectList]
+                    inputs <- inputs[c(order(inputs[,1])),]
+                    
+                    default2vars(inputs,inputXAxis,inputYAxis,input$selectGraphType_1)
+                }else{#e4
+                    inputs<-inputE4Data[,e4selectList]
+                    inputs<-inputs[c(order(inputs[,1])),]
+                    default2vars(inputs,inputXAxis,inputYAxis,input$selectGraphType_1)
+                }
+            }
+            
+            
+            
+        }else{
+            ggplot()+theme_bw()
+        }
+        
+    }, height = 700)
+    
+}
+
+
+shinyApp(ui = ui, server = server)
+
+
+
+

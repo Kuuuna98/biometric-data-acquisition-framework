@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1565859402154.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "189D92CF",
+    "lastKnownWriteTime" : 1565864906,
+    "last_content_update" : 1565864906327,
+    "path" : "~/Separation_version/functions.R",
+    "project_path" : "functions.R",
+    "properties" : {
+        "cursorPosition" : "500,26",
+        "scrollLine" : "479",
+        "tempName" : "Untitled3"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

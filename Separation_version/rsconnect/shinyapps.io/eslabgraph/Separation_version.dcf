@@ -1,0 +1,12 @@
+name: Separation_version
+title: Separation_version
+username:
+account: eslabgraph
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1088298
+bundleId: 2322062
+url: https://eslabgraph.shinyapps.io/Separation_version/
+when: 1565868959.46756
+asMultiple: FALSE
+asStatic: FALSE
