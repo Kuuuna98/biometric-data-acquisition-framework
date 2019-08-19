@@ -600,3 +600,5 @@ defaults <-function(inputData, inputXAxis, inputYAxis, graphType){
   }
   
 }
+
+
