@@ -80,7 +80,7 @@ function(input, output){
     #input time (start time ~ end time)
     startTime <- paste0(input$selectHour_s,":",input$selectMin_s,":",input$selectSec_s)
     endTime <- paste0(input$selectHour_e,":",input$selectMin_e,":",input$selectSec_e)
-    i= c(strptime(paste(input$selectDate[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate[2],endTime),"%Y-%m-%d %H:%M:%S"))
+    i= c(strptime(paste(input$selectDate[1],startTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"),strptime(paste(input$selectDate[2],endTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"))
     
     #call reactive module for data table
     e4Data<-e4Data()
@@ -89,8 +89,8 @@ function(input, output){
     
     #convert lungdata&e4Data sensingTime millisecond to second
     #for compare
-    timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01")
-    timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data$lungdata.sensingTime/1000,origin="1970-01-01")
+    timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01",tz="GMT-9")
+    timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data$lungdata.sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     
     #check data in selected time is null
     if(length(which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]))!=0){
@@ -147,12 +147,12 @@ function(input, output){
     #input time
     startTime <- paste0(input$selectHour_s2,":",input$selectMin_s2,":",input$selectSec_s2)
     endTime <- paste0(input$selectHour_e2,":",input$selectMin_e2,":",input$selectSec_e2)
-    i= c(strptime(paste(input$selectDate2[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate2[2],endTime),"%Y-%m-%d %H:%M:%S"))
+    i= c(strptime(paste(input$selectDate2[1],startTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"),strptime(paste(input$selectDate2[2],endTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"))
     
     #convert lungdata sensingTime millisecond to second
     #for compare
     timeDate <-inputData
-    timeDate$sensingTime <- as.POSIXct(timeDate$sensingTime/1000,origin="1970-01-01")
+    timeDate$sensingTime <- as.POSIXct(timeDate$sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     
     #check data in selected time is null
     if(length(which(i[1]<=timeDate$sensingTime  & timeDate$sensingTime <= i[2]))!=0){
@@ -169,7 +169,7 @@ function(input, output){
     if(length(input$selectData2[which(input$selectData2=="Gyroscope")])!=0) datas = c(datas, 7:9)
     if(length(input$selectData2[which(input$selectData2=="Location")])!=0) datas = c(datas, 10:11)
     #bind realTime(convert to second)
-    realTime<-as.POSIXct(inputData[,3]/1000,origin="1970-01-01")
+    realTime<-as.POSIXct(inputData[,3]/1000,origin="1970-01-01",tz="GMT-9")
     dataTable<-cbind(realTime,inputData[,datas])
     dataTable
   })
@@ -181,12 +181,12 @@ function(input, output){
     #input time
     startTime <- paste0(input$selectHour_s2_1,":",input$selectMin_s2_1,":",input$selectSec_s2_1)
     endTime <- paste0(input$selectHour_e2_1,":",input$selectMin_e2_1,":",input$selectSec_e2_1)
-    i= c(strptime(paste(input$selectDate2_1[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate2_1[2],endTime),"%Y-%m-%d %H:%M:%S"))
+    i= c(strptime(paste(input$selectDate2_1[1],startTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"),strptime(paste(input$selectDate2_1[2],endTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"))
     
     #convert e4Data sensingTime millisecond to second
     #for compare
     timeE4Date<-inputE4Data
-    timeE4Date$lungdata.sensingTime <- as.POSIXct(timeE4Date$lungdata.sensingTime/1000,origin="1970-01-01")
+    timeE4Date$lungdata.sensingTime <- as.POSIXct(timeE4Date$lungdata.sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     
     #check data in selected time is null
     if(length(which(i[1]<=timeE4Date$lungdata.sensingTime  & timeE4Date$lungdata.sensingTime <= i[2]))!=0){
@@ -205,7 +205,7 @@ function(input, output){
     if(length(input$selectData2_1[which(input$selectData2_1=="GSR")])!=0) E4datas = c(E4datas, 10)
     colnames(inputE4Data)<-c("ProductNo","id","E4sensingTime","E4_temp", "E4_bvp", "E4_ibi", "E4_accX","E4_accY","E4_accZ","E4_gsr")
     #bind realTime(convert to second)
-     realTime<-as.POSIXct(inputE4Data[,3]/1000,origin="1970-01-01")
+     realTime<-as.POSIXct(inputE4Data[,3]/1000,origin="1970-01-01",tz="GMT-9")
     e4dataTable<-cbind(realTime,inputE4Data[,E4datas])
     return(e4dataTable)
   })
@@ -218,14 +218,14 @@ function(input, output){
     #input time
     startTime <- paste0(input$selectHour_s3,":",input$selectMin_s3,":",input$selectSec_s3)
     endTime <- paste0(input$selectHour_e3,":",input$selectMin_e3,":",input$selectSec_e3)
-    i= c(strptime(paste(input$selectDate3[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate3[2],endTime),"%Y-%m-%d %H:%M:%S"))
+    i= c(strptime(paste(input$selectDate3[1],startTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"),strptime(paste(input$selectDate3[2],endTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"))
     
     #convert lungdata&e4Data sensingTime millisecond to second
     #for compare
     timeDate <- lungdata()
-    timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01")
+    timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     timeE4Date <- e4Data()
-    timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data()$lungdata.sensingTime/1000,origin="1970-01-01")
+    timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data()$lungdata.sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     
     
     #check data in selected time is null
@@ -469,14 +469,14 @@ function(input, output){
     #input time
     startTime <- paste0(input$selectHour_s3_1,":",input$selectMin_s3_1,":",input$selectSec_s3_1)
     endTime <- paste0(input$selectHour_e3_1,":",input$selectMin_e3_1,":",input$selectSec_e3_1)
-    i= c(strptime(paste(input$selectDate3_1[1],startTime),"%Y-%m-%d %H:%M:%S"),strptime(paste(input$selectDate3_1[2],endTime),"%Y-%m-%d %H:%M:%S"))
+    i= c(strptime(paste(input$selectDate3_1[1],startTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"),strptime(paste(input$selectDate3_1[2],endTime),"%Y-%m-%d %H:%M:%S",tz="GMT-9"))
     
     #convert lungdata&e4Data sensingTime millisecond to second
     #for compare
     timeDate <- lungdata()
-    timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01")
+    timeDate$sensingTime <- as.POSIXct(lungdata()$sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     timeE4Date <- e4Data()
-    timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data()$lungdata.sensingTime/1000,origin="1970-01-01")
+    timeE4Date$lungdata.sensingTime <- as.POSIXct(e4Data()$lungdata.sensingTime/1000,origin="1970-01-01",tz="GMT-9")
     
     
     #check data in selected time is null
